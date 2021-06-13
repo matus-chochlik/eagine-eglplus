@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_BASIC_EGL_API_HPP
-#define EGLPLUS_BASIC_EGL_API_HPP
+#ifndef EAGINE_EGLPLUS_BASIC_EGL_API_HPP
+#define EAGINE_EGLPLUS_BASIC_EGL_API_HPP
 
 #include "egl_api/api.hpp"
 #include "egl_api/api_traits.hpp"
@@ -80,4 +80,4 @@ struct tuple_element<1, eagine::eglp::basic_egl_api<ApiTraits>> {
 //------------------------------------------------------------------------------
 } // namespace std
 
-#endif // EGLPLUS_BASIC_EGL_API_HPP
+#endif // EAGINE_EGLPLUS_BASIC_EGL_API_HPP

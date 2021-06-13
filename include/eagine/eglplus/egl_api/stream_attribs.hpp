@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_STREAM_ATTRIBS_HPP
-#define EGLPLUS_EGL_API_STREAM_ATTRIBS_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_STREAM_ATTRIBS_HPP
+#define EAGINE_EGLPLUS_EGL_API_STREAM_ATTRIBS_HPP
 
 #include "config.hpp"
 #include "enum_types.hpp"
@@ -65,4 +65,4 @@ static constexpr auto operator|(stream_attribute key, bool value) noexcept
 
 } // namespace eagine::eglp
 
-#endif // EGLPLUS_EGL_API_STREAM_ATTRIBS_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_STREAM_ATTRIBS_HPP

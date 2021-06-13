@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_OBJECTS_HPP
-#define EGLPLUS_EGL_API_OBJECTS_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_OBJECTS_HPP
+#define EAGINE_EGLPLUS_EGL_API_OBJECTS_HPP
 
 #include "config.hpp"
 #include <eagine/handle.hpp>
@@ -133,4 +133,4 @@ using sync_handle = basic_handle<sync_tag, nothing_t>;
 //------------------------------------------------------------------------------
 } // namespace eagine::eglp
 
-#endif // EGLPLUS_EGL_API_OBJECTS_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_OBJECTS_HPP

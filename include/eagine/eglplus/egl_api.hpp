@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_HPP
-#define EGLPLUS_EGL_API_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_HPP
+#define EAGINE_EGLPLUS_EGL_API_HPP
 
 #include "basic_egl_api.hpp"
 #include "egl_api_fwd.hpp"
@@ -15,4 +15,4 @@
 #include <eagine/eglplus/egl_api.inl>
 #endif
 
-#endif // EGLPLUS_EGL_API_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_HPP

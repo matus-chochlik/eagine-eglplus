@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_ENUM_CLASS_HPP
-#define EGLPLUS_EGL_API_ENUM_CLASS_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_ENUM_CLASS_HPP
+#define EAGINE_EGLPLUS_EGL_API_ENUM_CLASS_HPP
 
 #include "config.hpp"
 #include <eagine/enum_bitfield.hpp>
@@ -41,4 +41,4 @@ same_enum_class(egl_any_enum_class a, egl_any_enum_class b) noexcept -> bool {
 //------------------------------------------------------------------------------
 } // namespace eagine::eglp
 
-#endif // EGLPLUS_EGL_API_ENUM_CLASS_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_ENUM_CLASS_HPP

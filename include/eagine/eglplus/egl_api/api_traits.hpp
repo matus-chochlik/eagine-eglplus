@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_API_TRAITS_HPP
-#define EGLPLUS_EGL_API_API_TRAITS_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP
+#define EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP
 
 #include "result.hpp"
 
@@ -40,4 +40,4 @@ private:
 //------------------------------------------------------------------------------
 } // namespace eagine::eglp
 
-#endif // EGLPLUS_EGL_API_API_TRAITS_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP

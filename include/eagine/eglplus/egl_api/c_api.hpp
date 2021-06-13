@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_C_API_HPP
-#define EGLPLUS_EGL_API_C_API_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_C_API_HPP
+#define EAGINE_EGLPLUS_EGL_API_C_API_HPP
 
 #include "api_traits.hpp"
 #include "config.hpp"
@@ -539,4 +539,4 @@ using egl_c_api = basic_egl_c_api<egl_api_traits>;
 //------------------------------------------------------------------------------
 } // namespace eagine::eglp
 
-#endif // EGLPLUS_EGL_API_C_API_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_C_API_HPP

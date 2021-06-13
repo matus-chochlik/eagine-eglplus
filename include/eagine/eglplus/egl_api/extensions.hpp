@@ -5,8 +5,8 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-#ifndef EGLPLUS_EGL_API_EXTENSIONS_HPP
-#define EGLPLUS_EGL_API_EXTENSIONS_HPP
+#ifndef EAGINE_EGLPLUS_EGL_API_EXTENSIONS_HPP
+#define EAGINE_EGLPLUS_EGL_API_EXTENSIONS_HPP
 
 #include "objects.hpp"
 
@@ -88,4 +88,4 @@ private:
 
 } // namespace eagine::eglp
 
-#endif // EGLPLUS_EGL_API_EXTENSIONS_HPP
+#endif // EAGINE_EGLPLUS_EGL_API_EXTENSIONS_HPP
