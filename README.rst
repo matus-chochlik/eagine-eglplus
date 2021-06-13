@@ -4,11 +4,11 @@ EAGine EGLplus
 
 :Author: Matúš Chochlík <chochlik@gmail.com>
 
-Cloning the repo
-================
+Cloning the repository
+======================
 ::
 
- git clone https://github.com/matus-chochlik/eagine-eglp.git
+ git clone https://github.com/matus-chochlik/eagine-eglplus.git
 
 License
 =======
