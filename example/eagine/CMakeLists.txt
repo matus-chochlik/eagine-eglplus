@@ -6,8 +6,15 @@
 add_custom_target(eagine-eglplus-examples ALL)
 set_target_properties(
 	eagine-eglplus-examples
-	PROPERTIES FOLDER "Example/EAGine/EGLplus"
+	PROPERTIES FOLDER "Example/EGLplus"
 )
+
+function(eagine_install_example TARGET_NAME)
+	install(
+		TARGETS ${TARGET_NAME}
+		DESTINATION share/eagine/example/eglplus
+	)
+endfunction()
 
 function(eagine_example_common EXAMPLE_NAME)
 	add_executable(
@@ -26,7 +33,7 @@ function(eagine_example_common EXAMPLE_NAME)
 
 	set_target_properties(
 		eglplus-${EXAMPLE_NAME}
-		PROPERTIES FOLDER "Example/EAGine/EGLplus"
+		PROPERTIES FOLDER "Example/EGLplus"
 	)
 	eagine_install_example(eglplus-${EXAMPLE_NAME})
 endfunction()
