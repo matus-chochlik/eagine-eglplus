@@ -9,7 +9,7 @@ target_link_libraries(EAGine::EGLplus INTERFACE eagine-eglplus-headers)
 target_link_libraries(
 	EAGine::EGLplus
 	INTERFACE
-		EGL::EGL
+		EAGine::Deps::EGL
 		EAGine::Core
 		eagine-eglplus-headers
 )
