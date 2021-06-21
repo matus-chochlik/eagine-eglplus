@@ -6,7 +6,7 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 template <typename Api, typename Tag, typename Signature>
 auto egl_api_traits::link_function(
@@ -27,4 +27,4 @@ auto egl_api_traits::link_function(
     return nullptr;
 }
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus

@@ -13,7 +13,7 @@
 #include <eagine/enum_class.hpp>
 #include <eagine/identifier.hpp>
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Typed wrapper class for EGL enum constants/values.
 /// @ingroup egl_api_wrap
@@ -39,6 +39,6 @@ same_enum_class(egl_any_enum_class a, egl_any_enum_class b) noexcept -> bool {
     return ::eagine::same_enum_class(a, b);
 }
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_ENUM_CLASS_HPP

@@ -14,7 +14,7 @@
 
 auto main() -> int {
     using namespace eagine;
-    using namespace eagine::eglp;
+    using namespace eagine::eglplus;
 
     egl_api egl;
 

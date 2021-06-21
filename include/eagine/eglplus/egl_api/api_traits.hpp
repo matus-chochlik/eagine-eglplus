@@ -10,7 +10,7 @@
 
 #include "result.hpp"
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Policy customizing the generic C-API wrappers for the EGL API
 /// @ingroup egl_api_wrap
@@ -38,6 +38,6 @@ private:
     std::string _full_name;
 };
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP

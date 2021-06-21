@@ -6,7 +6,7 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 basic_egl_constants<ApiTraits>::basic_egl_constants(
@@ -148,5 +148,5 @@ basic_egl_constants<ApiTraits>::basic_egl_constants(
   , gl_colorspace_srgb("gl_colorspace_srgb", traits, api)
   , none("NONE", traits, api) {}
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 

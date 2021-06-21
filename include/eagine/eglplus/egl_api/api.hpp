@@ -25,7 +25,7 @@
 #include <eagine/string_list.hpp>
 #include <chrono>
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 #define EGLPAFP(FUNC) decltype(c_api::FUNC), &c_api::FUNC
 //------------------------------------------------------------------------------
@@ -1226,6 +1226,6 @@ public:
 //------------------------------------------------------------------------------
 #undef OGLPAFP
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_API_HPP

@@ -45,7 +45,7 @@
 #include <cstdint>
 #endif
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Collection of aliases for EGL types.
 /// @ingroup egl_api_wrap
@@ -151,6 +151,6 @@ struct egl_types {
     }
 };
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_CONFIG_HPP

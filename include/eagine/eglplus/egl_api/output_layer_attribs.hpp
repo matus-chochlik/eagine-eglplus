@@ -12,7 +12,7 @@
 #include "enum_types.hpp"
 #include <eagine/key_val_list.hpp>
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 
 /// @brief Traits for EGL output layer attribute key/value list traits.
 /// @ingroup egl_api_wrap
@@ -64,6 +64,6 @@ static constexpr auto operator|(output_layer_attribute key, bool value) noexcept
 #endif
 }
 
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_OUTPUT_LAYER_ATTRIBS_HPP

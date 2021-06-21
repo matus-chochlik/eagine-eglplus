@@ -10,7 +10,7 @@
 
 #include "enum_class.hpp"
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Wrapper for true, false EGL enums.
 /// @ingroup egl_api_wrap
@@ -225,6 +225,6 @@ struct gl_colorspace : egl_enum_class<gl_colorspace, EAGINE_ID_V(GLClrspace)> {
     using enum_class::enum_class;
 };
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_ENUM_TYPES_HPP

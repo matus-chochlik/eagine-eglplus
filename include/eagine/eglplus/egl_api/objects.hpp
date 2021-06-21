@@ -12,7 +12,7 @@
 #include <eagine/handle.hpp>
 #include <eagine/message_id.hpp>
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Tag type denoting EGL device object.
 /// @ingroup egl_api_wrap
@@ -131,6 +131,6 @@ using sync_handle = basic_handle<sync_tag, egl_types::sync_type, EGL_NO_SYNC>;
 using sync_handle = basic_handle<sync_tag, nothing_t>;
 #endif
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_OBJECTS_HPP

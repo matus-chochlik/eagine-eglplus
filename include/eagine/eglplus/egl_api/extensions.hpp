@@ -10,7 +10,7 @@
 
 #include "objects.hpp"
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 
 template <typename ApiTraits>
 class basic_egl_operations;
@@ -86,6 +86,6 @@ private:
     string_view _name;
 };
 
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_EXTENSIONS_HPP

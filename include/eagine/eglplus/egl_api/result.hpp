@@ -13,7 +13,7 @@
 #include <eagine/c_api_wrap.hpp>
 #include <eagine/string_span.hpp>
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Class storing information about call result for unavailable EGL functions.
 /// @ingroup egl_api_wrap
@@ -178,6 +178,6 @@ using egl_result = api_result<Result, egl_result_info>;
 template <typename Result>
 using egl_opt_result = api_opt_result<Result, egl_result_info>;
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_RESULT_HPP

@@ -12,7 +12,7 @@
 #include "enum_types.hpp"
 #include <eagine/key_val_list.hpp>
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 
 /// @brief Traits for EGL image attribute key/value list traits.
 /// @ingroup egl_api_wrap
@@ -63,6 +63,6 @@ static constexpr auto operator|(image_attribute key, bool value) noexcept
 #endif
 }
 
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_IMAGE_ATTRIBS_HPP

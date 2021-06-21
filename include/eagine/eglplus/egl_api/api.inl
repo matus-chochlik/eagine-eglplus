@@ -6,7 +6,7 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
@@ -87,4 +87,4 @@ basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
   , swap_buffers_with_damage("swap_buffers_with_damage", traits, *this)
   , release_thread("release_thread", traits, *this) {}
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus

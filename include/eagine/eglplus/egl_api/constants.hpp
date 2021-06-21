@@ -11,7 +11,7 @@
 #include "c_api.hpp"
 #include "enum_types.hpp"
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the constants from the EGL API.
 /// @ingroup egl_api_wrap
@@ -209,7 +209,7 @@ public:
     /// @var true_
     /// @eglconstwrap{TRUE}
     opt_c_api_constant<
-      mp_list<eglp::true_false>,
+      mp_list<eglplus::true_false>,
 #ifdef EGL_TRUE
       enum_type_c<EGL_TRUE>>
 #else
@@ -220,7 +220,7 @@ public:
     /// @var false_
     /// @eglconstwrap{FALSE}
     opt_c_api_constant<
-      mp_list<eglp::true_false>,
+      mp_list<eglplus::true_false>,
 #ifdef EGL_FALSE
       enum_type_c<EGL_FALSE>>
 #else
@@ -597,7 +597,7 @@ public:
 #else
       int_type_i,
 #endif
-      eglp::gl_colorspace>
+      eglplus::gl_colorspace>
       gl_colorspace;
 
     opt_c_api_constant<
@@ -607,7 +607,7 @@ public:
 #else
       int_type_i,
 #endif
-      eglp::texture_target>
+      eglplus::texture_target>
       texture_target;
 
     opt_c_api_constant<
@@ -771,22 +771,22 @@ public:
     opt_c_api_constant<mp_list<stream_attribute>, int_type_c<0x3214>>
       stream_state;
 
-    opt_c_api_constant<mp_list<eglp::stream_state>, int_type_c<0x3215>>
+    opt_c_api_constant<mp_list<eglplus::stream_state>, int_type_c<0x3215>>
       stream_state_created;
 
-    opt_c_api_constant<mp_list<eglp::stream_state>, int_type_c<0x3216>>
+    opt_c_api_constant<mp_list<eglplus::stream_state>, int_type_c<0x3216>>
       stream_state_connecting;
 
-    opt_c_api_constant<mp_list<eglp::stream_state>, int_type_c<0x3217>>
+    opt_c_api_constant<mp_list<eglplus::stream_state>, int_type_c<0x3217>>
       stream_state_empty;
 
-    opt_c_api_constant<mp_list<eglp::stream_state>, int_type_c<0x3218>>
+    opt_c_api_constant<mp_list<eglplus::stream_state>, int_type_c<0x3218>>
       stream_state_new_frame_available;
 
-    opt_c_api_constant<mp_list<eglp::stream_state>, int_type_c<0x3219>>
+    opt_c_api_constant<mp_list<eglplus::stream_state>, int_type_c<0x3219>>
       stream_state_old_frame_available;
 
-    opt_c_api_constant<mp_list<eglp::stream_state>, int_type_c<0x321A>>
+    opt_c_api_constant<mp_list<eglplus::stream_state>, int_type_c<0x321A>>
       stream_state_disconnected;
 
     opt_c_api_constant<mp_list<image_attribute>, int_type_c<0x30D2>>
@@ -865,7 +865,7 @@ public:
       openvg_api;
 
     opt_c_api_constant<
-      mp_list<eglp::context_opengl_profile_bit>,
+      mp_list<eglplus::context_opengl_profile_bit>,
 #ifdef EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT
       int_type_c<EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT>>
 #else
@@ -874,7 +874,7 @@ public:
       context_opengl_core_profile_bit;
 
     opt_c_api_constant<
-      mp_list<eglp::context_opengl_profile_bit>,
+      mp_list<eglplus::context_opengl_profile_bit>,
 #ifdef EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT
       int_type_c<EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT>>
 #else
@@ -883,7 +883,7 @@ public:
       context_opengl_compatibility_profile_bit;
 
     opt_c_api_constant<
-      mp_list<eglp::color_buffer_type>,
+      mp_list<eglplus::color_buffer_type>,
 #ifdef EGL_RGB_BUFFER
       int_type_c<EGL_RGB_BUFFER>>
 #else
@@ -892,7 +892,7 @@ public:
       rgb_buffer;
 
     opt_c_api_constant<
-      mp_list<eglp::color_buffer_type>,
+      mp_list<eglplus::color_buffer_type>,
 #ifdef EGL_LUMINANCE_BUFFER
       int_type_c<EGL_LUMINANCE_BUFFER>>
 #else
@@ -900,14 +900,14 @@ public:
 #endif
       luminance_buffer;
 
-    opt_c_api_constant<mp_list<eglp::color_component_type>, int_type_c<0x333A>>
+    opt_c_api_constant<mp_list<eglplus::color_component_type>, int_type_c<0x333A>>
       color_component_type_fixed;
 
-    opt_c_api_constant<mp_list<eglp::color_component_type>, int_type_c<0x333B>>
+    opt_c_api_constant<mp_list<eglplus::color_component_type>, int_type_c<0x333B>>
       color_component_type_float;
 
     opt_c_api_constant<
-      mp_list<eglp::read_draw>,
+      mp_list<eglplus::read_draw>,
 #ifdef EGL_READ
       int_type_c<EGL_READ>>
 #else
@@ -916,7 +916,7 @@ public:
       read;
 
     opt_c_api_constant<
-      mp_list<eglp::read_draw>,
+      mp_list<eglplus::read_draw>,
 #ifdef EGL_DRAW
       int_type_c<EGL_DRAW>>
 #else
@@ -925,7 +925,7 @@ public:
       draw;
 
     opt_c_api_constant<
-      mp_list<eglp::sync_type>,
+      mp_list<eglplus::sync_type>,
 #ifdef EGL_SYNC_FENCE
       int_type_c<EGL_SYNC_FENCE>>
 #else
@@ -934,7 +934,7 @@ public:
       sync_fence;
 
     opt_c_api_constant<
-      mp_list<eglp::sync_type>,
+      mp_list<eglplus::sync_type>,
 #ifdef EGL_SYNC_CL_EVENT
       int_type_c<EGL_SYNC_CL_EVENT>>
 #else
@@ -943,7 +943,7 @@ public:
       sync_cl_event;
 
     opt_c_api_constant<
-      mp_list<eglp::texture_format, eglp::texture_target>,
+      mp_list<eglplus::texture_format, eglplus::texture_target>,
 #ifdef EGL_NO_TEXTURE
       int_type_c<EGL_NO_TEXTURE>>
 #else
@@ -952,7 +952,7 @@ public:
       no_texture;
 
     opt_c_api_constant<
-      mp_list<eglp::texture_target>,
+      mp_list<eglplus::texture_target>,
 #ifdef EGL_TEXTURE_2D
       int_type_c<EGL_TEXTURE_2D>>
 #else
@@ -961,7 +961,7 @@ public:
       texture_2d;
 
     opt_c_api_constant<
-      mp_list<eglp::texture_format>,
+      mp_list<eglplus::texture_format>,
 #ifdef EGL_TEXTURE_RGB
       int_type_c<EGL_TEXTURE_RGB>>
 #else
@@ -970,7 +970,7 @@ public:
       texture_rgb;
 
     opt_c_api_constant<
-      mp_list<eglp::texture_format>,
+      mp_list<eglplus::texture_format>,
 #ifdef EGL_TEXTURE_RGBA
       int_type_c<EGL_TEXTURE_RGBA>>
 #else
@@ -979,7 +979,7 @@ public:
       texture_rgba;
 
     opt_c_api_constant<
-      mp_list<eglp::gl_colorspace>,
+      mp_list<eglplus::gl_colorspace>,
 #ifdef EGL_GL_COLORSPACE_LINEAR
       int_type_c<EGL_GL_COLORSPACE_LINEAR>>
 #else
@@ -988,7 +988,7 @@ public:
       gl_colorspace_linear;
 
     opt_c_api_constant<
-      mp_list<eglp::gl_colorspace>,
+      mp_list<eglplus::gl_colorspace>,
 #ifdef EGL_GL_COLORSPACE_SRGB
       int_type_c<EGL_GL_COLORSPACE_SRGB>>
 #else
@@ -997,7 +997,7 @@ public:
       gl_colorspace_srgb;
 
     opt_c_api_constant<
-      mp_list<eglp::config_caveat>,
+      mp_list<eglplus::config_caveat>,
 #ifdef EGL_NONE
       int_type_c<EGL_NONE>>
 #else
@@ -1008,6 +1008,6 @@ public:
     basic_egl_constants(ApiTraits& traits, basic_egl_c_api<ApiTraits>& api);
 };
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_CONSTANTS_HPP

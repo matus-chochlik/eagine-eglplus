@@ -22,7 +22,7 @@
 #endif
 #endif
 
-namespace eagine::eglp {
+namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the C-functions from the EGL API.
 /// @ingroup egl_api_wrap
@@ -537,6 +537,6 @@ public:
 /// @ingroup egl_api_wrap
 using egl_c_api = basic_egl_c_api<egl_api_traits>;
 //------------------------------------------------------------------------------
-} // namespace eagine::eglp
+} // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_C_API_HPP
