@@ -149,4 +149,3 @@ basic_egl_constants<ApiTraits>::basic_egl_constants(
   , none("NONE", traits, api) {}
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
-

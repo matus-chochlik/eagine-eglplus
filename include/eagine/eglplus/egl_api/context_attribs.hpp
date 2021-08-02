@@ -51,9 +51,9 @@ using context_attribute_value = key_value_list_element<context_attrib_traits>;
 /// @brief Concatenation operator for context attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates context_attributes
-static constexpr auto
-operator|(context_attribute key, egl_types::int_type value) noexcept
-  -> context_attribute_value {
+static constexpr auto operator|(
+  context_attribute key,
+  egl_types::int_type value) noexcept -> context_attribute_value {
     return {key, value};
 }
 

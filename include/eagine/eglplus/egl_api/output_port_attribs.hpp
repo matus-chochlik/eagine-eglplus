@@ -46,9 +46,9 @@ using output_port_attribute_value =
 /// @brief Concatenation operator for output port attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates output_port_attributes
-static constexpr auto
-operator|(output_port_attribute key, egl_types::int_type value) noexcept
-  -> output_port_attribute_value {
+static constexpr auto operator|(
+  output_port_attribute key,
+  egl_types::int_type value) noexcept -> output_port_attribute_value {
     return {key, value};
 }
 

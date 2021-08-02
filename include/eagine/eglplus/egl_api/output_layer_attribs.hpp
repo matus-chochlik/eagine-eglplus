@@ -46,9 +46,9 @@ using output_layer_attribute_value =
 /// @brief Concatenation operator for output layer attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates output_layer_attributes
-static constexpr auto
-operator|(output_layer_attribute key, egl_types::int_type value) noexcept
-  -> output_layer_attribute_value {
+static constexpr auto operator|(
+  output_layer_attribute key,
+  egl_types::int_type value) noexcept -> output_layer_attribute_value {
     return {key, value};
 }
 

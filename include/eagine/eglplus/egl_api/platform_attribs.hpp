@@ -45,9 +45,9 @@ using platform_attribute_value = key_value_list_element<platform_attrib_traits>;
 /// @brief Concatenation operator for platform attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates platform_attributes
-static constexpr auto
-operator|(platform_attribute key, egl_types::int_type value) noexcept
-  -> platform_attribute_value {
+static constexpr auto operator|(
+  platform_attribute key,
+  egl_types::int_type value) noexcept -> platform_attribute_value {
     return {key, value};
 }
 

@@ -45,9 +45,9 @@ using sync_attribute_value = key_value_list_element<sync_attrib_traits>;
 /// @brief Concatenation operator for sync object attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates sync_attributes
-static constexpr auto
-operator|(sync_attribute key, egl_types::int_type value) noexcept
-  -> sync_attribute_value {
+static constexpr auto operator|(
+  sync_attribute key,
+  egl_types::int_type value) noexcept -> sync_attribute_value {
     return {key, value};
 }
 

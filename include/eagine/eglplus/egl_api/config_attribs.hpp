@@ -45,27 +45,27 @@ using config_attribute_value = key_value_list_element<config_attrib_traits>;
 /// @brief Concatenation operator for configuration attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates config_attributes
-static constexpr auto
-operator|(config_attribute key, egl_types::int_type value) noexcept
-  -> config_attribute_value {
+static constexpr auto operator|(
+  config_attribute key,
+  egl_types::int_type value) noexcept -> config_attribute_value {
     return {key, value};
 }
 
 /// @brief Concatenation operator for configuration attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates config_attributes
-static constexpr auto
-operator|(config_attribute key, color_buffer_type value) noexcept
-  -> config_attribute_value {
+static constexpr auto operator|(
+  config_attribute key,
+  color_buffer_type value) noexcept -> config_attribute_value {
     return {key, egl_types::int_type(value)};
 }
 
 /// @brief Concatenation operator for configuration attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates config_attributes
-static constexpr auto
-operator|(config_attribute key, enum_bitfield<surface_type_bit> value) noexcept
-  -> config_attribute_value {
+static constexpr auto operator|(
+  config_attribute key,
+  enum_bitfield<surface_type_bit> value) noexcept -> config_attribute_value {
     return {key, egl_types::int_type(value)};
 }
 

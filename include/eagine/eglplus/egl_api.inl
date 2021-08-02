@@ -21,4 +21,3 @@ template class basic_egl_c_api<egl_api_traits>;
 template class basic_egl_api<egl_api_traits>;
 
 } // namespace eagine::eglplus
-
