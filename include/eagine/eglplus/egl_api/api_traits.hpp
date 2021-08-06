@@ -31,8 +31,11 @@ public:
 
     /// @brief Links an EGL function with the specified name and Signature.
     template <typename Api, typename Tag, typename Signature>
-    auto link_function(Api& api, Tag, string_view name, type_identity<Signature>)
-      -> std::add_pointer_t<Signature>;
+    auto link_function(
+      Api& api,
+      const Tag,
+      const string_view name,
+      const type_identity<Signature>) -> std::add_pointer_t<Signature>;
 
 private:
     std::string _full_name;

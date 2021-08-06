@@ -141,7 +141,8 @@ struct egl_types {
 #endif
     }
 
-    static constexpr auto error_code_no_error(int_type ec) noexcept -> bool {
+    static constexpr auto error_code_no_error(const int_type ec) noexcept
+      -> bool {
 #if EGLPLUS_HAS_EGL
         return ec == EGL_SUCCESS;
 #else
