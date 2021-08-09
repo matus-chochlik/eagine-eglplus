@@ -16,12 +16,12 @@ auto main() -> int {
     using namespace eagine;
     using namespace eagine::eglplus;
 
-    egl_api egl;
+    const egl_api egl;
 
     std::cout << "Generic extensions: " << std::endl;
 
-    if(ok extensions{egl.get_extensions()}) {
-        for(auto name : extensions) {
+    if(const ok extensions{egl.get_extensions()}) {
+        for(const auto name : extensions) {
             std::cout << "  " << name << std::endl;
         }
     } else {
@@ -31,7 +31,7 @@ auto main() -> int {
 
     std::cout << std::endl;
 
-    if(ok dev_count{egl.query_devices.count()}) {
+    if(const ok dev_count{egl.query_devices.count()}) {
         std::vector<egl_types::device_type> devices;
         const auto n = std_size(dev_count.get());
         devices.resize(n);
@@ -40,8 +40,8 @@ auto main() -> int {
                 std::cout << "Device: " << d << std::endl;
 
                 std::cout << " Device extensions: " << std::endl;
-                if(ok extensions{egl.get_device_extensions(devices[d])}) {
-                    for(auto name : extensions) {
+                if(const ok extensions{egl.get_device_extensions(devices[d])}) {
+                    for(const auto name : extensions) {
                         std::cout << "  " << name << std::endl;
                     }
                 } else {
@@ -50,18 +50,18 @@ auto main() -> int {
                 }
 
                 if(egl.get_platform_display) {
-                    if(ok display{egl.get_platform_display(
+                    if(const ok display{egl.get_platform_display(
                          egl.platform_device, devices[d])}) {
-                        if(ok init_res{egl.initialize(display)}) {
-                            auto do_cleanup = egl.terminate.raii(display);
+                        if(const ok init_res{egl.initialize(display)}) {
+                            const auto do_cleanup = egl.terminate.raii(display);
 
-                            if(ok vendor{
+                            if(const ok vendor{
                                  egl.query_string(display, egl.vendor)}) {
                                 std::cout << " Vendor:  " << extract(vendor)
                                           << std::endl;
                             }
 
-                            if(ok version{
+                            if(const ok version{
                                  egl.query_string(display, egl.version)}) {
                                 std::cout << " Version: " << extract(version)
                                           << std::endl;
@@ -83,7 +83,7 @@ auto main() -> int {
                                       << " Output layers: " << extract(count)
                                       << std::endl;
                                 }
-                                if(ok count{
+                                if(const ok count{
                                      egl.get_output_ports.count(display)}) {
                                     std::cout
                                       << " Output ports: " << extract(count)
@@ -93,7 +93,8 @@ auto main() -> int {
 
                             std::cout << " Display extensions: " << std::endl;
 
-                            if(ok extensions = egl.get_extensions(display)) {
+                            if(const ok extensions{
+                                 egl.get_extensions(display)}) {
                                 for(auto name : extensions) {
                                     std::cout << "  " << name << std::endl;
                                 }

@@ -16,28 +16,28 @@ auto main() -> int {
     using namespace eagine;
     using namespace eagine::eglplus;
 
-    egl_api egl;
+    const egl_api egl;
 
     if(egl.get_display) {
-        if(ok display{egl.get_display()}) {
-            if(auto init_res = egl.initialize(display)) {
-                auto do_cleanup = egl.terminate.raii(display);
+        if(const ok display{egl.get_display()}) {
+            if(egl.initialize(display)) {
+                const auto do_cleanup = egl.terminate.raii(display);
 
                 const auto attribs =
                   (egl.depth_size | 24) + (egl.stencil_size | 8);
 
-                if(ok count{egl.choose_config.count(display, attribs)}) {
+                if(const ok count{egl.choose_config.count(display, attribs)}) {
 
                     std::vector<egl_api::config_type> configs(count);
 
                     std::cout << "found " << configs.size()
                               << " depth/stencil configs:" << std::endl;
 
-                    for(auto config : extract_or(
+                    for(const auto config : extract_or(
                           egl.choose_config(display, attribs, cover(configs)),
                           span<egl_api::config_type>{})) {
 
-                        auto print_info =
+                        const auto print_info =
                           [&](const char* pref, auto attr, const char* suff) {
                               std::cout << pref << std::setw(2)
                                         << extract_or(

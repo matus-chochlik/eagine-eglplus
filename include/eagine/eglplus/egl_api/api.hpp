@@ -339,7 +339,7 @@ public:
             return this->_cnvchkcall(disp);
         }
 
-        auto raii(display_handle disp) noexcept {
+        auto raii(display_handle disp) const noexcept {
             return eagine::finally([=]() { (*this)(disp); });
         }
     } terminate;
@@ -556,7 +556,7 @@ public:
             return this->_cnvchkcall(disp, surf);
         }
 
-        auto raii(display_handle disp, surface_handle surf) noexcept {
+        auto raii(display_handle disp, surface_handle surf) const noexcept {
             return eagine::finally([=]() { (*this)(disp, surf); });
         }
     } destroy_surface;
@@ -625,7 +625,7 @@ public:
             return this->_cnvchkcall(disp, surf);
         }
 
-        auto raii(display_handle disp, stream_handle surf) noexcept {
+        auto raii(display_handle disp, stream_handle surf) const noexcept {
             return eagine::finally([=]() { (*this)(disp, surf); });
         }
     } destroy_stream;
@@ -876,7 +876,7 @@ public:
             return this->_cnvchkcall(disp, imge);
         }
 
-        auto raii(display_handle disp, image_handle imge) noexcept {
+        auto raii(display_handle disp, image_handle imge) const noexcept {
             return eagine::finally([=]() { (*this)(disp, imge); });
         }
     } destroy_image;
@@ -939,7 +939,7 @@ public:
             return this->_cnvchkcall(disp, ctxt);
         }
 
-        auto raii(display_handle disp, context_handle ctxt) noexcept {
+        auto raii(display_handle disp, context_handle ctxt) const noexcept {
             return eagine::finally([=]() { (*this)(disp, ctxt); });
         }
     } destroy_context;
@@ -1081,10 +1081,8 @@ public:
     } query_string;
 
     // query_strings
-    auto query_strings(
-      display_handle disp,
-      string_query query,
-      char separator) noexcept {
+    auto query_strings(display_handle disp, string_query query, char separator)
+      const noexcept {
         return query_string(disp, query).transformed([separator](auto src) {
             return split_into_string_list(src, separator);
         });
