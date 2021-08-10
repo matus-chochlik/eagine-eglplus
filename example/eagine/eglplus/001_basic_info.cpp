@@ -14,21 +14,21 @@ auto main() -> int {
     using namespace eagine;
     using namespace eagine::eglplus;
 
-    egl_api egl;
+    const egl_api egl;
 
-    if(ok display = egl.get_display()) {
-        if(auto init_res = egl.initialize(display)) {
-            auto do_cleanup = egl.terminate.raii(display);
+    if(const ok display{egl.get_display()}) {
+        if(egl.initialize(display)) {
+            const auto do_cleanup = egl.terminate.raii(display);
 
-            if(ok dev_count{egl.query_devices.count()}) {
+            if(const ok dev_count{egl.query_devices.count()}) {
                 std::cout << "Devices: " << dev_count << std::endl;
             }
 
-            if(ok vendor = egl.query_string(display, egl.vendor)) {
+            if(const ok vendor{egl.query_string(display, egl.vendor)}) {
                 std::cout << "Vendor:  " << extract(vendor) << std::endl;
             }
 
-            if(ok version = egl.query_string(display, egl.version)) {
+            if(const ok version{egl.query_string(display, egl.version)}) {
                 std::cout << "Version: " << extract(version) << std::endl;
             }
 

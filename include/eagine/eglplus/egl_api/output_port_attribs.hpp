@@ -46,17 +46,18 @@ using output_port_attribute_value =
 /// @brief Concatenation operator for output port attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates output_port_attributes
-static constexpr auto
-operator|(output_port_attribute key, egl_types::int_type value) noexcept
-  -> output_port_attribute_value {
+static constexpr auto operator|(
+  const output_port_attribute key,
+  const egl_types::int_type value) noexcept -> output_port_attribute_value {
     return {key, value};
 }
 
 /// @brief Concatenation operator for output port attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates output_port_attributes
-static constexpr auto operator|(output_port_attribute key, bool value) noexcept
-  -> output_port_attribute_value {
+static constexpr auto operator|(
+  const output_port_attribute key,
+  const bool value) noexcept -> output_port_attribute_value {
 #if defined(EGL_TRUE) && defined(EGL_FALSE)
     return {key, value ? EGL_TRUE : EGL_FALSE};
 #else

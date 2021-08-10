@@ -30,15 +30,7 @@ public:
     basic_egl_api()
       : basic_egl_api{ApiTraits{}} {}
 
-    auto operations() noexcept -> basic_egl_operations<ApiTraits>& {
-        return *this;
-    }
-
     auto operations() const noexcept -> const basic_egl_operations<ApiTraits>& {
-        return *this;
-    }
-
-    auto constants() noexcept -> basic_egl_constants<ApiTraits>& {
         return *this;
     }
 
@@ -46,12 +38,6 @@ public:
         return *this;
     }
 };
-
-template <std::size_t I, typename ApiTraits>
-auto get(basic_egl_api<ApiTraits>& x) noexcept ->
-  typename std::tuple_element<I, basic_egl_api<ApiTraits>>::type& {
-    return x;
-}
 
 template <std::size_t I, typename ApiTraits>
 auto get(const basic_egl_api<ApiTraits>& x) noexcept -> const

@@ -45,17 +45,18 @@ using stream_attribute_value = key_value_list_element<stream_attrib_traits>;
 /// @brief Concatenation operator for stream attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates stream_attributes
-static constexpr auto
-operator|(stream_attribute key, egl_types::int_type value) noexcept
-  -> stream_attribute_value {
+static constexpr auto operator|(
+  const stream_attribute key,
+  const egl_types::int_type value) noexcept -> stream_attribute_value {
     return {key, value};
 }
 
 /// @brief Concatenation operator for stream attribute list key and value.
 /// @ingroup egl_api_wrap
 /// @relates stream_attributes
-static constexpr auto operator|(stream_attribute key, bool value) noexcept
-  -> stream_attribute_value {
+static constexpr auto operator|(
+  const stream_attribute key,
+  const bool value) noexcept -> stream_attribute_value {
 #if defined(EGL_TRUE) && defined(EGL_FALSE)
     return {key, value ? EGL_TRUE : EGL_FALSE};
 #else

@@ -15,12 +15,12 @@ auto main() -> int {
     using namespace eagine;
     using namespace eagine::eglplus;
 
-    egl_api egl;
+    const egl_api egl;
 
     std::cout << "Generic extensions: " << std::endl;
 
-    if(ok extensions = egl.get_extensions()) {
-        for(auto name : extensions) {
+    if(const ok extensions = egl.get_extensions()) {
+        for(const auto name : extensions) {
             std::cout << "  " << name << std::endl;
         }
     } else {
@@ -31,22 +31,22 @@ auto main() -> int {
     std::cout << std::endl;
 
     if(egl.get_display) {
-        if(ok display = egl.get_display()) {
-            if(auto init_res = egl.initialize(display)) {
-                auto do_cleanup = egl.terminate.raii(display);
+        if(const ok display{egl.get_display()}) {
+            if(egl.initialize(display)) {
+                const auto do_cleanup = egl.terminate.raii(display);
 
-                if(ok vendor = egl.query_string(display, egl.vendor)) {
+                if(const ok vendor{egl.query_string(display, egl.vendor)}) {
                     std::cout << "Vendor:  " << extract(vendor) << std::endl;
                 }
 
-                if(ok version = egl.query_string(display, egl.version)) {
+                if(const ok version{egl.query_string(display, egl.version)}) {
                     std::cout << "Version: " << extract(version) << std::endl;
                 }
 
                 std::cout << "Display extensions: " << std::endl;
 
-                if(ok extensions = egl.get_extensions(display)) {
-                    for(auto name : extensions) {
+                if(const ok extensions{egl.get_extensions(display)}) {
+                    for(const auto name : extensions) {
                         std::cout << "  " << name << std::endl;
                     }
                 } else {

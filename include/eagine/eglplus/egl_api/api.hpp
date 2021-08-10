@@ -213,8 +213,8 @@ public:
     struct : func<EGLPAFP(QueryDeviceString)> {
         using func<EGLPAFP(QueryDeviceString)>::func;
 
-        constexpr auto
-        operator()(device_type dev, device_string_query query) const noexcept {
+        constexpr auto operator()(device_type dev, device_string_query query)
+          const noexcept {
             return this->_cnvchkcall(dev, query)
               .cast_to(type_identity<string_view>{});
         }
@@ -259,8 +259,8 @@ public:
 #endif
         }
 
-        constexpr auto
-        operator()(platform pltf, void_ptr_type disp) const noexcept {
+        constexpr auto operator()(platform pltf, void_ptr_type disp)
+          const noexcept {
             return this->_cnvchkcall(pltf, disp, nullptr)
               .cast_to(type_identity<display_handle>{});
         }
@@ -317,8 +317,8 @@ public:
         using base::base;
         using base::operator();
 
-        constexpr auto
-        operator()(display_handle disp, int* maj, int* min) const noexcept {
+        constexpr auto operator()(display_handle disp, int* maj, int* min)
+          const noexcept {
             return this->_cnvchkcall(disp, maj, min)
               .transformed(
                 [&maj, &min](auto) { return std::make_tuple(maj, min); });
@@ -339,7 +339,7 @@ public:
             return this->_cnvchkcall(disp);
         }
 
-        auto raii(display_handle disp) noexcept {
+        auto raii(display_handle disp) const noexcept {
             return eagine::finally([=]() { (*this)(disp); });
         }
     } terminate;
@@ -357,8 +357,8 @@ public:
               });
         }
 
-        auto
-        operator()(display_handle disp, span<config_type> dest) const noexcept {
+        auto operator()(display_handle disp, span<config_type> dest)
+          const noexcept {
             int_type ret_count{0};
             return this
               ->_cnvchkcall(
@@ -388,8 +388,8 @@ public:
         }
 
         template <std::size_t N>
-        auto
-        count(display_handle disp, const config_attributes<N>& attribs) const {
+        auto count(display_handle disp, const config_attributes<N>& attribs)
+          const {
             return count(disp, attribs.get());
         }
 
@@ -493,8 +493,8 @@ public:
     struct : func<EGLPAFP(CreatePbufferSurface)> {
         using func<EGLPAFP(CreatePbufferSurface)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, config_type conf) const noexcept {
+        constexpr auto operator()(display_handle disp, config_type conf)
+          const noexcept {
             return this->_cnvchkcall(disp, conf, nullptr)
               .cast_to(type_identity<surface_handle>{});
         }
@@ -551,12 +551,12 @@ public:
     struct : func<EGLPAFP(DestroySurface)> {
         using func<EGLPAFP(DestroySurface)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, surface_handle surf) const noexcept {
+        constexpr auto operator()(display_handle disp, surface_handle surf)
+          const noexcept {
             return this->_cnvchkcall(disp, surf);
         }
 
-        auto raii(display_handle disp, surface_handle surf) noexcept {
+        auto raii(display_handle disp, surface_handle surf) const noexcept {
             return eagine::finally([=]() { (*this)(disp, surf); });
         }
     } destroy_surface;
@@ -620,12 +620,12 @@ public:
     struct : func<EGLPAFP(DestroyStream)> {
         using func<EGLPAFP(DestroyStream)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, stream_handle surf) const noexcept {
+        constexpr auto operator()(display_handle disp, stream_handle surf)
+          const noexcept {
             return this->_cnvchkcall(disp, surf);
         }
 
-        auto raii(display_handle disp, stream_handle surf) noexcept {
+        auto raii(display_handle disp, stream_handle surf) const noexcept {
             return eagine::finally([=]() { (*this)(disp, surf); });
         }
     } destroy_stream;
@@ -656,8 +656,8 @@ public:
     struct : func<EGLPAFP(StreamConsumerGLTextureExternal)> {
         using func<EGLPAFP(StreamConsumerGLTextureExternal)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, stream_handle surf) const noexcept {
+        constexpr auto operator()(display_handle disp, stream_handle surf)
+          const noexcept {
             return this->_cnvchkcall(disp, surf);
         }
     } stream_consumer_gl_texture_external;
@@ -666,8 +666,8 @@ public:
     struct : func<EGLPAFP(StreamConsumerAcquire)> {
         using func<EGLPAFP(StreamConsumerAcquire)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, stream_handle surf) const noexcept {
+        constexpr auto operator()(display_handle disp, stream_handle surf)
+          const noexcept {
             return this->_cnvchkcall(disp, surf);
         }
     } stream_consumer_acquire;
@@ -676,8 +676,8 @@ public:
     struct : func<EGLPAFP(StreamConsumerRelease)> {
         using func<EGLPAFP(StreamConsumerRelease)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, stream_handle surf) const noexcept {
+        constexpr auto operator()(display_handle disp, stream_handle surf)
+          const noexcept {
             return this->_cnvchkcall(disp, surf);
         }
     } stream_consumer_release;
@@ -871,12 +871,12 @@ public:
     struct : func<EGLPAFP(DestroyImage)> {
         using func<EGLPAFP(DestroyImage)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, image_handle imge) const noexcept {
+        constexpr auto operator()(display_handle disp, image_handle imge)
+          const noexcept {
             return this->_cnvchkcall(disp, imge);
         }
 
-        auto raii(display_handle disp, image_handle imge) noexcept {
+        auto raii(display_handle disp, image_handle imge) const noexcept {
             return eagine::finally([=]() { (*this)(disp, imge); });
         }
     } destroy_image;
@@ -934,12 +934,12 @@ public:
     struct : func<EGLPAFP(DestroyContext)> {
         using func<EGLPAFP(DestroyContext)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, context_handle ctxt) const noexcept {
+        constexpr auto operator()(display_handle disp, context_handle ctxt)
+          const noexcept {
             return this->_cnvchkcall(disp, ctxt);
         }
 
-        auto raii(display_handle disp, context_handle ctxt) noexcept {
+        auto raii(display_handle disp, context_handle ctxt) const noexcept {
             return eagine::finally([=]() { (*this)(disp, ctxt); });
         }
     } destroy_context;
@@ -1034,8 +1034,8 @@ public:
         }
 
         template <typename R, typename P>
-        constexpr auto
-        forever(display_handle disp, sync_handle sync) const noexcept {
+        constexpr auto forever(display_handle disp, sync_handle sync)
+          const noexcept {
 #ifdef EGL_FOREVER
             return this->_cnvchkcall(disp, sync, 0, EGL_FOREVER);
 #else
@@ -1048,8 +1048,8 @@ public:
     struct : func<EGLPAFP(WaitSync)> {
         using func<EGLPAFP(WaitSync)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, sync_handle sync) const noexcept {
+        constexpr auto operator()(display_handle disp, sync_handle sync)
+          const noexcept {
             return this->_cnvchkcall(disp, sync, 0);
         }
     } wait_sync;
@@ -1058,8 +1058,8 @@ public:
     struct : func<EGLPAFP(DestroySync)> {
         using func<EGLPAFP(DestroySync)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, sync_handle sync) const noexcept {
+        constexpr auto operator()(display_handle disp, sync_handle sync)
+          const noexcept {
             return this->_cnvchkcall(disp, sync);
         }
     } destroy_sync;
@@ -1068,8 +1068,8 @@ public:
     struct : func<EGLPAFP(QueryString)> {
         using func<EGLPAFP(QueryString)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, string_query query) const noexcept {
+        constexpr auto operator()(display_handle disp, string_query query)
+          const noexcept {
             return this->_cnvchkcall(disp, query)
               .cast_to(type_identity<string_view>{});
         }
@@ -1081,10 +1081,8 @@ public:
     } query_string;
 
     // query_strings
-    auto query_strings(
-      display_handle disp,
-      string_query query,
-      char separator) noexcept {
+    auto query_strings(display_handle disp, string_query query, char separator)
+      const noexcept {
         return query_string(disp, query).transformed([separator](auto src) {
             return split_into_string_list(src, separator);
         });
@@ -1188,8 +1186,8 @@ public:
     struct : func<EGLPAFP(SwapInterval)> {
         using func<EGLPAFP(SwapInterval)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, int_type interval) const noexcept {
+        constexpr auto operator()(display_handle disp, int_type interval)
+          const noexcept {
             return this->_cnvchkcall(disp, interval);
         }
     } swap_interval;
@@ -1198,8 +1196,8 @@ public:
     struct : func<EGLPAFP(SwapBuffers)> {
         using func<EGLPAFP(SwapBuffers)>::func;
 
-        constexpr auto
-        operator()(display_handle disp, surface_handle surf) const noexcept {
+        constexpr auto operator()(display_handle disp, surface_handle surf)
+          const noexcept {
             return this->_cnvchkcall(disp, surf);
         }
     } swap_buffers;

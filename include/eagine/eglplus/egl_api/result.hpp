@@ -21,7 +21,7 @@ namespace eagine::eglplus {
 /// @see egl_result_info
 class egl_no_result_info {
 public:
-    constexpr auto error_code(anything) noexcept -> auto& {
+    constexpr auto error_code(const anything) noexcept -> auto& {
         return *this;
     }
 
@@ -44,7 +44,7 @@ public:
         return egl_types::error_code_no_error(_error_code);
     }
 
-    constexpr auto error_code(egl_types::int_type ec) noexcept -> auto& {
+    constexpr auto error_code(const egl_types::int_type ec) noexcept -> auto& {
         _error_code = ec;
         return *this;
     }

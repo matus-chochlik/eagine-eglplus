@@ -73,4 +73,3 @@ basic_egl_c_api<ApiTraits>::basic_egl_c_api(api_traits& traits)
   , ReleaseThread{"ReleaseThread", traits, *this} {}
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
-

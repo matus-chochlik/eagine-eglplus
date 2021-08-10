@@ -14,17 +14,17 @@ auto main() -> int {
     using namespace eagine;
     using namespace eagine::eglplus;
 
-    egl_api egl;
+    const egl_api egl;
 
     if(egl.get_display) {
-        if(ok display = egl.get_display()) {
+        if(const ok display = egl.get_display()) {
             if(auto init_res = egl.initialize(display)) {
-                auto do_cleanup = egl.terminate.raii(display);
+                const auto do_cleanup = egl.terminate.raii(display);
 
                 std::cout << "Supported APIs:" << std::endl;
 
-                if(ok apis = egl.get_client_apis(display)) {
-                    for(auto name : apis) {
+                if(const ok apis{egl.get_client_apis(display)}) {
+                    for(const auto name : apis) {
                         std::cout << "  " << name << std::endl;
                     }
                 } else {
