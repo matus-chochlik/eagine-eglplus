@@ -340,7 +340,7 @@ public:
         }
 
         auto raii(display_handle disp) const noexcept {
-            return eagine::finally([=]() { (*this)(disp); });
+            return eagine::finally([=, this]() { (*this)(disp); });
         }
     } terminate;
 
@@ -557,7 +557,7 @@ public:
         }
 
         auto raii(display_handle disp, surface_handle surf) const noexcept {
-            return eagine::finally([=]() { (*this)(disp, surf); });
+            return eagine::finally([=, this]() { (*this)(disp, surf); });
         }
     } destroy_surface;
 
@@ -626,7 +626,7 @@ public:
         }
 
         auto raii(display_handle disp, stream_handle surf) const noexcept {
-            return eagine::finally([=]() { (*this)(disp, surf); });
+            return eagine::finally([=, this]() { (*this)(disp, surf); });
         }
     } destroy_stream;
 
@@ -877,7 +877,7 @@ public:
         }
 
         auto raii(display_handle disp, image_handle imge) const noexcept {
-            return eagine::finally([=]() { (*this)(disp, imge); });
+            return eagine::finally([=, this]() { (*this)(disp, imge); });
         }
     } destroy_image;
 
@@ -940,7 +940,7 @@ public:
         }
 
         auto raii(display_handle disp, context_handle ctxt) const noexcept {
-            return eagine::finally([=]() { (*this)(disp, ctxt); });
+            return eagine::finally([=, this]() { (*this)(disp, ctxt); });
         }
     } destroy_context;
 
