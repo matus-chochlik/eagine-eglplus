@@ -121,6 +121,12 @@ public:
             return this->_chkcall(_conv(params)...)
               .cast_to(type_identity<RVC>{});
         }
+
+        auto bind(Params... params) const noexcept {
+            return [this, params...] {
+                return (*this)(params...);
+            };
+        }
     };
 
     // numeric query function
@@ -339,8 +345,14 @@ public:
             return this->_cnvchkcall(disp);
         }
 
+        auto bind(display_handle disp) const noexcept {
+            return [this, disp] {
+                return (*this)(disp);
+            };
+        }
+
         auto raii(display_handle disp) const noexcept {
-            return eagine::finally([=, this]() { (*this)(disp); });
+            return eagine::finally(bind(disp));
         }
     } terminate;
 
@@ -556,8 +568,14 @@ public:
             return this->_cnvchkcall(disp, surf);
         }
 
+        auto bind(display_handle disp, surface_handle surf) const noexcept {
+            return [this, disp, surf] {
+                return (*this)(disp, surf);
+            };
+        }
+
         auto raii(display_handle disp, surface_handle surf) const noexcept {
-            return eagine::finally([=, this]() { (*this)(disp, surf); });
+            return eagine::finally(bind(disp, surf));
         }
     } destroy_surface;
 
@@ -625,8 +643,14 @@ public:
             return this->_cnvchkcall(disp, surf);
         }
 
-        auto raii(display_handle disp, stream_handle surf) const noexcept {
-            return eagine::finally([=, this]() { (*this)(disp, surf); });
+        auto bind(display_handle disp, stream_handle strm) const noexcept {
+            return [this, disp, strm] {
+                return (*this)(disp, strm);
+            };
+        }
+
+        auto raii(display_handle disp, stream_handle strm) const noexcept {
+            return eagine::finally(bind(disp, strm));
         }
     } destroy_stream;
 
@@ -876,8 +900,14 @@ public:
             return this->_cnvchkcall(disp, imge);
         }
 
+        auto bind(display_handle disp, image_handle imge) const noexcept {
+            return [this, disp, imge] {
+                return (*this)(disp, imge);
+            };
+        }
+
         auto raii(display_handle disp, image_handle imge) const noexcept {
-            return eagine::finally([=, this]() { (*this)(disp, imge); });
+            return eagine::finally(bind(disp, imge));
         }
     } destroy_image;
 
@@ -939,8 +969,14 @@ public:
             return this->_cnvchkcall(disp, ctxt);
         }
 
+        auto bind(display_handle disp, context_handle ctxt) const noexcept {
+            return [this, disp, ctxt] {
+                return (*this)(disp, ctxt);
+            };
+        }
+
         auto raii(display_handle disp, context_handle ctxt) const noexcept {
-            return eagine::finally([=, this]() { (*this)(disp, ctxt); });
+            return eagine::finally(bind(disp, ctxt));
         }
     } destroy_context;
 
