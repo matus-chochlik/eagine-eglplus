@@ -5,7 +5,6 @@
 #
 set(HEADERS
     eagine/eglplus/basic_egl_api.hpp
-    eagine/eglplus/config/basic.hpp
     eagine/eglplus/egl_api/api.hpp
     eagine/eglplus/egl_api/api_traits.hpp
     eagine/eglplus/egl_api/c_api.hpp
