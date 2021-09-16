@@ -231,7 +231,7 @@ public:
         }
 
         constexpr auto operator()() const noexcept {
-            return this->_fake_empty_c_str().cast_to(
+            return this->fake_empty_c_str().cast_to(
               type_identity<string_view>{});
         }
     } query_device_string;
@@ -240,11 +240,12 @@ public:
     auto get_device_extensions(device_type dev) const noexcept {
 #ifdef EGL_EXTENSIONS
         return query_device_string(dev, device_string_query(EGL_EXTENSIONS))
+#else
+        return query_device_string
+          .fake_empty_c_str()
+#endif
           .transformed(
             [](auto src) { return split_into_string_list(src, ' '); });
-#else
-        return this->_fake_empty_c_str();
-#endif
     }
 
     auto get_device_extensions(device_handle dev) const noexcept {
@@ -1111,7 +1112,7 @@ public:
         }
 
         constexpr auto operator()() const noexcept {
-            return this->_fake_empty_c_str().cast_to(
+            return this->fake_empty_c_str().cast_to(
               type_identity<string_view>{});
         }
     } query_string;

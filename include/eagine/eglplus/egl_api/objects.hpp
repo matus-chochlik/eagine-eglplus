@@ -72,7 +72,7 @@ using display_handle =
 #else
 /// @brief Alias for EGL display  handle wrapper.
 /// @ingroup egl_api_wrap
-using display_handle = basic_handle<display_tag, nothing_t>;
+using display_handle = basic_handle<display_tag, egl_types::display_type>;
 #endif
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_SURFACE)
@@ -81,7 +81,7 @@ using surface_handle =
 #else
 /// @brief Alias for EGL surface handle wrapper.
 /// @ingroup egl_api_wrap
-using surface_handle = basic_handle<surface_tag, nothing_t>;
+using surface_handle = basic_handle<surface_tag, egl_types::surface_type>;
 #endif
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_CONTEXT)
@@ -90,7 +90,7 @@ using context_handle =
 #else
 /// @brief Alias for EGL context handle wrapper.
 /// @ingroup egl_api_wrap
-using context_handle = basic_handle<context_tag, nothing_t>;
+using context_handle = basic_handle<context_tag, egl_types::context_type>;
 #endif
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL stream handle wrapper.
@@ -106,7 +106,7 @@ using image_handle =
 #else
 /// @brief Alias for EGL image handle wrapper.
 /// @ingroup egl_api_wrap
-using image_handle = basic_handle<image_tag, nothing_t>;
+using image_handle = basic_handle<image_tag, egl_types::image_type>;
 #endif
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL output layer handle wrapper.
@@ -128,7 +128,7 @@ using sync_handle = basic_handle<sync_tag, egl_types::sync_type, EGL_NO_SYNC>;
 #else
 /// @brief Alias for EGL sync object handle wrapper.
 /// @ingroup egl_api_wrap
-using sync_handle = basic_handle<sync_tag, nothing_t>;
+using sync_handle = basic_handle<sync_tag, egl_types::sync_type>;
 #endif
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
