@@ -20,7 +20,11 @@ namespace eagine::eglplus {
 template <typename ApiTraits>
 class basic_egl_constants {
 public:
+#if EGLPLUS_HAS_EGL
     static constexpr const typename egl_types::config_type no_config{nullptr};
+#else
+    static constexpr const typename egl_types::config_type no_config{0};
+#endif
 
     static constexpr const typename egl_types::int_type dont_care{
 #ifdef EGL_DONT_CARE
@@ -232,11 +236,10 @@ public:
     opt_c_api_constant<
       mp_list<platform>,
 #ifdef EGL_PLATFORM_DEVICE_EXT
-      int_type_c<EGL_PLATFORM_DEVICE_EXT>
+      int_type_c<EGL_PLATFORM_DEVICE_EXT>>
 #else
       int_type_i>
 #endif
-      >
       platform_device;
 
     /// @var platform_x11
