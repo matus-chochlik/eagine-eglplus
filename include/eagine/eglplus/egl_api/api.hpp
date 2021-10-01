@@ -328,7 +328,7 @@ public:
           const noexcept {
             return this->_cnvchkcall(disp, maj, min)
               .transformed(
-                [&maj, &min](auto) { return std::make_tuple(maj, min); });
+                [&maj, &min](auto) { return std::make_tuple(*maj, *min); });
         }
 
         constexpr auto operator()(display_handle disp) const noexcept {
