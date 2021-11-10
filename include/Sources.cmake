@@ -4,6 +4,7 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 #
 set(HEADERS
+    eagine/eglplus/config/basic.hpp
     eagine/eglplus/basic_egl_api.hpp
     eagine/eglplus/egl_api/api.hpp
     eagine/eglplus/egl_api/api_traits.hpp
