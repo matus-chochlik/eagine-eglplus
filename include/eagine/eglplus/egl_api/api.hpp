@@ -155,15 +155,13 @@ public:
       F> : func<W, F> {
         using func<W, F>::func;
 
-        template <
-          typename Query,
-          typename = std::enable_if_t<
-            (true || ... || is_enum_class_value_v<QueryClasses, Query>)>,
-          typename = std::enable_if_t<!std::is_array_v<typename Query::tag_type>>>
+        template <typename Query>
         constexpr auto operator()(
           PreParams... pre_params,
           Query query,
-          PostParams... post_params) const noexcept {
+          PostParams... post_params) const noexcept
+          requires((true || ... || is_enum_class_value_v<QueryClasses, Query>)&&(
+            !std::is_array_v<typename Query::tag_type>)) {
             using RV = typename Query::tag_type;
             QueryResult result{};
             return this
