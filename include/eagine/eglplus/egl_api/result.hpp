@@ -162,21 +162,21 @@ private:
 /// @see egl_result
 /// @see egl_opt_result
 template <typename Result>
-using egl_no_result = api_no_result<Result, egl_no_result_info>;
+using egl_no_result = c_api::no_result<Result, egl_no_result_info>;
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the result of a EGL API function call.
 /// @ingroup egl_api_wrap
 /// @see egl_no_result
 /// @see egl_opt_result
 template <typename Result>
-using egl_result = api_result<Result, egl_result_info>;
+using egl_result = c_api::result<Result, egl_result_info>;
 //------------------------------------------------------------------------------
 /// @brief Alias for conditionally-valid result of a EGL API function call.
 /// @ingroup gl_api_wrap
 /// @see egl_result
 /// @see egl_no_result
 template <typename Result>
-using egl_opt_result = api_opt_result<Result, egl_result_info>;
+using egl_opt_result = c_api::opt_result<Result, egl_result_info>;
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
