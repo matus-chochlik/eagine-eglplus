@@ -193,9 +193,9 @@ public:
         auto count() const noexcept {
             int_type ret_count{0};
             return this->_cnvchkcall(0, nullptr, &ret_count)
-              .transformed([&ret_count](auto ok) {
+              .transformed([&ret_count](auto ok, bool valid) {
                   return limit_cast<span_size_t>(
-                    egl_types::bool_true(ok) ? ret_count : 0);
+                    valid && egl_types::bool_true(ok) ? ret_count : 0);
               });
         }
 
@@ -204,11 +204,11 @@ public:
             return this
               ->_cnvchkcall(
                 limit_cast<int_type>(dest.size()), dest.data(), &ret_count)
-              .transformed([dest, &ret_count](auto ok) {
+              .transformed([dest, &ret_count](auto ok, bool valid) {
                   return head(
                     dest,
                     limit_cast<span_size_t>(
-                      egl_types::bool_true(ok) ? ret_count : 0));
+                      valid && egl_types::bool_true(ok) ? ret_count : 0));
               });
         }
     } query_devices;
@@ -243,7 +243,7 @@ public:
           .fake_empty_c_str()
 #endif
           .transformed(
-            [](auto src) { return split_into_string_list(src, ' '); });
+            [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
     auto get_device_extensions(device_handle dev) const noexcept {
@@ -325,8 +325,9 @@ public:
         constexpr auto operator()(display_handle disp, int* maj, int* min)
           const noexcept {
             return this->_cnvchkcall(disp, maj, min)
-              .transformed(
-                [&maj, &min](auto) { return std::make_tuple(*maj, *min); });
+              .transformed([&maj, &min](auto, bool valid) {
+                  return std::make_tuple(valid ? *maj : 0, valid ? *min : 0);
+              });
         }
 
         constexpr auto operator()(display_handle disp) const noexcept {
@@ -362,9 +363,9 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return this->_cnvchkcall(disp, nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok) {
+              .transformed([&ret_count](auto ok, bool valid) {
                   return limit_cast<span_size_t>(
-                    egl_types::bool_true(ok) ? ret_count : 0);
+                    valid && egl_types::bool_true(ok) ? ret_count : 0);
               });
         }
 
@@ -374,11 +375,11 @@ public:
             return this
               ->_cnvchkcall(
                 disp, dest.data(), limit_cast<int_type>(dest.size()), &ret_count)
-              .transformed([dest, &ret_count](auto ok) {
+              .transformed([dest, &ret_count](auto ok, bool valid) {
                   return head(
                     dest,
                     limit_cast<span_size_t>(
-                      egl_types::bool_true(ok) ? ret_count : 0));
+                      valid && egl_types::bool_true(ok) ? ret_count : 0));
               });
         }
     } get_configs;
@@ -392,9 +393,9 @@ public:
             int_type ret_count{0};
             return this
               ->_cnvchkcall(disp, attribs.data(), nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok) {
+              .transformed([&ret_count](auto ok, bool valid) {
                   return limit_cast<span_size_t>(
-                    egl_types::bool_true(ok) ? ret_count : 0);
+                    valid && egl_types::bool_true(ok) ? ret_count : 0);
               });
         }
 
@@ -421,11 +422,11 @@ public:
                 dest.data(),
                 limit_cast<int_type>(dest.size()),
                 &ret_count)
-              .transformed([dest, &ret_count](auto ok) {
+              .transformed([dest, &ret_count](auto ok, bool valid) {
                   return head(
                     dest,
                     limit_cast<span_size_t>(
-                      egl_types::bool_true(ok) ? ret_count : 0));
+                      valid && egl_types::bool_true(ok) ? ret_count : 0));
               });
         }
 
@@ -712,9 +713,9 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return this->_cnvchkcall(disp, nullptr, nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok) {
+              .transformed([&ret_count](auto ok, bool valid) {
                   return limit_cast<span_size_t>(
-                    egl_types::bool_true(ok) ? ret_count : 0);
+                    valid && egl_types::bool_true(ok) ? ret_count : 0);
               });
         }
 
@@ -730,11 +731,11 @@ public:
                 dest.data(),
                 limit_cast<int_type>(dest.size()),
                 &ret_count)
-              .transformed([dest, &ret_count](auto ok) {
+              .transformed([dest, &ret_count](auto ok, bool valid) {
                   return head(
                     dest,
                     limit_cast<span_size_t>(
-                      egl_types::bool_true(ok) ? ret_count : 0));
+                      valid && egl_types::bool_true(ok) ? ret_count : 0));
               });
         }
 
@@ -792,9 +793,9 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return this->_cnvchkcall(disp, nullptr, nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok) {
+              .transformed([&ret_count](auto ok, bool valid) {
                   return limit_cast<span_size_t>(
-                    egl_types::bool_true(ok) ? ret_count : 0);
+                    valid && egl_types::bool_true(ok) ? ret_count : 0);
               });
         }
 
@@ -810,11 +811,11 @@ public:
                 dest.data(),
                 limit_cast<int_type>(dest.size()),
                 &ret_count)
-              .transformed([dest, &ret_count](auto ok) {
+              .transformed([dest, &ret_count](auto ok, bool valid) {
                   return head(
                     dest,
                     limit_cast<span_size_t>(
-                      egl_types::bool_true(ok) ? ret_count : 0));
+                      valid && egl_types::bool_true(ok) ? ret_count : 0));
               });
         }
 
@@ -1118,9 +1119,10 @@ public:
     // query_strings
     auto query_strings(display_handle disp, string_query query, char separator)
       const noexcept {
-        return query_string(disp, query).transformed([separator](auto src) {
-            return split_into_string_list(src, separator);
-        });
+        return query_string(disp, query)
+          .transformed([separator](auto src, bool) {
+              return split_into_string_list(src, separator);
+          });
     }
 
     // get_client_apis
@@ -1131,7 +1133,7 @@ public:
         return query_string()
 #endif
           .transformed(
-            [](auto src) { return split_into_string_list(src, ' '); });
+            [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
     auto get_client_api_bits(display_handle disp) const noexcept {
@@ -1169,7 +1171,7 @@ public:
         return query_string()
 #endif
           .transformed(
-            [](auto src) { return split_into_string_list(src, ' '); });
+            [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
     // get_extensions
@@ -1180,7 +1182,7 @@ public:
         return query_string()
 #endif
           .transformed(
-            [](auto src) { return split_into_string_list(src, ' '); });
+            [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
     // has_extension
