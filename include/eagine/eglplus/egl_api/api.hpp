@@ -254,12 +254,12 @@ public:
     struct : func<EGLPAFP(GetPlatformDisplay)> {
         using func<EGLPAFP(GetPlatformDisplay)>::func;
 
-        constexpr auto operator()(device_handle dev) const noexcept {
+        constexpr auto operator()(
+          [[maybe_unused]] device_handle dev) const noexcept {
 #ifdef EGL_PLATFORM_DEVICE_EXT
             return this->_cnvchkcall(EGL_PLATFORM_DEVICE_EXT, dev, nullptr)
               .cast_to(type_identity<display_handle>{});
 #else
-            EAGINE_MAYBE_UNUSED(dev);
             return this->_fake().cast_to(type_identity<display_handle>{});
 #endif
         }

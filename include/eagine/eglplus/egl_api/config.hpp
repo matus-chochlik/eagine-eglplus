@@ -9,7 +9,6 @@
 #define EAGINE_EGLPLUS_EGL_API_CONFIG_HPP
 
 #include "../config/basic.hpp"
-#include <eagine/maybe_unused.hpp>
 
 #ifndef EGLPLUS_HAS_EGL
 #if defined(EGL_SUCCESS)
@@ -141,12 +140,11 @@ struct egl_types {
 #endif
     }
 
-    static constexpr auto error_code_no_error(const int_type ec) noexcept
-      -> bool {
+    static constexpr auto error_code_no_error(
+      [[maybe_unused]] const int_type ec) noexcept -> bool {
 #if EGLPLUS_HAS_EGL
         return ec == EGL_SUCCESS;
 #else
-        EAGINE_MAYBE_UNUSED(ec);
         return false;
 #endif
     }
