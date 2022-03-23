@@ -10,6 +10,7 @@
 
 #include "api_traits.hpp"
 #include "config.hpp"
+#include <eagine/c_api/function.hpp>
 #include <eagine/diagnostic.hpp>
 #include <eagine/nothing.hpp>
 #include <eagine/preprocessor.hpp>
@@ -100,6 +101,12 @@ public:
 
     /// @brief Alias for image handle type.
     using image_type = typename egl_types::image_type;
+
+    template <typename Result>
+    constexpr auto check_result(Result res) const noexcept {
+        res.error_code(this->GetError());
+        return res;
+    }
 
 #ifdef __GNUC__
     EAGINE_DIAG_PUSH()

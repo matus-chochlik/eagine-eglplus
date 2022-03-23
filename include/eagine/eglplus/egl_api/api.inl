@@ -10,7 +10,7 @@ namespace eagine::eglplus {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
-  : c_api{traits}
+  : egl_api{traits}
   , EXT_device_base{"EXT_device_base", traits, *this}
   , EXT_device_enumeration{"EXT_device_enumeration", traits, *this}
   , EXT_device_query{"EXT_device_query", traits, *this}
@@ -79,9 +79,6 @@ basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
   , wait_sync{"wait_sync", traits, *this}
   , destroy_sync{"destroy_sync", traits, *this}
   , query_string{"query_string", traits, *this}
-  , swap_interval{"swap_interval", traits, *this}
-  , swap_buffers{"swap_buffers", traits, *this}
-  , swap_buffers_with_damage{"swap_buffers_with_damage", traits, *this}
   , release_thread{"release_thread", traits, *this} {}
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus

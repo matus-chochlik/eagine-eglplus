@@ -9,6 +9,7 @@
 #define EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP
 
 #include "result.hpp"
+#include <eagine/c_api/api_traits.hpp>
 
 namespace eagine::eglplus {
 //------------------------------------------------------------------------------

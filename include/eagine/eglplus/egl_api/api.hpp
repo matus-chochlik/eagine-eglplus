@@ -21,13 +21,16 @@
 #include "stream_attribs.hpp"
 #include "surface_attribs.hpp"
 #include "sync_attribs.hpp"
+#include <eagine/c_api/adapted_function.hpp>
+#include <eagine/c_api_wrap.hpp>
 #include <eagine/scope_exit.hpp>
 #include <eagine/string_list.hpp>
 #include <chrono>
 
 namespace eagine::eglplus {
+using c_api::adapted_function;
 //------------------------------------------------------------------------------
-#define EGLPAFP(FUNC) decltype(c_api::FUNC), &c_api::FUNC
+#define EGLPAFP(FUNC) decltype(egl_api::FUNC), &egl_api::FUNC
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the functions from the EGL API.
 /// @ingroup egl_api_wrap
@@ -38,7 +41,7 @@ class basic_egl_operations : public basic_egl_c_api<ApiTraits> {
 
 public:
     using api_traits = ApiTraits;
-    using c_api = basic_egl_c_api<ApiTraits>;
+    using egl_api = basic_egl_c_api<ApiTraits>;
 
     using void_ptr_type = typename egl_types::void_ptr_type;
     using int_type = typename egl_types::int_type;
@@ -52,6 +55,14 @@ public:
     using native_pixmap_type = typename egl_types::native_pixmap_type;
     using client_buffer_type = typename egl_types::client_buffer_type;
     using config_type = typename egl_types::config_type;
+
+    struct collapse_bool_map {
+        template <typename... P>
+        constexpr auto operator()(size_constant<0> i, P&&... p) const noexcept {
+            return collapse_bool(
+              c_api::trivial_map{}(i, std::forward<P>(p)...));
+        }
+    };
 
     // extensions
     template <typename... Args>
@@ -85,13 +96,14 @@ public:
     extension<display_handle> MESA_query_driver;
 
     // functions
-    template <typename W, W c_api::*F, typename Signature = typename W::signature>
+    template <typename W, W egl_api::*F, typename Signature = typename W::signature>
     class func;
 
-    template <typename W, W c_api::*F, typename RVC, typename... Params>
+    template <typename W, W egl_api::*F, typename RVC, typename... Params>
     class func<W, F, RVC(Params...)>
-      : public wrapped_c_api_function<c_api, api_traits, nothing_t, W, F> {
-        using base = wrapped_c_api_function<c_api, api_traits, nothing_t, W, F>;
+      : public wrapped_c_api_function<egl_api, api_traits, nothing_t, W, F> {
+        using base =
+          wrapped_c_api_function<egl_api, api_traits, nothing_t, W, F>;
 
     private:
         template <typename Res>
@@ -136,7 +148,7 @@ public:
       typename PostTypeList,
       typename QueryResult,
       typename W,
-      W c_api::*F>
+      W egl_api::*F>
     struct query_func;
 
     template <
@@ -145,7 +157,7 @@ public:
       typename... PostParams,
       typename QueryResult,
       typename W,
-      W c_api::*F>
+      W egl_api::*F>
     struct query_func<
       mp_list<PreParams...>,
       mp_list<QueryClasses...>,
@@ -1219,39 +1231,23 @@ public:
         return false;
     }
 
-    // swap_interval
-    struct : func<EGLPAFP(SwapInterval)> {
-        using func<EGLPAFP(SwapInterval)>::func;
+    adapted_function<
+      &egl_api::SwapInterval,
+      bool_type(display_handle, int_type),
+      collapse_bool_map>
+      swap_interval{*this};
 
-        constexpr auto operator()(display_handle disp, int_type interval)
-          const noexcept {
-            return this->_cnvchkcall(disp, interval);
-        }
-    } swap_interval;
+    adapted_function<
+      &egl_api::SwapBuffers,
+      bool_type(display_handle, surface_handle),
+      collapse_bool_map>
+      swap_buffers{*this};
 
-    // swap_buffers
-    struct : func<EGLPAFP(SwapBuffers)> {
-        using func<EGLPAFP(SwapBuffers)>::func;
-
-        constexpr auto operator()(display_handle disp, surface_handle surf)
-          const noexcept {
-            return this->_cnvchkcall(disp, surf);
-        }
-    } swap_buffers;
-
-    // swap_buffers_with_damage
-    struct : func<EGLPAFP(SwapBuffersWithDamage)> {
-        using func<EGLPAFP(SwapBuffersWithDamage)>::func;
-
-        constexpr auto operator()(
-          display_handle disp,
-          surface_handle surf,
-          span<const int_type> rects) const noexcept {
-            EAGINE_ASSERT(rects.size() % 4 == 0);
-            return this->_cnvchkcall(
-              disp, surf, rects.data(), limit_cast<int_type>(rects.size()));
-        }
-    } swap_buffers_with_damage;
+    adapted_function<
+      &egl_api::SwapBuffersWithDamage,
+      bool_type(display_handle, surface_handle, span<const int_type>),
+      collapse_bool_map>
+      swap_buffers_with_damage{*this};
 
     // release_thread
     func<EGLPAFP(ReleaseThread)> release_thread;
@@ -1259,7 +1255,7 @@ public:
     basic_egl_operations(api_traits& traits);
 };
 //------------------------------------------------------------------------------
-#undef OGLPAFP
+#undef EGLPAFP
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
