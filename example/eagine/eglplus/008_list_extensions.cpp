@@ -40,7 +40,8 @@ auto main() -> int {
                 std::cout << "Device: " << d << std::endl;
 
                 std::cout << " Device extensions: " << std::endl;
-                if(const ok extensions{egl.get_device_extensions(devices[d])}) {
+                if(const ok extensions{
+                     egl.get_device_extensions(device_handle(devices[d]))}) {
                     for(const auto name : extensions) {
                         std::cout << "  " << name << std::endl;
                     }

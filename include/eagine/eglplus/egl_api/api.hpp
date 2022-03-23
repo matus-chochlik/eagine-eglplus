@@ -27,6 +27,14 @@
 #include <eagine/string_list.hpp>
 #include <chrono>
 
+#ifndef EGL_EXTENSIONS
+#define EGL_EXTENSIONS 0x3055
+#endif
+
+#ifndef EGL_PLATFORM_DEVICE_EXT
+#define EGL_PLATFORM_DEVICE_EXT 0x313F
+#endif
+
 namespace eagine::eglplus {
 using c_api::adapted_function;
 //------------------------------------------------------------------------------
@@ -198,125 +206,81 @@ public:
         }
     };
 
-    // query_devices
-    struct : func<EGLPAFP(QueryDevices)> {
-        using func<EGLPAFP(QueryDevices)>::func;
+    using _query_devices_t = adapted_function<
+      &egl_api::QueryDevices,
+      bool_type(span<device_type>, int_type&),
+      collapse_bool_map>;
+
+    struct : _query_devices_t {
+        using base = _query_devices_t;
+        using base::base;
 
         auto count() const noexcept {
             int_type ret_count{0};
-            return this->_cnvchkcall(0, nullptr, &ret_count)
-              .transformed([&ret_count](auto ok, bool valid) {
-                  return limit_cast<span_size_t>(
-                    valid && egl_types::bool_true(ok) ? ret_count : 0);
+            return base::operator()({}, ret_count)
+              .transformed([&ret_count](bool valid) {
+                  return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
 
         auto operator()(span<device_type> dest) const noexcept {
             int_type ret_count{0};
-            return this
-              ->_cnvchkcall(
-                limit_cast<int_type>(dest.size()), dest.data(), &ret_count)
-              .transformed([dest, &ret_count](auto ok, bool valid) {
+            return base::operator()(dest, ret_count)
+              .transformed([dest, &ret_count](bool valid) {
                   return head(
-                    dest,
-                    limit_cast<span_size_t>(
-                      valid && egl_types::bool_true(ok) ? ret_count : 0));
+                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
-    } query_devices;
+    } query_devices{*this};
 
-    // query_device_string
-    struct : func<EGLPAFP(QueryDeviceString)> {
-        using func<EGLPAFP(QueryDeviceString)>::func;
-
-        constexpr auto operator()(device_type dev, device_string_query query)
-          const noexcept {
-            return this->_cnvchkcall(dev, query)
-              .cast_to(type_identity<string_view>{});
-        }
-
-        constexpr auto operator()(device_handle dev, device_string_query query)
-          const noexcept {
-            return (*this)(device_type(dev), query);
-        }
-
-        constexpr auto operator()() const noexcept {
-            return this->fake_empty_c_str().cast_to(
-              type_identity<string_view>{});
-        }
-    } query_device_string;
+    adapted_function<
+      &egl_api::QueryDeviceString,
+      string_view(device_handle, device_string_query)>
+      query_device_string{*this};
 
     // get_device_extensions
-    auto get_device_extensions(device_type dev) const noexcept {
-#ifdef EGL_EXTENSIONS
+    auto get_device_extensions(device_handle dev) const noexcept {
         return query_device_string(dev, device_string_query(EGL_EXTENSIONS))
-#else
-        return query_device_string
-          .fake_empty_c_str()
-#endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
-    auto get_device_extensions(device_handle dev) const noexcept {
-        return get_device_extensions(device_type(dev));
-    }
+    using _get_platform_display_t = adapted_function<
+      &egl_api::GetPlatformDisplay,
+      display_handle(platform, void_ptr_type, span<const attrib_type>)>;
 
-    // get_platform_display
-    struct : func<EGLPAFP(GetPlatformDisplay)> {
-        using func<EGLPAFP(GetPlatformDisplay)>::func;
-
-        constexpr auto operator()(
-          [[maybe_unused]] device_handle dev) const noexcept {
-#ifdef EGL_PLATFORM_DEVICE_EXT
-            return this->_cnvchkcall(EGL_PLATFORM_DEVICE_EXT, dev, nullptr)
-              .cast_to(type_identity<display_handle>{});
-#else
-            return this->_fake().cast_to(type_identity<display_handle>{});
-#endif
-        }
+    struct : _get_platform_display_t {
+        using base = _get_platform_display_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(platform pltf, void_ptr_type disp)
           const noexcept {
-            return this->_cnvchkcall(pltf, disp, nullptr)
-              .cast_to(type_identity<display_handle>{});
+            return base::operator()(pltf, disp, {});
         }
 
-        constexpr auto operator()(
-          platform pltf,
-          void_ptr_type disp,
-          span<const attrib_type> attribs) const noexcept {
-            return this->_cnvchkcall(pltf, disp, attribs.data())
-              .cast_to(type_identity<display_handle>{});
+        constexpr auto operator()(device_handle dev) const noexcept {
+            return base::operator()(
+              platform(EGL_PLATFORM_DEVICE_EXT), device_type(dev), {});
         }
+    } get_platform_display{*this};
 
-        template <std::size_t N>
-        constexpr auto operator()(
-          platform pltf,
-          void_ptr_type disp,
-          const platform_attributes<N>& attribs) const noexcept {
-            return (*this)(pltf, disp, attribs.get());
-        }
-    } get_platform_display;
+    using _get_display_t =
+      adapted_function<&egl_api::GetDisplay, display_handle(native_display_type)>;
 
-    // get_display
-    struct : func<EGLPAFP(GetDisplay)> {
-        using func<EGLPAFP(GetDisplay)>::func;
-
-        constexpr auto operator()(native_display_type disp) const noexcept {
-            return this->_cnvchkcall(disp).cast_to(
-              type_identity<display_handle>{});
-        }
+    struct : _get_display_t {
+        using base = _get_display_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()() const noexcept {
 #ifdef EGL_DEFAULT_DISPLAY
-            return this->_cnvchkcall(EGL_DEFAULT_DISPLAY)
-              .cast_to(type_identity<display_handle>{});
+            return base::operator()(EGL_DEFAULT_DISPLAY);
 #else
-            return this->_fake().cast_to(type_identity<display_handle>{});
+            return base::fail();
 #endif
         }
-    } get_display;
+    } get_display{*this};
 
     // get_display_driver_name
     struct : func<EGLPAFP(GetDisplayDriverName)> {
