@@ -32,9 +32,6 @@ basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
   , EXT_pixel_format_float{"EXT_pixel_format_float", traits, *this}
   , MESA_configless_context{"MESA_configless_context", traits, *this}
   , MESA_query_driver{"MESA_query_driver", traits, *this}
-  , get_display_driver_name{"get_display_driver_name", traits, *this}
-  , initialize{"initialize", traits, *this}
-  , terminate{"terminate", traits, *this}
   , get_configs{"get_configs", traits, *this}
   , choose_config{"choose_config", traits, *this}
   , get_config_attrib{"get_config_attrib", traits, *this}

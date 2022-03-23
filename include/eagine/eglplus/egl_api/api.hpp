@@ -282,55 +282,31 @@ public:
         }
     } get_display{*this};
 
-    // get_display_driver_name
-    struct : func<EGLPAFP(GetDisplayDriverName)> {
-        using func<EGLPAFP(GetDisplayDriverName)>::func;
+    adapted_function<&egl_api::GetDisplayDriverName, string_view(display_handle)>
+      get_display_driver_name{*this};
 
-        constexpr auto operator()(display_handle disp) const noexcept {
-            return this->_cnvchkcall(disp).cast_to(
-              type_identity<string_view>{});
-        }
-    } get_display_driver_name;
+    using _initialize_t = adapted_function<
+      &egl_api::Initialize,
+      bool_type(display_handle, int&, int&),
+      collapse_bool_map>;
 
-    // initialize
-    struct : func<EGLPAFP(Initialize)> {
-        using base = func<EGLPAFP(Initialize)>;
+    struct : _initialize_t {
+        using base = _initialize_t;
         using base::base;
         using base::operator();
-
-        constexpr auto operator()(display_handle disp, int* maj, int* min)
-          const noexcept {
-            return this->_cnvchkcall(disp, maj, min)
-              .transformed([&maj, &min](auto, bool valid) {
-                  return std::make_tuple(valid ? *maj : 0, valid ? *min : 0);
-              });
-        }
 
         constexpr auto operator()(display_handle disp) const noexcept {
             int_type maj{-1};
             int_type min{-1};
-            return (*this)(disp, &maj, &min);
+            return base::operator()(disp, maj, min);
         }
-    } initialize;
+    } initialize{*this};
 
-    // terminate
-    struct : func<EGLPAFP(Terminate)> {
-        using func<EGLPAFP(Terminate)>::func;
-
-        constexpr auto operator()(display_handle disp) const noexcept {
-            return this->_cnvchkcall(disp);
-        }
-
-        auto bind(display_handle disp) const noexcept {
-            return [this, disp] {
-                return (*this)(disp);
-            };
-        }
-
-        auto raii(display_handle disp) const noexcept {
-            return eagine::finally(bind(disp));
-        }
-    } terminate;
+    adapted_function<
+      &egl_api::Terminate,
+      string_view(display_handle),
+      collapse_bool_map>
+      terminate{*this};
 
     // get_configs
     struct : func<EGLPAFP(GetConfigs)> {
