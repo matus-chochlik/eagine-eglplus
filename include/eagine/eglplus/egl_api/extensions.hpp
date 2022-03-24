@@ -22,7 +22,6 @@ class basic_egl_extension {
 public:
     constexpr basic_egl_extension(
       const string_view name,
-      ApiTraits&,
       const basic_egl_operations<ApiTraits>& api) noexcept
       : _api{api}
       , _name{name} {}
@@ -49,7 +48,6 @@ class basic_egl_extension<ApiTraits, display_handle> {
 public:
     constexpr basic_egl_extension(
       const string_view name,
-      ApiTraits&,
       const basic_egl_operations<ApiTraits>& api) noexcept
       : _api{api}
       , _name{name} {}
@@ -71,7 +69,6 @@ class basic_egl_extension<ApiTraits, device_handle> {
 public:
     constexpr basic_egl_extension(
       const string_view name,
-      ApiTraits&,
       const basic_egl_operations<ApiTraits>& api) noexcept
       : _api{api}
       , _name{name} {}
