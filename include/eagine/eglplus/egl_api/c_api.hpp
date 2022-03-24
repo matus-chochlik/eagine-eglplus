@@ -31,6 +31,8 @@ namespace eagine::eglplus {
 /// @see basic_egl_operations
 template <typename ApiTraits>
 class basic_egl_c_api {
+    ApiTraits& _traits;
+
 public:
     using this_api = basic_egl_c_api;
 
@@ -538,6 +540,10 @@ public:
       ReleaseThread;
 
     basic_egl_c_api(api_traits& traits);
+
+    auto traits() noexcept -> api_traits& {
+        return _traits;
+    }
 };
 //------------------------------------------------------------------------------
 /// @brief Alias for the default EGL operations wrapper instantiation.
