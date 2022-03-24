@@ -308,33 +308,32 @@ public:
       collapse_bool_map>
       terminate{*this};
 
-    // get_configs
-    struct : func<EGLPAFP(GetConfigs)> {
-        using func<EGLPAFP(GetConfigs)>::func;
+    using _get_configs_t = adapted_function<
+      &egl_api::GetConfigs,
+      string_view(display_handle disp, span<config_type> dest, int_type&),
+      collapse_bool_map>;
+
+    struct : _get_configs_t {
+        using base = _get_configs_t;
+        using base::base;
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
-            return this->_cnvchkcall(disp, nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok, bool valid) {
-                  return limit_cast<span_size_t>(
-                    valid && egl_types::bool_true(ok) ? ret_count : 0);
+            return base::operator()(disp, {}, ret_count)
+              .transformed([&ret_count](bool valid) {
+                  return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
-
         auto operator()(display_handle disp, span<config_type> dest)
           const noexcept {
             int_type ret_count{0};
-            return this
-              ->_cnvchkcall(
-                disp, dest.data(), limit_cast<int_type>(dest.size()), &ret_count)
-              .transformed([dest, &ret_count](auto ok, bool valid) {
+            return base::operator()(disp, dest, ret_count)
+              .transformed([&ret_count, dest](bool valid) {
                   return head(
-                    dest,
-                    limit_cast<span_size_t>(
-                      valid && egl_types::bool_true(ok) ? ret_count : 0));
+                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
-    } get_configs;
+    } get_configs{*this};
 
     // choose_config
     struct : func<EGLPAFP(ChooseConfig)> {
@@ -511,47 +510,20 @@ public:
         }
     } create_pixmap_surface;
 
-    // destroy_surface
-    struct : func<EGLPAFP(DestroySurface)> {
-        using func<EGLPAFP(DestroySurface)>::func;
+    adapted_function<
+      &egl_api::DestroySurface,
+      bool_type(display_handle, surface_handle),
+      collapse_bool_map>
+      destroy_surface{*this};
 
-        constexpr auto operator()(display_handle disp, surface_handle surf)
-          const noexcept {
-            return this->_cnvchkcall(disp, surf);
-        }
+    adapted_function<&egl_api::GetCurrentSurface, surface_handle(read_draw)>
+      get_current_surface{*this};
 
-        auto bind(display_handle disp, surface_handle surf) const noexcept {
-            return [this, disp, surf] {
-                return (*this)(disp, surf);
-            };
-        }
-
-        auto raii(display_handle disp, surface_handle surf) const noexcept {
-            return eagine::finally(bind(disp, surf));
-        }
-    } destroy_surface;
-
-    // get_current_surface
-    struct : func<EGLPAFP(GetCurrentSurface)> {
-        using func<EGLPAFP(GetCurrentSurface)>::func;
-
-        constexpr auto operator()(read_draw which) const noexcept {
-            return this->_cnvchkcall(which);
-        }
-    } get_current_surface;
-
-    // surface_attrib
-    struct : func<EGLPAFP(SurfaceAttrib)> {
-        using func<EGLPAFP(SurfaceAttrib)>::func;
-
-        constexpr auto operator()(
-          display_handle disp,
-          surface_handle surf,
-          surface_attribute attr,
-          int_type value) const noexcept {
-            return this->_cnvchkcall(disp, surf, attr, value);
-        }
-    } surface_attrib;
+    adapted_function<
+      &egl_api::SurfaceAttrib,
+      surface_handle(display_handle, surface_handle, surface_attribute, int_type),
+      collapse_bool_map>
+      surface_attrib{*this};
 
     // query_surface
     query_func<
@@ -586,38 +558,17 @@ public:
         }
     } create_stream;
 
-    // destroy_stream
-    struct : func<EGLPAFP(DestroyStream)> {
-        using func<EGLPAFP(DestroyStream)>::func;
+    adapted_function<
+      &egl_api::DestroyStream,
+      bool_type(display_handle, stream_handle),
+      collapse_bool_map>
+      destroy_stream{*this};
 
-        constexpr auto operator()(display_handle disp, stream_handle surf)
-          const noexcept {
-            return this->_cnvchkcall(disp, surf);
-        }
-
-        auto bind(display_handle disp, stream_handle strm) const noexcept {
-            return [this, disp, strm] {
-                return (*this)(disp, strm);
-            };
-        }
-
-        auto raii(display_handle disp, stream_handle strm) const noexcept {
-            return eagine::finally(bind(disp, strm));
-        }
-    } destroy_stream;
-
-    // stream_attrib
-    struct : func<EGLPAFP(StreamAttrib)> {
-        using func<EGLPAFP(StreamAttrib)>::func;
-
-        constexpr auto operator()(
-          display_handle disp,
-          stream_handle surf,
-          stream_attribute attr,
-          int_type value) const noexcept {
-            return this->_cnvchkcall(disp, surf, attr, value);
-        }
-    } stream_attrib;
+    adapted_function<
+      &egl_api::StreamAttrib,
+      surface_handle(display_handle, stream_handle, stream_attribute, int_type),
+      collapse_bool_map>
+      stream_attrib{*this};
 
     // query_stream
     query_func<
@@ -628,35 +579,23 @@ public:
       EGLPAFP(QueryStream)>
       query_stream;
 
-    // stream_consumer_gl_texture_external
-    struct : func<EGLPAFP(StreamConsumerGLTextureExternal)> {
-        using func<EGLPAFP(StreamConsumerGLTextureExternal)>::func;
+    adapted_function<
+      &egl_api::StreamConsumerGLTextureExternal,
+      bool_type(display_handle, stream_handle),
+      collapse_bool_map>
+      stream_consumer_gl_texture_external{*this};
 
-        constexpr auto operator()(display_handle disp, stream_handle surf)
-          const noexcept {
-            return this->_cnvchkcall(disp, surf);
-        }
-    } stream_consumer_gl_texture_external;
+    adapted_function<
+      &egl_api::StreamConsumerAcquire,
+      bool_type(display_handle, stream_handle),
+      collapse_bool_map>
+      stream_consumer_acquire{*this};
 
-    // stream_consumer_acquire
-    struct : func<EGLPAFP(StreamConsumerAcquire)> {
-        using func<EGLPAFP(StreamConsumerAcquire)>::func;
-
-        constexpr auto operator()(display_handle disp, stream_handle surf)
-          const noexcept {
-            return this->_cnvchkcall(disp, surf);
-        }
-    } stream_consumer_acquire;
-
-    // stream_consumer_release
-    struct : func<EGLPAFP(StreamConsumerRelease)> {
-        using func<EGLPAFP(StreamConsumerRelease)>::func;
-
-        constexpr auto operator()(display_handle disp, stream_handle surf)
-          const noexcept {
-            return this->_cnvchkcall(disp, surf);
-        }
-    } stream_consumer_release;
+    adapted_function<
+      &egl_api::StreamConsumerRelease,
+      bool_type(display_handle, stream_handle),
+      collapse_bool_map>
+      stream_consumer_release{*this};
 
     // get_output_layers
     struct : func<EGLPAFP(GetOutputLayers)> {
@@ -726,17 +665,10 @@ public:
         }
     } query_output_layer_attrib;
 
-    // query_output_layer_string
-    struct : func<EGLPAFP(QueryOutputLayerString)> {
-        using func<EGLPAFP(QueryOutputLayerString)>::func;
-        auto operator()(
-          display_handle disp,
-          output_layer_handle outl,
-          output_layer_string_query qury) const noexcept {
-            return this->_cnvchkcall(disp, outl, qury)
-              .cast_to(type_identity<string_view>{});
-        }
-    } query_output_layer_string;
+    adapted_function<
+      &egl_api::QueryOutputLayerString,
+      string_view(display_handle, output_layer_handle, output_layer_string_query)>
+      query_output_layer_string{*this};
 
     // get_output_ports
     struct : func<EGLPAFP(GetOutputPorts)> {
@@ -843,43 +775,16 @@ public:
         }
     } create_image;
 
-    // destroy_image
-    struct : func<EGLPAFP(DestroyImage)> {
-        using func<EGLPAFP(DestroyImage)>::func;
+    adapted_function<
+      &egl_api::DestroyImage,
+      bool_type(display_handle, image_handle),
+      collapse_bool_map>
+      destroy_image{*this};
 
-        constexpr auto operator()(display_handle disp, image_handle imge)
-          const noexcept {
-            return this->_cnvchkcall(disp, imge);
-        }
+    adapted_function<&egl_api::BindAPI, bool_type(client_api), collapse_bool_map>
+      bind_api{*this};
 
-        auto bind(display_handle disp, image_handle imge) const noexcept {
-            return [this, disp, imge] {
-                return (*this)(disp, imge);
-            };
-        }
-
-        auto raii(display_handle disp, image_handle imge) const noexcept {
-            return eagine::finally(bind(disp, imge));
-        }
-    } destroy_image;
-
-    // bind_api
-    struct : func<EGLPAFP(BindAPI)> {
-        using func<EGLPAFP(BindAPI)>::func;
-
-        constexpr auto operator()(client_api api) const noexcept {
-            return this->_cnvchkcall(api);
-        }
-    } bind_api;
-
-    // query_api
-    struct : func<EGLPAFP(QueryAPI)> {
-        using func<EGLPAFP(QueryAPI)>::func;
-
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall().cast_to(type_identity<client_api>{});
-        }
-    } query_api;
+    adapted_function<&egl_api::QueryAPI, client_api()> query_api{*this};
 
     // create_context
     struct : func<EGLPAFP(CreateContext)> {
@@ -912,25 +817,11 @@ public:
         }
     } create_context;
 
-    // destroy_context
-    struct : func<EGLPAFP(DestroyContext)> {
-        using func<EGLPAFP(DestroyContext)>::func;
-
-        constexpr auto operator()(display_handle disp, context_handle ctxt)
-          const noexcept {
-            return this->_cnvchkcall(disp, ctxt);
-        }
-
-        auto bind(display_handle disp, context_handle ctxt) const noexcept {
-            return [this, disp, ctxt] {
-                return (*this)(disp, ctxt);
-            };
-        }
-
-        auto raii(display_handle disp, context_handle ctxt) const noexcept {
-            return eagine::finally(bind(disp, ctxt));
-        }
-    } destroy_context;
+    adapted_function<
+      &egl_api::DestroyContext,
+      bool_type(display_handle, context_handle),
+      collapse_bool_map>
+      destroy_context{*this};
 
     // make_current
     struct : func<EGLPAFP(MakeCurrent)> {
@@ -956,30 +847,18 @@ public:
         }
     } make_current;
 
-    // get_current_context
-    struct : func<EGLPAFP(GetCurrentContext)> {
-        using func<EGLPAFP(GetCurrentContext)>::func;
+    adapted_function<&egl_api::GetCurrentContext, context_handle()>
+      get_current_context{*this};
 
-        constexpr auto operator()() const noexcept {
-            return this->_cnvchkcall().cast_to(type_identity<context_handle>{});
-        }
-    } get_current_context;
-
-    // wait_client
-    struct : func<EGLPAFP(WaitClient)> {
-        using func<EGLPAFP(WaitClient)>::func;
-
-        constexpr auto operator()() const noexcept {
-            return this->_chkcall();
-        }
-    } wait_client;
+    adapted_function<&egl_api::WaitClient, bool_type(), collapse_bool_map>
+      wait_client{*this};
 
     // wait_native
     struct : func<EGLPAFP(WaitNative)> {
         using func<EGLPAFP(WaitNative)>::func;
 
         constexpr auto operator()() const noexcept {
-#ifdef EGL_CORE_NATIVE_ENGINEs
+#ifdef EGL_CORE_NATIVE_ENGINE
             return this->_chkcall(EGL_CORE_NATIVE_ENGINE);
 #else
             return this->_fake();
@@ -1032,25 +911,17 @@ public:
         }
     } client_wait_sync;
 
-    // wait_sync
-    struct : func<EGLPAFP(WaitSync)> {
-        using func<EGLPAFP(WaitSync)>::func;
+    adapted_function<
+      &egl_api::WaitSync,
+      bool_type(display_handle, sync_handle),
+      collapse_bool_map>
+      wait_sync{*this};
 
-        constexpr auto operator()(display_handle disp, sync_handle sync)
-          const noexcept {
-            return this->_cnvchkcall(disp, sync, 0);
-        }
-    } wait_sync;
-
-    // destroy_sync
-    struct : func<EGLPAFP(DestroySync)> {
-        using func<EGLPAFP(DestroySync)>::func;
-
-        constexpr auto operator()(display_handle disp, sync_handle sync)
-          const noexcept {
-            return this->_cnvchkcall(disp, sync);
-        }
-    } destroy_sync;
+    adapted_function<
+      &egl_api::DestroySync,
+      bool_type(display_handle, sync_handle),
+      collapse_bool_map>
+      destroy_sync{*this};
 
     // query_string
     struct : func<EGLPAFP(QueryString)> {
