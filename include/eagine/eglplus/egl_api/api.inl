@@ -32,11 +32,7 @@ basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
   , EXT_pixel_format_float{"EXT_pixel_format_float", *this}
   , MESA_configless_context{"MESA_configless_context", *this}
   , MESA_query_driver{"MESA_query_driver", *this}
-  , choose_config{"choose_config", *this}
   , get_config_attrib{"get_config_attrib", *this}
-  , create_window_surface{"create_window_surface", *this}
-  , create_pbuffer_surface{"create_pbuffer_surface", *this}
-  , create_pixmap_surface{"create_pixmap_surface", *this}
   , query_surface{"query_surface", *this}
   , create_stream{"create_stream", *this}
   , query_stream{"query_stream", *this}

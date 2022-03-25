@@ -335,18 +335,26 @@ public:
         }
     } get_configs{*this};
 
-    // choose_config
-    struct : func<EGLPAFP(ChooseConfig)> {
-        using func<EGLPAFP(ChooseConfig)>::func;
+    using _choose_config_t = adapted_function<
+      &egl_api::ChooseConfig,
+      bool_type(
+        display_handle disp,
+        span<const int_type>,
+        span<config_type> dest,
+        int_type&),
+      collapse_bool_map>;
+
+    struct : _choose_config_t {
+        using base = _choose_config_t;
+        using base::base;
+        using base::operator();
 
         auto count(display_handle disp, span<const int_type> attribs)
           const noexcept {
             int_type ret_count{0};
-            return this
-              ->_cnvchkcall(disp, attribs.data(), nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok, bool valid) {
-                  return limit_cast<span_size_t>(
-                    valid && egl_types::bool_true(ok) ? ret_count : 0);
+            return base::operator()(disp, attribs, {}, ret_count)
+              .transformed([&ret_count](bool valid) {
+                  return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
 
@@ -366,18 +374,10 @@ public:
           span<const int_type> attribs,
           span<config_type> dest) const noexcept {
             int_type ret_count{0};
-            return this
-              ->_cnvchkcall(
-                disp,
-                attribs.data(),
-                dest.data(),
-                limit_cast<int_type>(dest.size()),
-                &ret_count)
-              .transformed([dest, &ret_count](auto ok, bool valid) {
+            return base::operator()(disp, attribs, dest, ret_count)
+              .transformed([&ret_count, dest](bool valid) {
                   return head(
-                    dest,
-                    limit_cast<span_size_t>(
-                      valid && egl_types::bool_true(ok) ? ret_count : 0));
+                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
 
@@ -387,15 +387,6 @@ public:
           const config_attributes<N>& attribs,
           span<config_type> dest) const noexcept {
             return (*this)(disp, attribs.get(), dest);
-        }
-
-        template <std::size_t N>
-        auto operator()(
-          display_handle disp,
-          const config_attributes<N>& attribs) const noexcept {
-            config_type result;
-            return (*this)(disp, attribs.get(), cover_one(&result))
-              .replaced_with(result);
         }
 
         auto operator()(
@@ -410,7 +401,16 @@ public:
           const config_attribute_value& attribs) const noexcept {
             return (*this)(disp, config_attributes<2>{attribs});
         }
-    } choose_config;
+
+        template <std::size_t N>
+        auto operator()(
+          display_handle disp,
+          const config_attributes<N>& attribs) const noexcept {
+            config_type result;
+            return (*this)(disp, attribs.get(), cover_one(&result))
+              .replaced_with(result);
+        }
+    } choose_config{*this};
 
     // get_config_attrib
     query_func<
@@ -421,26 +421,18 @@ public:
       EGLPAFP(GetConfigAttrib)>
       get_config_attrib;
 
-    // create_window_surface
-    struct : func<EGLPAFP(CreateWindowSurface)> {
-        using func<EGLPAFP(CreateWindowSurface)>::func;
+    using _create_window_surface_t = adapted_function<
+      &egl_api::CreateWindowSurface,
+      surface_handle(
+        display_handle,
+        config_type,
+        native_window_type,
+        span<const int_type>)>;
 
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_window_type win) const noexcept {
-            return this->_cnvchkcall(disp, conf, win, nullptr)
-              .cast_to(type_identity<surface_handle>{});
-        }
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_window_type win,
-          span<const int_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, conf, win, attribs.data())
-              .cast_to(type_identity<surface_handle>{});
-        }
+    struct : _create_window_surface_t {
+        using base = _create_window_surface_t;
+        using base::base;
+        using base::operator();
 
         template <std::size_t N>
         constexpr auto operator()(
@@ -448,57 +440,40 @@ public:
           config_type conf,
           native_window_type win,
           const surface_attributes<N> attribs) const noexcept {
-            return (*this)(disp, conf, win, attribs.get());
+            return base::operator()(disp, conf, win, attribs.get());
         }
-    } create_window_surface;
+    } create_window_surface{*this};
 
-    // create_pbuffer_surface
-    struct : func<EGLPAFP(CreatePbufferSurface)> {
-        using func<EGLPAFP(CreatePbufferSurface)>::func;
+    using _create_pbuffer_surface_t = adapted_function<
+      &egl_api::CreatePbufferSurface,
+      surface_handle(display_handle, config_type, span<const int_type>)>;
 
-        constexpr auto operator()(display_handle disp, config_type conf)
-          const noexcept {
-            return this->_cnvchkcall(disp, conf, nullptr)
-              .cast_to(type_identity<surface_handle>{});
-        }
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          span<const int_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, conf, attribs.data())
-              .cast_to(type_identity<surface_handle>{});
-        }
+    struct : _create_pbuffer_surface_t {
+        using base = _create_pbuffer_surface_t;
+        using base::base;
+        using base::operator();
 
         template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           config_type conf,
           const surface_attributes<N> attribs) const noexcept {
-            return (*this)(disp, conf, attribs.get());
+            return base::operator()(disp, conf, attribs.get());
         }
-    } create_pbuffer_surface;
+    } create_pbuffer_surface{*this};
 
-    // create_pixmap_surface
-    struct : func<EGLPAFP(CreatePixmapSurface)> {
-        using func<EGLPAFP(CreatePixmapSurface)>::func;
+    using _create_pixmap_surface_t = adapted_function<
+      &egl_api::CreatePixmapSurface,
+      surface_handle(
+        display_handle,
+        config_type,
+        native_pixmap_type,
+        span<const int_type>)>;
 
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_pixmap_type pmp) const noexcept {
-            return this->_cnvchkcall(disp, conf, pmp, nullptr)
-              .cast_to(type_identity<surface_handle>{});
-        }
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_pixmap_type pmp,
-          span<const int_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, conf, pmp, attribs.data())
-              .cast_to(type_identity<surface_handle>{});
-        }
+    struct : _create_pixmap_surface_t {
+        using base = _create_pixmap_surface_t;
+        using base::base;
+        using base::operator();
 
         template <std::size_t N>
         constexpr auto operator()(
@@ -506,9 +481,9 @@ public:
           config_type conf,
           native_pixmap_type pmp,
           const surface_attributes<N> attribs) const noexcept {
-            return (*this)(disp, conf, pmp, attribs.get());
+            return base::operator()(disp, conf, pmp, attribs.get());
         }
-    } create_pixmap_surface;
+    } create_pixmap_surface{*this};
 
     adapted_function<
       &egl_api::DestroySurface,
