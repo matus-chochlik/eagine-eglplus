@@ -10,6 +10,7 @@
 
 #include "api_traits.hpp"
 #include "config.hpp"
+#include <eagine/c_api/function.hpp>
 #include <eagine/diagnostic.hpp>
 #include <eagine/nothing.hpp>
 #include <eagine/preprocessor.hpp>
@@ -30,6 +31,8 @@ namespace eagine::eglplus {
 /// @see basic_egl_operations
 template <typename ApiTraits>
 class basic_egl_c_api {
+    ApiTraits& _traits;
+
 public:
     using this_api = basic_egl_c_api;
 
@@ -101,6 +104,12 @@ public:
     /// @brief Alias for image handle type.
     using image_type = typename egl_types::image_type;
 
+    template <typename Result>
+    constexpr auto check_result(Result res) const noexcept {
+        res.error_code(this->GetError());
+        return res;
+    }
+
 #ifdef __GNUC__
     EAGINE_DIAG_PUSH()
     EAGINE_DIAG_OFF(address)
@@ -109,8 +118,8 @@ public:
     /// @brief Alias for EGL C-API function wrapper template.
     template <
       typename Signature,
-      c_api_function_ptr<api_traits, nothing_t, Signature> Function>
-    using egl_api_function = eagine::opt_c_api_function<
+      c_api::function_ptr<api_traits, nothing_t, Signature> Function>
+    using egl_api_function = c_api::opt_function<
       api_traits,
       nothing_t,
       Signature,
@@ -531,6 +540,10 @@ public:
       ReleaseThread;
 
     basic_egl_c_api(api_traits& traits);
+
+    auto traits() noexcept -> api_traits& {
+        return _traits;
+    }
 };
 //------------------------------------------------------------------------------
 /// @brief Alias for the default EGL operations wrapper instantiation.

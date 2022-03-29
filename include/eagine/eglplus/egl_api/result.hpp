@@ -10,8 +10,12 @@
 
 #include "config.hpp"
 #include <eagine/anything.hpp>
-#include <eagine/c_api_wrap.hpp>
+#include <eagine/c_api/result.hpp>
 #include <eagine/string_span.hpp>
+
+#ifndef EGL_SUCCESS
+#define EGL_SUCCESS 0x3000
+#endif
 
 namespace eagine::eglplus {
 //------------------------------------------------------------------------------
@@ -28,6 +32,10 @@ public:
     /// @brief Returns a message associated with the result.
     constexpr auto message() const noexcept -> string_view {
         return {"EGL function not available"};
+    }
+
+    constexpr auto set_unknown_error() const noexcept -> auto& {
+        return *this;
     }
 
 private:
@@ -149,12 +157,15 @@ public:
         return {"unknown error"};
     }
 
+    constexpr auto set_unknown_error() noexcept -> auto& {
+        if(_error_code != EGL_SUCCESS) {
+            _error_code = ~egl_types::int_type(0);
+        }
+        return *this;
+    }
+
 private:
-    egl_types::int_type _error_code{
-#ifdef EGL_SUCCESS
-      EGL_SUCCESS
-#endif
-    };
+    egl_types::int_type _error_code{EGL_SUCCESS};
 };
 //------------------------------------------------------------------------------
 /// @brief Alias for always-invalid result of a missing EGL API function call.
@@ -162,21 +173,29 @@ private:
 /// @see egl_result
 /// @see egl_opt_result
 template <typename Result>
-using egl_no_result = api_no_result<Result, egl_no_result_info>;
+using egl_no_result = c_api::no_result<Result, egl_no_result_info>;
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the result of a EGL API function call.
 /// @ingroup egl_api_wrap
 /// @see egl_no_result
 /// @see egl_opt_result
 template <typename Result>
-using egl_result = api_result<Result, egl_result_info>;
+using egl_result = c_api::result<Result, egl_result_info>;
 //------------------------------------------------------------------------------
 /// @brief Alias for conditionally-valid result of a EGL API function call.
 /// @ingroup gl_api_wrap
 /// @see egl_result
 /// @see egl_no_result
 template <typename Result>
-using egl_opt_result = api_opt_result<Result, egl_result_info>;
+using egl_opt_result = c_api::opt_result<Result, egl_result_info>;
+//------------------------------------------------------------------------------
+template <typename Result, c_api::result_validity Validity>
+inline auto collapse_bool(
+  c_api::result<Result, egl_result_info, Validity>&& r) noexcept {
+    return r.collapsed(
+      [](egl_types::bool_type value) { return bool(value); },
+      [](auto& info) { info.set_unknown_error(); });
+}
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
