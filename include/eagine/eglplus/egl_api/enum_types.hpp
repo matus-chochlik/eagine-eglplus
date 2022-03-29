@@ -38,6 +38,12 @@ struct platform : egl_enum_class<platform, EAGINE_ID_V(Platform)> {
     using enum_class::enum_class;
 };
 
+/// @brief Typed enumeration for EGL engine constants.
+/// @ingroup egl_api_wrap
+struct engine : egl_enum_class<engine, EAGINE_ID_V(Engine)> {
+    using enum_class::enum_class;
+};
+
 /// @brief Typed enumeration for EGL platform attribute constants.
 /// @ingroup egl_api_wrap
 struct platform_attribute

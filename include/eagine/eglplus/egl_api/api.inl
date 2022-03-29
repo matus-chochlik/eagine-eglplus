@@ -31,25 +31,6 @@ basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
   , EXT_stream_consumer_egloutput{"EXT_stream_consumer_egloutput", *this}
   , EXT_pixel_format_float{"EXT_pixel_format_float", *this}
   , MESA_configless_context{"MESA_configless_context", *this}
-  , MESA_query_driver{"MESA_query_driver", *this}
-  , get_config_attrib{"get_config_attrib", *this}
-  , query_surface{"query_surface", *this}
-  , create_stream{"create_stream", *this}
-  , query_stream{"query_stream", *this}
-  , get_output_layers{"get_output_layers", *this}
-  , output_layer_attrib{"output_layer_attrib", *this}
-  , query_output_layer_attrib{"query_output_layer_attrib", *this}
-  , get_output_ports{"get_output_ports", *this}
-  , output_port_attrib{"output_port_attrib", *this}
-  , query_output_port_attrib{"query_output_port_attrib", *this}
-  , query_output_port_string{"query_output_port_string", *this}
-  , create_image{"create_image", *this}
-  , create_context{"create_context", *this}
-  , make_current{"make_current", *this}
-  , wait_native{"wait_native", *this}
-  , create_sync{"create_sync", *this}
-  , client_wait_sync{"client_wait_sync", *this}
-  , query_string{"query_string", *this}
-  , release_thread{"release_thread", *this} {}
+  , MESA_query_driver{"MESA_query_driver", *this} {}
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
