@@ -37,8 +37,6 @@
 namespace eagine::eglplus {
 using c_api::adapted_function;
 //------------------------------------------------------------------------------
-#define EGLPAFP(FUNC) decltype(egl_api::FUNC), &egl_api::FUNC
-//------------------------------------------------------------------------------
 /// @brief Class wrapping the functions from the EGL API.
 /// @ingroup egl_api_wrap
 /// @see basic_egl_constants
@@ -881,8 +879,6 @@ public:
 
     basic_egl_operations(api_traits& traits);
 };
-//------------------------------------------------------------------------------
-#undef EGLPAFP
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
