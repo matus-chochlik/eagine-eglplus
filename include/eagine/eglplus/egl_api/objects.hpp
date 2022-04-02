@@ -9,7 +9,7 @@
 #define EAGINE_EGLPLUS_EGL_API_OBJECTS_HPP
 
 #include "config.hpp"
-#include <eagine/handle.hpp>
+#include <eagine/c_api/handle.hpp>
 #include <eagine/message_id.hpp>
 
 namespace eagine::eglplus {
@@ -61,74 +61,78 @@ using sync_tag = EAGINE_MSG_TYPE(egl, Sync);
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL device handle wrapper.
 /// @ingroup egl_api_wrap
-using device_handle = basic_handle<
+using device_handle = c_api::basic_handle<
   device_tag,
   egl_types::device_type,
   egl_types::device_type(nullptr)>;
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_DISPLAY)
 using display_handle =
-  basic_handle<display_tag, egl_types::display_type, EGL_NO_DISPLAY>;
+  c_api::basic_handle<display_tag, egl_types::display_type, EGL_NO_DISPLAY>;
 #else
 /// @brief Alias for EGL display  handle wrapper.
 /// @ingroup egl_api_wrap
-using display_handle = basic_handle<display_tag, egl_types::display_type>;
+using display_handle =
+  c_api::basic_handle<display_tag, egl_types::display_type>;
 #endif
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_SURFACE)
 using surface_handle =
-  basic_handle<surface_tag, egl_types::surface_type, EGL_NO_SURFACE>;
+  c_api::basic_handle<surface_tag, egl_types::surface_type, EGL_NO_SURFACE>;
 #else
 /// @brief Alias for EGL surface handle wrapper.
 /// @ingroup egl_api_wrap
-using surface_handle = basic_handle<surface_tag, egl_types::surface_type>;
+using surface_handle =
+  c_api::basic_handle<surface_tag, egl_types::surface_type>;
 #endif
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_CONTEXT)
 using context_handle =
-  basic_handle<context_tag, egl_types::context_type, EGL_NO_CONTEXT>;
+  c_api::basic_handle<context_tag, egl_types::context_type, EGL_NO_CONTEXT>;
 #else
 /// @brief Alias for EGL context handle wrapper.
 /// @ingroup egl_api_wrap
-using context_handle = basic_handle<context_tag, egl_types::context_type>;
+using context_handle =
+  c_api::basic_handle<context_tag, egl_types::context_type>;
 #endif
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL stream handle wrapper.
 /// @ingroup egl_api_wrap
-using stream_handle = basic_handle<
+using stream_handle = c_api::basic_handle<
   stream_tag,
   egl_types::stream_type,
   egl_types::stream_type(nullptr)>;
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_IMAGE)
 using image_handle =
-  basic_handle<image_tag, egl_types::image_type, EGL_NO_IMAGE>;
+  c_api::basic_handle<image_tag, egl_types::image_type, EGL_NO_IMAGE>;
 #else
 /// @brief Alias for EGL image handle wrapper.
 /// @ingroup egl_api_wrap
-using image_handle = basic_handle<image_tag, egl_types::image_type>;
+using image_handle = c_api::basic_handle<image_tag, egl_types::image_type>;
 #endif
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL output layer handle wrapper.
 /// @ingroup egl_api_wrap
-using output_layer_handle = basic_handle<
+using output_layer_handle = c_api::basic_handle<
   stream_tag,
   egl_types::output_layer_type,
   egl_types::output_layer_type(nullptr)>;
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL output port handle wrapper.
 /// @ingroup egl_api_wrap
-using output_port_handle = basic_handle<
+using output_port_handle = c_api::basic_handle<
   stream_tag,
   egl_types::output_port_type,
   egl_types::output_port_type(nullptr)>;
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_SYNC)
-using sync_handle = basic_handle<sync_tag, egl_types::sync_type, EGL_NO_SYNC>;
+using sync_handle =
+  c_api::basic_handle<sync_tag, egl_types::sync_type, EGL_NO_SYNC>;
 #else
 /// @brief Alias for EGL sync object handle wrapper.
 /// @ingroup egl_api_wrap
-using sync_handle = basic_handle<sync_tag, egl_types::sync_type>;
+using sync_handle = c_api::basic_handle<sync_tag, egl_types::sync_type>;
 #endif
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
