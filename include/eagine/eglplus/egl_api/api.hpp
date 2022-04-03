@@ -309,66 +309,28 @@ public:
       int_type(display_handle, config_type, config_attribute)>
       get_config_attrib{*this};
 
-    using _create_window_surface_t = adapted_function<
+    adapted_function<
       &egl_api::CreateWindowSurface,
       surface_handle(
         display_handle,
         config_type,
         native_window_type,
-        span<const int_type>)>;
+        surface_attributes)>
+      create_window_surface{*this};
 
-    struct : _create_window_surface_t {
-        using base = _create_window_surface_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_window_type win,
-          const surface_attributes attribs) const noexcept {
-            return base::operator()(disp, conf, win, attribs);
-        }
-    } create_window_surface{*this};
-
-    using _create_pbuffer_surface_t = adapted_function<
+    adapted_function<
       &egl_api::CreatePbufferSurface,
-      surface_handle(display_handle, config_type, span<const int_type>)>;
+      surface_handle(display_handle, config_type, surface_attributes)>
+      create_pbuffer_surface{*this};
 
-    struct : _create_pbuffer_surface_t {
-        using base = _create_pbuffer_surface_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          const surface_attributes attribs) const noexcept {
-            return base::operator()(disp, conf, attribs);
-        }
-    } create_pbuffer_surface{*this};
-
-    using _create_pixmap_surface_t = adapted_function<
+    adapted_function<
       &egl_api::CreatePixmapSurface,
       surface_handle(
         display_handle,
         config_type,
         native_pixmap_type,
-        span<const int_type>)>;
-
-    struct : _create_pixmap_surface_t {
-        using base = _create_pixmap_surface_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_pixmap_type pmp,
-          const surface_attributes attribs) const noexcept {
-            return base::operator()(disp, conf, pmp, attribs);
-        }
-    } create_pixmap_surface{*this};
+        surface_attributes)>
+      create_pixmap_surface{*this};
 
     adapted_function<
       &egl_api::DestroySurface,
@@ -390,21 +352,10 @@ public:
       int_type(display_handle, surface_handle, surface_attribute)>
       query_surface{*this};
 
-    using _create_stream_t = adapted_function<
+    adapted_function<
       &egl_api::CreateStream,
-      stream_handle(display_handle, span<const int_type>)>;
-
-    struct : _create_stream_t {
-        using base = _create_stream_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          const stream_attributes attribs) const noexcept {
-            return base::operator()(disp, attribs.get());
-        }
-    } create_stream{*this};
+      stream_handle(display_handle, stream_attributes)>
+      create_stream{*this};
 
     adapted_function<
       &egl_api::DestroyStream,
@@ -555,29 +506,15 @@ public:
       string_view(display_handle, output_port_handle, output_port_string_query)>
       query_output_port_string{*this};
 
-    using _create_image_t = adapted_function<
+    adapted_function<
       &egl_api::CreateImage,
       image_handle(
         display_handle,
         context_handle,
         image_target,
         client_buffer_type,
-        span<const attrib_type>)>;
-
-    struct : _create_image_t {
-        using base = _create_image_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          context_handle ctxt,
-          image_target tgt,
-          client_buffer_type buf,
-          const image_attributes attribs) const noexcept {
-            return base::operator()(disp, ctxt, tgt, buf, attribs);
-        }
-    } create_image{*this};
+        image_attributes)>
+      create_image{*this};
 
     adapted_function<
       &egl_api::DestroyImage,
@@ -590,34 +527,14 @@ public:
 
     adapted_function<&egl_api::QueryAPI, client_api()> query_api{*this};
 
-    using _create_context_t = adapted_function<
+    adapted_function<
       &egl_api::CreateContext,
       context_handle(
         display_handle,
         config_type,
         context_handle,
-        span<const int_type>)>;
-
-    struct : _create_context_t {
-        using base = _create_context_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          const context_attributes attribs) const noexcept {
-            return base::operator()(disp, conf, context_handle{}, attribs);
-        }
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          context_handle sctx,
-          const context_attributes attribs) const noexcept {
-            return base::operator()(disp, conf, sctx, attribs);
-        }
-    } create_context{*this};
+        context_attributes)>
+      create_context{*this};
 
     adapted_function<
       &egl_api::DestroyContext,
@@ -671,22 +588,10 @@ public:
         }
     } wait_native{*this};
 
-    using _create_sync_t = adapted_function<
+    adapted_function<
       &egl_api::CreateSync,
-      sync_handle(display_handle, sync_type, span<const attrib_type>)>;
-
-    struct : _create_sync_t {
-        using base = _create_sync_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(
-          display_handle disp,
-          sync_type typ,
-          const sync_attributes attribs) const noexcept {
-            return base::operator()(disp, typ, attribs.get());
-        }
-    } create_sync{*this};
+      sync_handle(display_handle, sync_type, sync_attributes)>
+      create_sync{*this};
 
     using _client_wait_sync_t = adapted_function<
       &egl_api::ClientWaitSync,
