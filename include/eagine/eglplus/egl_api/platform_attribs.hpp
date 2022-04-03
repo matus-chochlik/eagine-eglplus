@@ -10,7 +10,7 @@
 
 #include "config.hpp"
 #include "enum_types.hpp"
-#include <eagine/key_val_list.hpp>
+#include <eagine/c_api/key_value_list.hpp>
 
 namespace eagine::eglplus {
 
@@ -34,13 +34,13 @@ struct platform_attrib_traits {
 
 /// @brief Alias for EGL platform attribute key/value list.
 /// @ingroup egl_api_wrap
-template <std::size_t N>
-using platform_attributes = key_value_list<platform_attrib_traits, N>;
+using platform_attributes = c_api::key_value_list<platform_attrib_traits>;
 
 /// @brief Alias for EGL platform attribute list key/value pair.
 /// @ingroup egl_api_wrap
 /// @see platform_attributes
-using platform_attribute_value = key_value_list_element<platform_attrib_traits>;
+using platform_attribute_value =
+  c_api::key_value_list_element<platform_attrib_traits>;
 
 /// @brief Concatenation operator for platform attribute list key and value.
 /// @ingroup egl_api_wrap

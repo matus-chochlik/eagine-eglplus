@@ -18,7 +18,7 @@ auto main() -> int {
 
     if(const ok display{egl.get_display()}) {
         if(egl.initialize(display)) {
-            const auto do_cleanup = egl.terminate.raii(display);
+            const auto do_cleanup{egl.terminate.raii(display)};
 
             if(const ok dev_count{egl.query_devices.count()}) {
                 std::cout << "Devices: " << dev_count << std::endl;

@@ -255,15 +255,13 @@ public:
               });
         }
 
-        template <std::size_t N>
-        auto count(display_handle disp, const config_attributes<N>& attribs)
-          const {
+        auto count(display_handle disp, const config_attributes& attribs) const {
             return count(disp, attribs.get());
         }
 
         auto count(display_handle disp, const config_attribute_value& attribs)
           const {
-            return count(disp, config_attributes<2>{attribs});
+            return count(disp, config_attributes{attribs});
         }
 
         auto operator()(
@@ -278,10 +276,9 @@ public:
               });
         }
 
-        template <std::size_t N>
         auto operator()(
           display_handle disp,
-          const config_attributes<N>& attribs,
+          const config_attributes& attribs,
           span<config_type> dest) const noexcept {
             return (*this)(disp, attribs.get(), dest);
         }
@@ -290,19 +287,17 @@ public:
           display_handle disp,
           const config_attribute_value& attribs,
           span<config_type> dest) const noexcept {
-            return (*this)(disp, config_attributes<2>{attribs}, dest);
+            return (*this)(disp, config_attributes{attribs}, dest);
         }
 
         auto operator()(
           display_handle disp,
           const config_attribute_value& attribs) const noexcept {
-            return (*this)(disp, config_attributes<2>{attribs});
+            return (*this)(disp, config_attributes{attribs});
         }
 
-        template <std::size_t N>
-        auto operator()(
-          display_handle disp,
-          const config_attributes<N>& attribs) const noexcept {
+        auto operator()(display_handle disp, const config_attributes& attribs)
+          const noexcept {
             config_type result;
             return (*this)(disp, attribs.get(), cover_one(&result))
               .replaced_with(result);
@@ -327,13 +322,12 @@ public:
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           config_type conf,
           native_window_type win,
-          const surface_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, win, attribs.get());
+          const surface_attributes attribs) const noexcept {
+            return base::operator()(disp, conf, win, attribs);
         }
     } create_window_surface{*this};
 
@@ -346,12 +340,11 @@ public:
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           config_type conf,
-          const surface_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, attribs.get());
+          const surface_attributes attribs) const noexcept {
+            return base::operator()(disp, conf, attribs);
         }
     } create_pbuffer_surface{*this};
 
@@ -368,13 +361,12 @@ public:
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           config_type conf,
           native_pixmap_type pmp,
-          const surface_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, pmp, attribs.get());
+          const surface_attributes attribs) const noexcept {
+            return base::operator()(disp, conf, pmp, attribs);
         }
     } create_pixmap_surface{*this};
 
@@ -407,10 +399,9 @@ public:
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
-          const stream_attributes<N> attribs) const noexcept {
+          const stream_attributes attribs) const noexcept {
             return base::operator()(disp, attribs.get());
         }
     } create_stream{*this};
@@ -483,10 +474,9 @@ public:
               });
         }
 
-        template <std::size_t N>
         auto operator()(
           display_handle disp,
-          output_layer_attributes<N> attr,
+          output_layer_attributes attr,
           span<output_layer_type> dest) const noexcept {
             return (*this)(disp, attr.get(), dest);
         }
@@ -541,10 +531,9 @@ public:
               });
         }
 
-        template <std::size_t N>
         auto operator()(
           display_handle disp,
-          output_port_attributes<N> attr,
+          output_port_attributes attr,
           span<output_port_type> dest) const noexcept {
             return (*this)(disp, attr.get(), dest);
         }
@@ -573,21 +562,20 @@ public:
         context_handle,
         image_target,
         client_buffer_type,
-        span<const int_type>)>;
+        span<const attrib_type>)>;
 
     struct : _create_image_t {
         using base = _create_image_t;
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           context_handle ctxt,
           image_target tgt,
           client_buffer_type buf,
-          const image_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, ctxt, tgt, buf, attribs.get());
+          const image_attributes attribs) const noexcept {
+            return base::operator()(disp, ctxt, tgt, buf, attribs);
         }
     } create_image{*this};
 
@@ -615,22 +603,19 @@ public:
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           config_type conf,
-          const context_attributes<N> attribs) const noexcept {
-            return base::operator()(
-              disp, conf, context_handle{}, attribs.get());
+          const context_attributes attribs) const noexcept {
+            return base::operator()(disp, conf, context_handle{}, attribs);
         }
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           config_type conf,
           context_handle sctx,
-          const context_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, sctx, attribs.get());
+          const context_attributes attribs) const noexcept {
+            return base::operator()(disp, conf, sctx, attribs);
         }
     } create_context{*this};
 
@@ -688,18 +673,17 @@ public:
 
     using _create_sync_t = adapted_function<
       &egl_api::CreateSync,
-      sync_handle(display_handle, sync_type, span<const int_type>)>;
+      sync_handle(display_handle, sync_type, span<const attrib_type>)>;
 
     struct : _create_sync_t {
         using base = _create_sync_t;
         using base::base;
         using base::operator();
 
-        template <std::size_t N>
         constexpr auto operator()(
           display_handle disp,
           sync_type typ,
-          const sync_attributes<N> attribs) const noexcept {
+          const sync_attributes attribs) const noexcept {
             return base::operator()(disp, typ, attribs.get());
         }
     } create_sync{*this};

@@ -10,7 +10,7 @@
 
 #include "config.hpp"
 #include "enum_types.hpp"
-#include <eagine/key_val_list.hpp>
+#include <eagine/c_api/key_value_list.hpp>
 
 namespace eagine::eglplus {
 
@@ -34,13 +34,12 @@ struct sync_attrib_traits {
 
 /// @brief Alias for EGL sync object attribute key/value list.
 /// @ingroup egl_api_wrap
-template <std::size_t N>
-using sync_attributes = key_value_list<sync_attrib_traits, N>;
+using sync_attributes = c_api::key_value_list<sync_attrib_traits>;
 
 /// @brief Alias for EGL sync object attribute key/value list.
 /// @ingroup egl_api_wrap
 /// @see sync_attributes
-using sync_attribute_value = key_value_list_element<sync_attrib_traits>;
+using sync_attribute_value = c_api::key_value_list_element<sync_attrib_traits>;
 
 /// @brief Concatenation operator for sync object attribute list key and value.
 /// @ingroup egl_api_wrap
