@@ -22,7 +22,6 @@
 #include "surface_attribs.hpp"
 #include "sync_attribs.hpp"
 #include <eagine/c_api/adapted_function.hpp>
-#include <eagine/c_api_wrap.hpp>
 #include <eagine/scope_exit.hpp>
 #include <eagine/string_list.hpp>
 #include <chrono>
@@ -37,8 +36,6 @@
 
 namespace eagine::eglplus {
 using c_api::adapted_function;
-//------------------------------------------------------------------------------
-#define EGLPAFP(FUNC) decltype(egl_api::FUNC), &egl_api::FUNC
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the functions from the EGL API.
 /// @ingroup egl_api_wrap
@@ -56,6 +53,7 @@ public:
     using bool_type = typename egl_types::char_type;
     using char_type = typename egl_types::char_type;
     using enum_type = typename egl_types::enum_type;
+    using time_type = typename egl_types::time_type;
     using attrib_type = typename egl_types::attrib_type;
     using device_type = typename egl_types::device_type;
     using native_display_type = typename egl_types::native_display_type;
@@ -63,6 +61,8 @@ public:
     using native_pixmap_type = typename egl_types::native_pixmap_type;
     using client_buffer_type = typename egl_types::client_buffer_type;
     using config_type = typename egl_types::config_type;
+    using output_layer_type = typename egl_types::output_layer_type;
+    using output_port_type = typename egl_types::output_port_type;
 
     struct collapse_bool_map {
         template <typename... P>
@@ -102,109 +102,6 @@ public:
 
     extension<display_handle> MESA_configless_context;
     extension<display_handle> MESA_query_driver;
-
-    // functions
-    template <typename W, W egl_api::*F, typename Signature = typename W::signature>
-    class func;
-
-    template <typename W, W egl_api::*F, typename RVC, typename... Params>
-    class func<W, F, RVC(Params...)>
-      : public wrapped_c_api_function<egl_api, api_traits, nothing_t, W, F> {
-        using base =
-          wrapped_c_api_function<egl_api, api_traits, nothing_t, W, F>;
-
-    private:
-        template <typename Res>
-        constexpr auto _check(Res&& res) const noexcept {
-            res.error_code(this->api().GetError());
-            return std::forward<Res>(res);
-        }
-
-    protected:
-        template <typename... Args>
-        constexpr auto _chkcall(Args&&... args) const noexcept {
-            return this->_check(this->_call(std::forward<Args>(args)...));
-        }
-
-        using base::_conv;
-
-        template <typename... Args>
-        constexpr auto _cnvchkcall(Args&&... args) const noexcept {
-            return this->_chkcall(_conv(std::forward<Args>(args))...)
-              .cast_to(type_identity<RVC>{});
-        }
-
-    public:
-        using base::base;
-
-        constexpr auto operator()(Params... params) const noexcept {
-            return this->_chkcall(_conv(params)...)
-              .cast_to(type_identity<RVC>{});
-        }
-
-        auto bind(Params... params) const noexcept {
-            return [this, params...] {
-                return (*this)(params...);
-            };
-        }
-    };
-
-    // numeric query function
-    template <
-      typename PreTypeList,
-      typename QueryClassList,
-      typename PostTypeList,
-      typename QueryResult,
-      typename W,
-      W egl_api::*F>
-    struct query_func;
-
-    template <
-      typename... PreParams,
-      typename... QueryClasses,
-      typename... PostParams,
-      typename QueryResult,
-      typename W,
-      W egl_api::*F>
-    struct query_func<
-      mp_list<PreParams...>,
-      mp_list<QueryClasses...>,
-      mp_list<PostParams...>,
-      QueryResult,
-      W,
-      F> : func<W, F> {
-        using func<W, F>::func;
-
-        template <typename Query>
-        constexpr auto operator()(
-          PreParams... pre_params,
-          Query query,
-          PostParams... post_params) const noexcept
-          requires((true || ... || is_enum_class_value_v<QueryClasses, Query>)&&(
-            !std::is_array_v<typename Query::tag_type>)) {
-            using RV = typename Query::tag_type;
-            QueryResult result{};
-            return this
-              ->_cnvchkcall(
-                pre_params..., int_type(query), post_params..., &result)
-              .replaced_with(result)
-              .cast_to(type_identity<RV>{});
-        }
-
-        template <
-          typename Query,
-          typename = std::enable_if_t<
-            (true || ... || is_enum_class_value_v<QueryClasses, Query>)>>
-        auto operator()(
-          PreParams... pre_params,
-          Query query,
-          PostParams... post_params,
-          span<QueryResult> dest) const noexcept {
-            EAGINE_ASSERT(dest.size());
-            return this->_cnvchkcall(
-              pre_params..., int_type(query), post_params..., dest.data());
-        }
-    };
 
     using _query_devices_t = adapted_function<
       &egl_api::QueryDevices,
@@ -358,15 +255,13 @@ public:
               });
         }
 
-        template <std::size_t N>
-        auto count(display_handle disp, const config_attributes<N>& attribs)
-          const {
+        auto count(display_handle disp, const config_attributes& attribs) const {
             return count(disp, attribs.get());
         }
 
         auto count(display_handle disp, const config_attribute_value& attribs)
           const {
-            return count(disp, config_attributes<2>{attribs});
+            return count(disp, config_attributes{attribs});
         }
 
         auto operator()(
@@ -381,10 +276,9 @@ public:
               });
         }
 
-        template <std::size_t N>
         auto operator()(
           display_handle disp,
-          const config_attributes<N>& attribs,
+          const config_attributes& attribs,
           span<config_type> dest) const noexcept {
             return (*this)(disp, attribs.get(), dest);
         }
@@ -393,97 +287,50 @@ public:
           display_handle disp,
           const config_attribute_value& attribs,
           span<config_type> dest) const noexcept {
-            return (*this)(disp, config_attributes<2>{attribs}, dest);
+            return (*this)(disp, config_attributes{attribs}, dest);
         }
 
         auto operator()(
           display_handle disp,
           const config_attribute_value& attribs) const noexcept {
-            return (*this)(disp, config_attributes<2>{attribs});
+            return (*this)(disp, config_attributes{attribs});
         }
 
-        template <std::size_t N>
-        auto operator()(
-          display_handle disp,
-          const config_attributes<N>& attribs) const noexcept {
+        auto operator()(display_handle disp, const config_attributes& attribs)
+          const noexcept {
             config_type result;
             return (*this)(disp, attribs.get(), cover_one(&result))
               .replaced_with(result);
         }
     } choose_config{*this};
 
-    // get_config_attrib
-    query_func<
-      mp_list<display_handle, config_type>,
-      mp_list<config_attribute>,
-      mp_list<>,
-      int_type,
-      EGLPAFP(GetConfigAttrib)>
-      get_config_attrib;
+    adapted_function<
+      &egl_api::GetConfigAttrib,
+      int_type(display_handle, config_type, config_attribute)>
+      get_config_attrib{*this};
 
-    using _create_window_surface_t = adapted_function<
+    adapted_function<
       &egl_api::CreateWindowSurface,
       surface_handle(
         display_handle,
         config_type,
         native_window_type,
-        span<const int_type>)>;
+        surface_attributes)>
+      create_window_surface{*this};
 
-    struct : _create_window_surface_t {
-        using base = _create_window_surface_t;
-        using base::base;
-        using base::operator();
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_window_type win,
-          const surface_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, win, attribs.get());
-        }
-    } create_window_surface{*this};
-
-    using _create_pbuffer_surface_t = adapted_function<
+    adapted_function<
       &egl_api::CreatePbufferSurface,
-      surface_handle(display_handle, config_type, span<const int_type>)>;
+      surface_handle(display_handle, config_type, surface_attributes)>
+      create_pbuffer_surface{*this};
 
-    struct : _create_pbuffer_surface_t {
-        using base = _create_pbuffer_surface_t;
-        using base::base;
-        using base::operator();
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          const surface_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, attribs.get());
-        }
-    } create_pbuffer_surface{*this};
-
-    using _create_pixmap_surface_t = adapted_function<
+    adapted_function<
       &egl_api::CreatePixmapSurface,
       surface_handle(
         display_handle,
         config_type,
         native_pixmap_type,
-        span<const int_type>)>;
-
-    struct : _create_pixmap_surface_t {
-        using base = _create_pixmap_surface_t;
-        using base::base;
-        using base::operator();
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          native_pixmap_type pmp,
-          const surface_attributes<N> attribs) const noexcept {
-            return base::operator()(disp, conf, pmp, attribs.get());
-        }
-    } create_pixmap_surface{*this};
+        surface_attributes)>
+      create_pixmap_surface{*this};
 
     adapted_function<
       &egl_api::DestroySurface,
@@ -500,38 +347,15 @@ public:
       collapse_bool_map>
       surface_attrib{*this};
 
-    // query_surface
-    query_func<
-      mp_list<display_handle, surface_handle>,
-      mp_list<surface_attribute>,
-      mp_list<>,
-      int_type,
-      EGLPAFP(QuerySurface)>
-      query_surface;
+    adapted_function<
+      &egl_api::QuerySurface,
+      int_type(display_handle, surface_handle, surface_attribute)>
+      query_surface{*this};
 
-    // create_stream
-    struct : func<EGLPAFP(CreateStream)> {
-        using func<EGLPAFP(CreateStream)>::func;
-
-        constexpr auto operator()(display_handle disp) const noexcept {
-            return this->_cnvchkcall(disp, nullptr)
-              .cast_to(type_identity<stream_handle>{});
-        }
-
-        constexpr auto operator()(
-          display_handle disp,
-          span<const int_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, attribs.data())
-              .cast_to(type_identity<stream_handle>{});
-        }
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          const stream_attributes<N> attribs) const noexcept {
-            return (*this)(disp, attribs.get());
-        }
-    } create_stream;
+    adapted_function<
+      &egl_api::CreateStream,
+      stream_handle(display_handle, stream_attributes)>
+      create_stream{*this};
 
     adapted_function<
       &egl_api::DestroyStream,
@@ -545,14 +369,10 @@ public:
       collapse_bool_map>
       stream_attrib{*this};
 
-    // query_stream
-    query_func<
-      mp_list<display_handle, stream_handle>,
-      mp_list<stream_attribute>,
-      mp_list<>,
-      int_type,
-      EGLPAFP(QueryStream)>
-      query_stream;
+    adapted_function<
+      &egl_api::QueryStream,
+      int_type(display_handle, stream_handle, stream_attribute)>
+      query_stream{*this};
 
     adapted_function<
       &egl_api::StreamConsumerGLTextureExternal,
@@ -572,183 +392,129 @@ public:
       collapse_bool_map>
       stream_consumer_release{*this};
 
-    // get_output_layers
-    struct : func<EGLPAFP(GetOutputLayers)> {
-        using func<EGLPAFP(GetOutputLayers)>::func;
+    using _get_output_layers_t = adapted_function<
+      &egl_api::GetOutputLayers,
+      bool_type(
+        display_handle,
+        span<const attrib_type>,
+        span<output_layer_type>,
+        int_type&),
+      collapse_bool_map>;
+
+    struct : _get_output_layers_t {
+        using base = _get_output_layers_t;
+        using base::base;
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
-            return this->_cnvchkcall(disp, nullptr, nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok, bool valid) {
-                  return limit_cast<span_size_t>(
-                    valid && egl_types::bool_true(ok) ? ret_count : 0);
+            return base::operator()(disp, {}, {}, ret_count)
+              .transformed([&ret_count](bool valid) {
+                  return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
 
         auto operator()(
           display_handle disp,
-          span<attrib_type> attr,
-          span<device_type> dest) const noexcept {
+          span<const attrib_type> attr,
+          span<output_layer_type> dest) const noexcept {
             int_type ret_count{0};
-            return this
-              ->_cnvchkcall(
-                disp,
-                attr.data(),
-                dest.data(),
-                limit_cast<int_type>(dest.size()),
-                &ret_count)
-              .transformed([dest, &ret_count](auto ok, bool valid) {
+            return base::operator()(disp, attr, dest, ret_count)
+              .transformed([dest, &ret_count](bool valid) {
                   return head(
-                    dest,
-                    limit_cast<span_size_t>(
-                      valid && egl_types::bool_true(ok) ? ret_count : 0));
+                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
 
-        template <std::size_t N>
         auto operator()(
           display_handle disp,
-          output_layer_attributes<N> attr,
-          span<device_type> dest) const noexcept {
+          output_layer_attributes attr,
+          span<output_layer_type> dest) const noexcept {
             return (*this)(disp, attr.get(), dest);
         }
-    } get_output_layers;
+    } get_output_layers{*this};
 
-    // output_layer_attrib
-    struct : func<EGLPAFP(OutputLayerAttrib)> {
-        using func<EGLPAFP(OutputLayerAttrib)>::func;
-        auto operator()(
-          display_handle disp,
-          output_layer_handle outl,
-          output_layer_attribute_value attr) const noexcept {
-            return this->_cnvchkcall(disp, outl, attr._key, attr._value);
-        }
-    } output_layer_attrib;
+    adapted_function<
+      &egl_api::OutputLayerAttrib,
+      bool_type(display_handle, output_layer_handle, output_layer_attribute),
+      collapse_bool_map>
+      output_layer_attrib{*this};
 
-    // query_output_layer_attrib
-    struct : func<EGLPAFP(QueryOutputLayerAttrib)> {
-        using func<EGLPAFP(QueryOutputLayerAttrib)>::func;
-        auto operator()(
-          display_handle disp,
-          output_layer_handle outl,
-          output_layer_attribute attr) const noexcept {
-            using RV = attrib_type;
-            attrib_type result{0};
-            return this->_cnvchkcall(disp, outl, attr, &result)
-              .replaced_with(result)
-              .cast_to(type_identity<RV>{});
-        }
-    } query_output_layer_attrib;
+    adapted_function<
+      &egl_api::QueryOutputLayerAttrib,
+      int_type(display_handle, output_layer_handle, output_layer_attribute)>
+      query_output_layer_attrib{*this};
 
     adapted_function<
       &egl_api::QueryOutputLayerString,
       string_view(display_handle, output_layer_handle, output_layer_string_query)>
       query_output_layer_string{*this};
 
-    // get_output_ports
-    struct : func<EGLPAFP(GetOutputPorts)> {
-        using func<EGLPAFP(GetOutputPorts)>::func;
+    using _get_output_ports_t = adapted_function<
+      &egl_api::GetOutputPorts,
+      bool_type(
+        display_handle,
+        span<const attrib_type>,
+        span<output_port_type>,
+        int_type&),
+      collapse_bool_map>;
+
+    struct : _get_output_ports_t {
+        using base = _get_output_ports_t;
+        using base::base;
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
-            return this->_cnvchkcall(disp, nullptr, nullptr, 0, &ret_count)
-              .transformed([&ret_count](auto ok, bool valid) {
-                  return limit_cast<span_size_t>(
-                    valid && egl_types::bool_true(ok) ? ret_count : 0);
+            return base::operator()(disp, {}, {}, ret_count)
+              .transformed([&ret_count](bool valid) {
+                  return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
 
         auto operator()(
           display_handle disp,
-          span<attrib_type> attr,
-          span<device_type> dest) const noexcept {
+          span<const attrib_type> attr,
+          span<output_port_type> dest) const noexcept {
             int_type ret_count{0};
-            return this
-              ->_cnvchkcall(
-                disp,
-                attr.data(),
-                dest.data(),
-                limit_cast<int_type>(dest.size()),
-                &ret_count)
-              .transformed([dest, &ret_count](auto ok, bool valid) {
+            return base::operator()(disp, attr, dest, ret_count)
+              .transformed([dest, &ret_count](bool valid) {
                   return head(
-                    dest,
-                    limit_cast<span_size_t>(
-                      valid && egl_types::bool_true(ok) ? ret_count : 0));
+                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
 
-        template <std::size_t N>
         auto operator()(
           display_handle disp,
-          output_port_attributes<N> attr,
-          span<device_type> dest) const noexcept {
+          output_port_attributes attr,
+          span<output_port_type> dest) const noexcept {
             return (*this)(disp, attr.get(), dest);
         }
-    } get_output_ports;
+    } get_output_ports{*this};
 
-    // output_port_attrib
-    struct : func<EGLPAFP(OutputPortAttrib)> {
-        using func<EGLPAFP(OutputPortAttrib)>::func;
-        auto operator()(
-          display_handle disp,
-          output_port_handle outp,
-          output_port_attribute_value attr) const noexcept {
-            return this->_cnvchkcall(disp, outp, attr._key, attr._value);
-        }
-    } output_port_attrib;
+    adapted_function<
+      &egl_api::OutputPortAttrib,
+      bool_type(display_handle, output_port_handle, output_port_attribute),
+      collapse_bool_map>
+      output_port_attrib{*this};
 
-    // query_output_port_attrib
-    struct : func<EGLPAFP(QueryOutputPortAttrib)> {
-        using func<EGLPAFP(QueryOutputPortAttrib)>::func;
-        auto operator()(
-          display_handle disp,
-          output_port_handle outp,
-          output_port_attribute attr) const noexcept {
-            using RV = attrib_type;
-            attrib_type result{0};
-            return this->_cnvchkcall(disp, outp, attr, &result)
-              .replaced_with(result)
-              .cast_to(type_identity<RV>{});
-        }
-    } query_output_port_attrib;
+    adapted_function<
+      &egl_api::QueryOutputPortAttrib,
+      int_type(display_handle, output_port_handle, output_port_attribute)>
+      query_output_port_attrib{*this};
 
-    // query_output_port_string
-    struct : func<EGLPAFP(QueryOutputPortString)> {
-        using func<EGLPAFP(QueryOutputPortString)>::func;
-        auto operator()(
-          display_handle disp,
-          output_port_handle outl,
-          output_port_string_query qury) const noexcept {
-            return this->_cnvchkcall(disp, outl, qury)
-              .cast_to(type_identity<string_view>{});
-        }
-    } query_output_port_string;
+    adapted_function<
+      &egl_api::QueryOutputPortString,
+      string_view(display_handle, output_port_handle, output_port_string_query)>
+      query_output_port_string{*this};
 
-    // create_image
-    struct : func<EGLPAFP(CreateImage)> {
-        using func<EGLPAFP(CreateImage)>::func;
-
-        constexpr auto operator()(
-          display_handle disp,
-          context_handle ctxt,
-          image_target tgt,
-          client_buffer_type buf,
-          span<const attrib_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, ctxt, tgt, buf, attribs.data())
-              .cast_to(type_identity<image_handle>{});
-        }
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          context_handle ctxt,
-          image_target tgt,
-          client_buffer_type buf,
-          const image_attributes<N> attribs) const noexcept {
-            return (*this)(disp, ctxt, tgt, buf, attribs.get());
-        }
-    } create_image;
+    adapted_function<
+      &egl_api::CreateImage,
+      image_handle(
+        display_handle,
+        context_handle,
+        image_target,
+        client_buffer_type,
+        image_attributes)>
+      create_image{*this};
 
     adapted_function<
       &egl_api::DestroyImage,
@@ -761,36 +527,14 @@ public:
 
     adapted_function<&egl_api::QueryAPI, client_api()> query_api{*this};
 
-    // create_context
-    struct : func<EGLPAFP(CreateContext)> {
-        using func<EGLPAFP(CreateContext)>::func;
-
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          context_handle share_ctxt,
-          span<const int_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, conf, share_ctxt, attribs.data())
-              .cast_to(type_identity<context_handle>{});
-        }
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          const context_attributes<N> attribs) const noexcept {
-            return (*this)(disp, conf, context_handle{}, attribs.get());
-        }
-
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          config_type conf,
-          context_handle share_ctxt,
-          const context_attributes<N> attribs) const noexcept {
-            return (*this)(disp, conf, share_ctxt, attribs.get());
-        }
-    } create_context;
+    adapted_function<
+      &egl_api::CreateContext,
+      context_handle(
+        display_handle,
+        config_type,
+        context_handle,
+        context_attributes)>
+      create_context{*this};
 
     adapted_function<
       &egl_api::DestroyContext,
@@ -798,29 +542,28 @@ public:
       collapse_bool_map>
       destroy_context{*this};
 
-    // make_current
-    struct : func<EGLPAFP(MakeCurrent)> {
-        using func<EGLPAFP(MakeCurrent)>::func;
+    using _make_current_t = adapted_function<
+      &egl_api::MakeCurrent,
+      bool_type(display_handle, surface_handle, surface_handle, context_handle),
+      collapse_bool_map>;
 
-        constexpr auto operator()(
-          display_handle disp,
-          surface_handle draw,
-          surface_handle read,
-          context_handle ctxt) const noexcept {
-            return this->_cnvchkcall(disp, draw, read, ctxt);
-        }
+    struct : _make_current_t {
+        using base = _make_current_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()(
           display_handle disp,
           surface_handle surf,
           context_handle ctxt) const noexcept {
-            return this->_cnvchkcall(disp, surf, surf, ctxt);
+            return base::operator()(disp, surf, surf, ctxt);
         }
 
         constexpr auto none(display_handle disp) const noexcept {
-            return (*this)(disp, surface_handle{}, context_handle{});
+            return base::operator()(
+              disp, surface_handle{}, surface_handle{}, context_handle{});
         }
-    } make_current;
+    } make_current{*this};
 
     adapted_function<&egl_api::GetCurrentContext, context_handle()>
       get_current_context{*this};
@@ -828,50 +571,43 @@ public:
     adapted_function<&egl_api::WaitClient, bool_type(), collapse_bool_map>
       wait_client{*this};
 
-    // wait_native
-    struct : func<EGLPAFP(WaitNative)> {
-        using func<EGLPAFP(WaitNative)>::func;
+    using _wait_native_t =
+      adapted_function<&egl_api::WaitNative, bool_type(engine), collapse_bool_map>;
+
+    struct : _wait_native_t {
+        using base = _wait_native_t;
+        using base::base;
+        using base::operator();
 
         constexpr auto operator()() const noexcept {
 #ifdef EGL_CORE_NATIVE_ENGINE
-            return this->_chkcall(EGL_CORE_NATIVE_ENGINE);
+            return base::operator()(engine{EGL_CORE_NATIVE_ENGINE});
 #else
-            return this->_fake();
+            return base::fail();
 #endif
         }
-    } wait_native;
+    } wait_native{*this};
 
-    // create_sync
-    struct : func<EGLPAFP(CreateSync)> {
-        using func<EGLPAFP(CreateSync)>::func;
+    adapted_function<
+      &egl_api::CreateSync,
+      sync_handle(display_handle, sync_type, sync_attributes)>
+      create_sync{*this};
 
-        constexpr auto operator()(
-          display_handle disp,
-          sync_type type,
-          span<const attrib_type> attribs) const noexcept {
-            return this->_cnvchkcall(disp, type, attribs.data())
-              .cast_to(type_identity<sync_handle>{});
-        }
+    using _client_wait_sync_t = adapted_function<
+      &egl_api::ClientWaitSync,
+      bool_type(display_handle, sync_handle, int_type, time_type),
+      collapse_bool_map>;
 
-        template <std::size_t N>
-        constexpr auto operator()(
-          display_handle disp,
-          sync_type type,
-          const sync_attributes<N> attribs) const noexcept {
-            return (*this)(disp, type, attribs.get());
-        }
-    } create_sync;
-
-    // client_wait_sync
-    struct : func<EGLPAFP(ClientWaitSync)> {
-        using func<EGLPAFP(ClientWaitSync)>::func;
+    struct : _client_wait_sync_t {
+        using base = _client_wait_sync_t;
+        using base::base;
 
         template <typename R, typename P>
         constexpr auto operator()(
           display_handle disp,
           sync_handle sync,
           std::chrono::duration<R, P> timeout) const noexcept {
-            return this->_cnvchkcall(
+            return base::operator()(
               disp, sync, 0, std::chrono::nanoseconds(timeout).count());
         }
 
@@ -879,12 +615,12 @@ public:
         constexpr auto forever(display_handle disp, sync_handle sync)
           const noexcept {
 #ifdef EGL_FOREVER
-            return this->_cnvchkcall(disp, sync, 0, EGL_FOREVER);
+            return base::operator()(disp, sync, 0, EGL_FOREVER);
 #else
-            return this->_fake({});
+            return base::fail();
 #endif
         }
-    } client_wait_sync;
+    } client_wait_sync{*this};
 
     adapted_function<
       &egl_api::WaitSync,
@@ -898,21 +634,10 @@ public:
       collapse_bool_map>
       destroy_sync{*this};
 
-    // query_string
-    struct : func<EGLPAFP(QueryString)> {
-        using func<EGLPAFP(QueryString)>::func;
-
-        constexpr auto operator()(display_handle disp, string_query query)
-          const noexcept {
-            return this->_cnvchkcall(disp, query)
-              .cast_to(type_identity<string_view>{});
-        }
-
-        constexpr auto operator()() const noexcept {
-            return this->fake_empty_c_str().cast_to(
-              type_identity<string_view>{});
-        }
-    } query_string;
+    adapted_function<
+      &egl_api::QueryString,
+      string_view(display_handle, string_query)>
+      query_string{*this};
 
     // query_strings
     auto query_strings(display_handle disp, string_query query, char separator)
@@ -928,7 +653,8 @@ public:
 #ifdef EGL_CLIENT_APIS
         return query_string(disp, string_query(EGL_CLIENT_APIS))
 #else
-        return query_string()
+        return query_string
+          .fail()
 #endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
@@ -966,7 +692,8 @@ public:
         return query_string(
                  display_handle(EGL_NO_DISPLAY), string_query(EGL_EXTENSIONS))
 #else
-        return query_string()
+        return query_string
+          .fail()
 #endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
@@ -977,7 +704,8 @@ public:
 #ifdef EGL_EXTENSIONS
         return query_string(disp, string_query(EGL_EXTENSIONS))
 #else
-        return query_string()
+        return query_string
+          .fail()
 #endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
@@ -1035,13 +763,11 @@ public:
       collapse_bool_map>
       swap_buffers_with_damage{*this};
 
-    // release_thread
-    func<EGLPAFP(ReleaseThread)> release_thread;
+    adapted_function<&egl_api::ReleaseThread, bool_type(), collapse_bool_map>
+      release_thread{*this};
 
     basic_egl_operations(api_traits& traits);
 };
-//------------------------------------------------------------------------------
-#undef EGLPAFP
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 

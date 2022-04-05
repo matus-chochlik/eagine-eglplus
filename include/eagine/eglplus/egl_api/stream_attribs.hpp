@@ -10,7 +10,7 @@
 
 #include "config.hpp"
 #include "enum_types.hpp"
-#include <eagine/key_val_list.hpp>
+#include <eagine/c_api/key_value_list.hpp>
 
 namespace eagine::eglplus {
 
@@ -34,13 +34,13 @@ struct stream_attrib_traits {
 
 /// @brief Alias for EGL stream attribute key/value list.
 /// @ingroup egl_api_wrap
-template <std::size_t N>
-using stream_attributes = key_value_list<stream_attrib_traits, N>;
+using stream_attributes = c_api::key_value_list<stream_attrib_traits>;
 
 /// @brief Alias for EGL stream attribute key/value list.
 /// @ingroup egl_api_wrap
 /// @see stream_attributes
-using stream_attribute_value = key_value_list_element<stream_attrib_traits>;
+using stream_attribute_value =
+  c_api::key_value_list_element<stream_attrib_traits>;
 
 /// @brief Concatenation operator for stream attribute list key and value.
 /// @ingroup egl_api_wrap

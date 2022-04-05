@@ -10,6 +10,7 @@
 
 #include "c_api.hpp"
 #include "enum_types.hpp"
+#include <eagine/c_api/constant.hpp>
 
 namespace eagine::eglplus {
 //------------------------------------------------------------------------------
@@ -236,36 +237,37 @@ public:
     c_api::opt_constant<
       mp_list<platform>,
 #ifdef EGL_PLATFORM_DEVICE_EXT
-      int_type_c<EGL_PLATFORM_DEVICE_EXT>>
+      enum_type_c<EGL_PLATFORM_DEVICE_EXT>>
 #else
-      int_type_i>
+      enum_type_i>
 #endif
       platform_device;
 
     /// @var platform_x11
     /// @eglconstwrap{PLATFORM_X11_EXT}
-    c_api::opt_constant<mp_list<platform>, int_type_c<0x31D5>> platform_x11;
+    c_api::opt_constant<mp_list<platform>, enum_type_c<0x31D5>> platform_x11;
 
     /// @var platform_xcb
     /// @eglconstwrap{PLATFORM_XCB_EXT}
-    c_api::opt_constant<mp_list<platform>, int_type_c<0x31DC>> platform_xcb;
+    c_api::opt_constant<mp_list<platform>, enum_type_c<0x31DC>> platform_xcb;
 
     /// @var platform_wayland
     /// @eglconstwrap{PLATFORM_WAYLAND}
-    c_api::opt_constant<mp_list<platform>, int_type_c<0x31D8>> platform_wayland;
+    c_api::opt_constant<mp_list<platform>, enum_type_c<0x31D8>> platform_wayland;
 
     /// @var platform_gbm_mesa
     /// @eglconstwrap{PLATFORM_GBM_MESA}
-    c_api::opt_constant<mp_list<platform>, int_type_c<0x31D7>> platform_gbm_mesa;
+    c_api::opt_constant<mp_list<platform>, enum_type_c<0x31D7>>
+      platform_gbm_mesa;
 
     /// @var platform_surfaceless
     /// @eglconstwrap{PLATFORM_SURFACELESS_EXT}
-    c_api::opt_constant<mp_list<platform>, int_type_c<0x31DD>>
+    c_api::opt_constant<mp_list<platform>, enum_type_c<0x31DD>>
       platform_surfaceless;
 
     /// @var platform_android
     /// @eglconstwrap{PLATFORM_ANDROID_EXT}
-    c_api::opt_constant<mp_list<platform>, int_type_c<0x3141>> platform_android;
+    c_api::opt_constant<mp_list<platform>, enum_type_c<0x3141>> platform_android;
 
     /// @var client_apis
     /// @eglconstwrap{CLIENT_APIS}
@@ -843,27 +845,27 @@ public:
     c_api::opt_constant<
       mp_list<client_api>,
 #ifdef EGL_OPENGL_API
-      int_type_c<EGL_OPENGL_API>>
+      enum_type_c<EGL_OPENGL_API>>
 #else
-      int_type_i>
+      enum_type_i>
 #endif
       opengl_api;
 
     c_api::opt_constant<
       mp_list<client_api>,
 #ifdef EGL_OPENGL_ES_API
-      int_type_c<EGL_OPENGL_ES_API>>
+      enum_type_c<EGL_OPENGL_ES_API>>
 #else
-      int_type_i>
+      enum_type_i>
 #endif
       opengl_es_api;
 
     c_api::opt_constant<
       mp_list<client_api>,
 #ifdef EGL_OPENVG_API
-      int_type_c<EGL_OPENVG_API>>
+      enum_type_c<EGL_OPENVG_API>>
 #else
-      int_type_i>
+      enum_type_i>
 #endif
       openvg_api;
 
@@ -932,18 +934,18 @@ public:
     c_api::opt_constant<
       mp_list<eglplus::sync_type>,
 #ifdef EGL_SYNC_FENCE
-      int_type_c<EGL_SYNC_FENCE>>
+      enum_type_c<EGL_SYNC_FENCE>>
 #else
-      int_type_i>
+      enum_type_i>
 #endif
       sync_fence;
 
     c_api::opt_constant<
       mp_list<eglplus::sync_type>,
 #ifdef EGL_SYNC_CL_EVENT
-      int_type_c<EGL_SYNC_CL_EVENT>>
+      enum_type_c<EGL_SYNC_CL_EVENT>>
 #else
-      int_type_i>
+      enum_type_i>
 #endif
       sync_cl_event;
 

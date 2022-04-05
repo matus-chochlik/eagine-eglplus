@@ -104,8 +104,8 @@ public:
     /// @brief Alias for image handle type.
     using image_type = typename egl_types::image_type;
 
-    template <typename Result>
-    constexpr auto check_result(Result res) const noexcept {
+    template <typename Result, typename... U>
+    constexpr auto check_result(Result res, U&&...) const noexcept {
         res.error_code(this->GetError());
         return res;
     }

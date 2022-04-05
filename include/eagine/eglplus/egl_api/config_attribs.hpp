@@ -10,7 +10,7 @@
 
 #include "config.hpp"
 #include "enum_types.hpp"
-#include <eagine/key_val_list.hpp>
+#include <eagine/c_api/key_value_list.hpp>
 
 namespace eagine::eglplus {
 
@@ -34,13 +34,13 @@ struct config_attrib_traits {
 
 /// @brief Alias for EGL configuration attribute key/value list.
 /// @ingroup egl_api_wrap
-template <std::size_t N>
-using config_attributes = key_value_list<config_attrib_traits, N>;
+using config_attributes = c_api::key_value_list<config_attrib_traits>;
 
 /// @brief Alias for EGL config attribute list key/value pair.
 /// @ingroup egl_api_wrap
 /// @see config_attributes
-using config_attribute_value = key_value_list_element<config_attrib_traits>;
+using config_attribute_value =
+  c_api::key_value_list_element<config_attrib_traits>;
 
 /// @brief Concatenation operator for configuration attribute list key and value.
 /// @ingroup egl_api_wrap
