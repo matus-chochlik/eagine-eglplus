@@ -23,8 +23,12 @@ namespace eagine::eglplus {
 /// from unrelated groups. For example using a config attribute constant in place
 /// of context attribute constants. Such mismatches result in compilation errors.
 template <typename Self, identifier_t Id>
-using egl_enum_class =
+using egl_int_class =
   enum_class<Self, egl_types::int_type, EAGINE_ID_V(EGL), Id>;
+
+template <typename Self, identifier_t Id>
+using egl_enum_class =
+  enum_class<Self, egl_types::enum_type, EAGINE_ID_V(EGL), Id>;
 
 /// @brief Type erasure alias for EGL enum classes.
 /// @ingroup egl_api_wrap
