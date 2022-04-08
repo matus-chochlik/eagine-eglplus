@@ -142,25 +142,20 @@ public:
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
-    using _get_platform_display_t = adapted_function<
-      &egl_api::GetPlatformDisplay,
-      display_handle(platform, void_ptr_type, span<const attrib_type>)>;
-
-    struct : _get_platform_display_t {
-        using base = _get_platform_display_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(platform pltf, void_ptr_type disp)
-          const noexcept {
-            return base::operator()(pltf, disp, {});
-        }
-
-        constexpr auto operator()(device_handle dev) const noexcept {
-            return base::operator()(
-              platform(EGL_PLATFORM_DEVICE_EXT), device_type(dev), {});
-        }
-    } get_platform_display{*this};
+    c_api::combined<
+      adapted_function<
+        &egl_api::GetPlatformDisplay,
+        display_handle(platform, void_ptr_type, span<const attrib_type>)>,
+      adapted_function<
+        &egl_api::GetPlatformDisplay,
+        display_handle(platform, void_ptr_type, c_api::substituted<nullptr>)>,
+      adapted_function<
+        &egl_api::GetPlatformDisplay,
+        display_handle(
+          c_api::substituted<EGL_PLATFORM_DEVICE_EXT>,
+          device_handle,
+          c_api::substituted<nullptr>)>>
+      get_platform_display{*this};
 
     using _get_display_t =
       adapted_function<&egl_api::GetDisplay, display_handle(native_display_type)>;
@@ -571,22 +566,13 @@ public:
     adapted_function<&egl_api::WaitClient, bool_type(), collapse_bool_map>
       wait_client{*this};
 
-    using _wait_native_t =
-      adapted_function<&egl_api::WaitNative, bool_type(engine), collapse_bool_map>;
-
-    struct : _wait_native_t {
-        using base = _wait_native_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()() const noexcept {
-#ifdef EGL_CORE_NATIVE_ENGINE
-            return base::operator()(engine{EGL_CORE_NATIVE_ENGINE});
-#else
-            return base::fail();
-#endif
-        }
-    } wait_native{*this};
+    c_api::combined<
+      adapted_function<&egl_api::WaitNative, bool_type(engine), collapse_bool_map>,
+      adapted_function<
+        &egl_api::WaitNative,
+        bool_type(c_api::substituted<EGL_CORE_NATIVE_ENGINE>),
+        collapse_bool_map>>
+      wait_native{*this};
 
     adapted_function<
       &egl_api::CreateSync,
