@@ -95,29 +95,25 @@ public:
     extension<display_handle> MESA_configless_context;
     extension<display_handle> MESA_query_driver;
 
-    using _query_devices_t = adapted_function<
-      &egl_api::QueryDevices,
-      bool_type(span<device_type>, int_type&),
-      collapse_bool_map>;
+    using _query_devices_t = c_api::combined<
+      adapted_function<
+        &egl_api::QueryDevices,
+        bool_type(span<device_type>, int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::QueryDevices,
+        c_api::head_transformed<int_type, 1, 2>(span<device_type>)>>;
 
     struct : _query_devices_t {
         using base = _query_devices_t;
         using base::base;
+        using base::operator();
 
         auto count() const noexcept {
             int_type ret_count{0};
             return base::operator()({}, ret_count)
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
-              });
-        }
-
-        auto operator()(span<device_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(dest, ret_count)
-              .transformed([dest, &ret_count](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
     } query_devices{*this};
@@ -192,29 +188,27 @@ public:
       collapse_bool_map>
       terminate{*this};
 
-    using _get_configs_t = adapted_function<
-      &egl_api::GetConfigs,
-      string_view(display_handle disp, span<config_type> dest, int_type&),
-      collapse_bool_map>;
+    using _get_configs_t = c_api::combined<
+      adapted_function<
+        &egl_api::GetConfigs,
+        bool_type(display_handle, span<config_type>, int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::GetConfigs,
+        c_api::head_transformed<int_type, 2, 4>(
+          display_handle,
+          span<config_type> dest)>>;
 
     struct : _get_configs_t {
         using base = _get_configs_t;
         using base::base;
+        using base::operator();
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, ret_count)
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
-              });
-        }
-        auto operator()(display_handle disp, span<config_type> dest)
-          const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, dest, ret_count)
-              .transformed([&ret_count, dest](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
     } get_configs{*this};
@@ -379,18 +373,26 @@ public:
       collapse_bool_map>
       stream_consumer_release{*this};
 
-    using _get_output_layers_t = adapted_function<
-      &egl_api::GetOutputLayers,
-      bool_type(
-        display_handle,
-        span<const attrib_type>,
-        span<output_layer_type>,
-        int_type&),
-      collapse_bool_map>;
+    using _get_output_layers_t = c_api::combined<
+      adapted_function<
+        &egl_api::GetOutputLayers,
+        bool_type(
+          display_handle,
+          span<const attrib_type>,
+          span<output_layer_type>,
+          int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::GetOutputLayers,
+        c_api::head_transformed<int_type, 3, 5>(
+          display_handle,
+          output_layer_attributes,
+          span<output_layer_type>)>>;
 
     struct : _get_output_layers_t {
         using base = _get_output_layers_t;
         using base::base;
+        using base::operator();
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
@@ -398,25 +400,6 @@ public:
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
-        }
-
-        auto operator()(
-          display_handle disp,
-          span<const attrib_type> attr,
-          span<output_layer_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, attr, dest, ret_count)
-              .transformed([dest, &ret_count](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
-              });
-        }
-
-        auto operator()(
-          display_handle disp,
-          output_layer_attributes attr,
-          span<output_layer_type> dest) const noexcept {
-            return (*this)(disp, attr.get(), dest);
         }
     } get_output_layers{*this};
 
@@ -436,18 +419,26 @@ public:
       string_view(display_handle, output_layer_handle, output_layer_string_query)>
       query_output_layer_string{*this};
 
-    using _get_output_ports_t = adapted_function<
-      &egl_api::GetOutputPorts,
-      bool_type(
-        display_handle,
-        span<const attrib_type>,
-        span<output_port_type>,
-        int_type&),
-      collapse_bool_map>;
+    using _get_output_ports_t = c_api::combined<
+      adapted_function<
+        &egl_api::GetOutputPorts,
+        bool_type(
+          display_handle,
+          span<const attrib_type>,
+          span<output_port_type>,
+          int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::GetOutputPorts,
+        c_api::head_transformed<int_type, 3, 5>(
+          display_handle,
+          output_port_attributes,
+          span<output_port_type>)>>;
 
     struct : _get_output_ports_t {
         using base = _get_output_ports_t;
         using base::base;
+        using base::operator();
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
@@ -455,25 +446,6 @@ public:
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
-        }
-
-        auto operator()(
-          display_handle disp,
-          span<const attrib_type> attr,
-          span<output_port_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, attr, dest, ret_count)
-              .transformed([dest, &ret_count](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
-              });
-        }
-
-        auto operator()(
-          display_handle disp,
-          output_port_attributes attr,
-          span<output_port_type> dest) const noexcept {
-            return (*this)(disp, attr.get(), dest);
         }
     } get_output_ports{*this};
 
