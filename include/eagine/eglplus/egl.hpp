@@ -11,9 +11,7 @@
 #if __has_include(<EGL/egl.h>)
 #include <EGL/egl.h>
 #endif
-
-#ifndef EGL_CORE_NATIVE_ENGINE
-#define EGL_CORE_NATIVE_ENGINE 0x305B
-#endif
+//
+#include <eagine/eglplus/egl_fallback.hpp>
 
 #endif // EAGINE_EGLPLUS_EGL_HPP

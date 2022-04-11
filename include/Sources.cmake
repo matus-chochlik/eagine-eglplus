@@ -4,8 +4,8 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 #
 set(HEADERS
-    eagine/eglplus/config/basic.hpp
     eagine/eglplus/basic_egl_api.hpp
+    eagine/eglplus/config/basic.hpp
     eagine/eglplus/egl_api/api.hpp
     eagine/eglplus/egl_api/api_traits.hpp
     eagine/eglplus/egl_api/c_api.hpp
@@ -27,6 +27,7 @@ set(HEADERS
     eagine/eglplus/egl_api/stream_attribs.hpp
     eagine/eglplus/egl_api/surface_attribs.hpp
     eagine/eglplus/egl_api/sync_attribs.hpp
+    eagine/eglplus/egl_fallback.hpp
     eagine/eglplus/egl.hpp
 )
 

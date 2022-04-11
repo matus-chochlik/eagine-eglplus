@@ -26,14 +26,6 @@
 #include <eagine/string_list.hpp>
 #include <chrono>
 
-#ifndef EGL_EXTENSIONS
-#define EGL_EXTENSIONS 0x3055
-#endif
-
-#ifndef EGL_PLATFORM_DEVICE_EXT
-#define EGL_PLATFORM_DEVICE_EXT 0x313F
-#endif
-
 namespace eagine::eglplus {
 using c_api::adapted_function;
 //------------------------------------------------------------------------------
@@ -579,10 +571,19 @@ public:
       sync_handle(display_handle, sync_type, sync_attributes)>
       create_sync{*this};
 
-    using _client_wait_sync_t = adapted_function<
-      &egl_api::ClientWaitSync,
-      bool_type(display_handle, sync_handle, int_type, time_type),
-      collapse_bool_map>;
+    using _client_wait_sync_t = c_api::combined<
+      adapted_function<
+        &egl_api::ClientWaitSync,
+        bool_type(display_handle, sync_handle, int_type, time_type),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::ClientWaitSync,
+        bool_type(
+          display_handle,
+          sync_handle,
+          c_api::substituted<0>,
+          c_api::substituted<EGL_FOREVER>),
+        collapse_bool_map>>;
 
     struct : _client_wait_sync_t {
         using base = _client_wait_sync_t;
@@ -595,16 +596,6 @@ public:
           std::chrono::duration<R, P> timeout) const noexcept {
             return base::operator()(
               disp, sync, 0, std::chrono::nanoseconds(timeout).count());
-        }
-
-        template <typename R, typename P>
-        constexpr auto forever(display_handle disp, sync_handle sync)
-          const noexcept {
-#ifdef EGL_FOREVER
-            return base::operator()(disp, sync, 0, EGL_FOREVER);
-#else
-            return base::fail();
-#endif
         }
     } client_wait_sync{*this};
 
@@ -636,12 +627,7 @@ public:
 
     // get_client_apis
     auto get_client_apis(display_handle disp) const noexcept {
-#ifdef EGL_CLIENT_APIS
         return query_string(disp, string_query(EGL_CLIENT_APIS))
-#else
-        return query_string
-          .fail()
-#endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
@@ -651,21 +637,15 @@ public:
 
         if(ok apis{get_client_apis(disp)}) {
             for(auto api : apis) {
-#ifdef EGL_OPENGL_BIT
                 if(are_equal(api, string_view("OpenGL"))) {
                     result.add(client_api_bit(EGL_OPENGL_BIT));
                 }
-#endif
-#ifdef EGL_OPENGL_ES_BIT
                 if(are_equal(api, string_view("OpenGL_ES"))) {
                     result.add(client_api_bit(EGL_OPENGL_ES_BIT));
                 }
-#endif
-#ifdef EGL_OPENVG_BIT
                 if(are_equal(api, string_view("OpenVG"))) {
                     result.add(client_api_bit(EGL_OPENVG_BIT));
                 }
-#endif
             }
         }
 
@@ -687,12 +667,7 @@ public:
 
     // get_extensions
     auto get_extensions(display_handle disp) const noexcept {
-#ifdef EGL_EXTENSIONS
         return query_string(disp, string_query(EGL_EXTENSIONS))
-#else
-        return query_string
-          .fail()
-#endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
