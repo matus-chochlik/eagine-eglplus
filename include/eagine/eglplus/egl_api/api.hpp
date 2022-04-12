@@ -26,14 +26,6 @@
 #include <eagine/string_list.hpp>
 #include <chrono>
 
-#ifndef EGL_EXTENSIONS
-#define EGL_EXTENSIONS 0x3055
-#endif
-
-#ifndef EGL_PLATFORM_DEVICE_EXT
-#define EGL_PLATFORM_DEVICE_EXT 0x313F
-#endif
-
 namespace eagine::eglplus {
 using c_api::adapted_function;
 //------------------------------------------------------------------------------
@@ -103,29 +95,25 @@ public:
     extension<display_handle> MESA_configless_context;
     extension<display_handle> MESA_query_driver;
 
-    using _query_devices_t = adapted_function<
-      &egl_api::QueryDevices,
-      bool_type(span<device_type>, int_type&),
-      collapse_bool_map>;
+    using _query_devices_t = c_api::combined<
+      adapted_function<
+        &egl_api::QueryDevices,
+        bool_type(span<device_type>, int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::QueryDevices,
+        c_api::head_transformed<int_type, 1, 2>(span<device_type>)>>;
 
     struct : _query_devices_t {
         using base = _query_devices_t;
         using base::base;
+        using base::operator();
 
         auto count() const noexcept {
             int_type ret_count{0};
             return base::operator()({}, ret_count)
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
-              });
-        }
-
-        auto operator()(span<device_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(dest, ret_count)
-              .transformed([dest, &ret_count](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
     } query_devices{*this};
@@ -142,25 +130,20 @@ public:
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
-    using _get_platform_display_t = adapted_function<
-      &egl_api::GetPlatformDisplay,
-      display_handle(platform, void_ptr_type, span<const attrib_type>)>;
-
-    struct : _get_platform_display_t {
-        using base = _get_platform_display_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()(platform pltf, void_ptr_type disp)
-          const noexcept {
-            return base::operator()(pltf, disp, {});
-        }
-
-        constexpr auto operator()(device_handle dev) const noexcept {
-            return base::operator()(
-              platform(EGL_PLATFORM_DEVICE_EXT), device_type(dev), {});
-        }
-    } get_platform_display{*this};
+    c_api::combined<
+      adapted_function<
+        &egl_api::GetPlatformDisplay,
+        display_handle(platform, void_ptr_type, span<const attrib_type>)>,
+      adapted_function<
+        &egl_api::GetPlatformDisplay,
+        display_handle(platform, void_ptr_type, c_api::substituted<nullptr>)>,
+      adapted_function<
+        &egl_api::GetPlatformDisplay,
+        display_handle(
+          c_api::substituted<EGL_PLATFORM_DEVICE_EXT>,
+          device_handle,
+          c_api::substituted<nullptr>)>>
+      get_platform_display{*this};
 
     using _get_display_t =
       adapted_function<&egl_api::GetDisplay, display_handle(native_display_type)>;
@@ -205,29 +188,27 @@ public:
       collapse_bool_map>
       terminate{*this};
 
-    using _get_configs_t = adapted_function<
-      &egl_api::GetConfigs,
-      string_view(display_handle disp, span<config_type> dest, int_type&),
-      collapse_bool_map>;
+    using _get_configs_t = c_api::combined<
+      adapted_function<
+        &egl_api::GetConfigs,
+        bool_type(display_handle, span<config_type>, int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::GetConfigs,
+        c_api::head_transformed<int_type, 2, 4>(
+          display_handle,
+          span<config_type> dest)>>;
 
     struct : _get_configs_t {
         using base = _get_configs_t;
         using base::base;
+        using base::operator();
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, ret_count)
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
-              });
-        }
-        auto operator()(display_handle disp, span<config_type> dest)
-          const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, dest, ret_count)
-              .transformed([&ret_count, dest](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
               });
         }
     } get_configs{*this};
@@ -392,18 +373,26 @@ public:
       collapse_bool_map>
       stream_consumer_release{*this};
 
-    using _get_output_layers_t = adapted_function<
-      &egl_api::GetOutputLayers,
-      bool_type(
-        display_handle,
-        span<const attrib_type>,
-        span<output_layer_type>,
-        int_type&),
-      collapse_bool_map>;
+    using _get_output_layers_t = c_api::combined<
+      adapted_function<
+        &egl_api::GetOutputLayers,
+        bool_type(
+          display_handle,
+          span<const attrib_type>,
+          span<output_layer_type>,
+          int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::GetOutputLayers,
+        c_api::head_transformed<int_type, 3, 5>(
+          display_handle,
+          output_layer_attributes,
+          span<output_layer_type>)>>;
 
     struct : _get_output_layers_t {
         using base = _get_output_layers_t;
         using base::base;
+        using base::operator();
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
@@ -411,25 +400,6 @@ public:
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
-        }
-
-        auto operator()(
-          display_handle disp,
-          span<const attrib_type> attr,
-          span<output_layer_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, attr, dest, ret_count)
-              .transformed([dest, &ret_count](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
-              });
-        }
-
-        auto operator()(
-          display_handle disp,
-          output_layer_attributes attr,
-          span<output_layer_type> dest) const noexcept {
-            return (*this)(disp, attr.get(), dest);
         }
     } get_output_layers{*this};
 
@@ -449,18 +419,26 @@ public:
       string_view(display_handle, output_layer_handle, output_layer_string_query)>
       query_output_layer_string{*this};
 
-    using _get_output_ports_t = adapted_function<
-      &egl_api::GetOutputPorts,
-      bool_type(
-        display_handle,
-        span<const attrib_type>,
-        span<output_port_type>,
-        int_type&),
-      collapse_bool_map>;
+    using _get_output_ports_t = c_api::combined<
+      adapted_function<
+        &egl_api::GetOutputPorts,
+        bool_type(
+          display_handle,
+          span<const attrib_type>,
+          span<output_port_type>,
+          int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::GetOutputPorts,
+        c_api::head_transformed<int_type, 3, 5>(
+          display_handle,
+          output_port_attributes,
+          span<output_port_type>)>>;
 
     struct : _get_output_ports_t {
         using base = _get_output_ports_t;
         using base::base;
+        using base::operator();
 
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
@@ -468,25 +446,6 @@ public:
               .transformed([&ret_count](bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
-        }
-
-        auto operator()(
-          display_handle disp,
-          span<const attrib_type> attr,
-          span<output_port_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, attr, dest, ret_count)
-              .transformed([dest, &ret_count](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
-              });
-        }
-
-        auto operator()(
-          display_handle disp,
-          output_port_attributes attr,
-          span<output_port_type> dest) const noexcept {
-            return (*this)(disp, attr.get(), dest);
         }
     } get_output_ports{*this};
 
@@ -571,32 +530,32 @@ public:
     adapted_function<&egl_api::WaitClient, bool_type(), collapse_bool_map>
       wait_client{*this};
 
-    using _wait_native_t =
-      adapted_function<&egl_api::WaitNative, bool_type(engine), collapse_bool_map>;
-
-    struct : _wait_native_t {
-        using base = _wait_native_t;
-        using base::base;
-        using base::operator();
-
-        constexpr auto operator()() const noexcept {
-#ifdef EGL_CORE_NATIVE_ENGINE
-            return base::operator()(engine{EGL_CORE_NATIVE_ENGINE});
-#else
-            return base::fail();
-#endif
-        }
-    } wait_native{*this};
+    c_api::combined<
+      adapted_function<&egl_api::WaitNative, bool_type(engine), collapse_bool_map>,
+      adapted_function<
+        &egl_api::WaitNative,
+        bool_type(c_api::substituted<EGL_CORE_NATIVE_ENGINE>),
+        collapse_bool_map>>
+      wait_native{*this};
 
     adapted_function<
       &egl_api::CreateSync,
       sync_handle(display_handle, sync_type, sync_attributes)>
       create_sync{*this};
 
-    using _client_wait_sync_t = adapted_function<
-      &egl_api::ClientWaitSync,
-      bool_type(display_handle, sync_handle, int_type, time_type),
-      collapse_bool_map>;
+    using _client_wait_sync_t = c_api::combined<
+      adapted_function<
+        &egl_api::ClientWaitSync,
+        bool_type(display_handle, sync_handle, int_type, time_type),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::ClientWaitSync,
+        bool_type(
+          display_handle,
+          sync_handle,
+          c_api::substituted<0>,
+          c_api::substituted<EGL_FOREVER>),
+        collapse_bool_map>>;
 
     struct : _client_wait_sync_t {
         using base = _client_wait_sync_t;
@@ -609,16 +568,6 @@ public:
           std::chrono::duration<R, P> timeout) const noexcept {
             return base::operator()(
               disp, sync, 0, std::chrono::nanoseconds(timeout).count());
-        }
-
-        template <typename R, typename P>
-        constexpr auto forever(display_handle disp, sync_handle sync)
-          const noexcept {
-#ifdef EGL_FOREVER
-            return base::operator()(disp, sync, 0, EGL_FOREVER);
-#else
-            return base::fail();
-#endif
         }
     } client_wait_sync{*this};
 
@@ -650,12 +599,7 @@ public:
 
     // get_client_apis
     auto get_client_apis(display_handle disp) const noexcept {
-#ifdef EGL_CLIENT_APIS
         return query_string(disp, string_query(EGL_CLIENT_APIS))
-#else
-        return query_string
-          .fail()
-#endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
@@ -665,21 +609,15 @@ public:
 
         if(ok apis{get_client_apis(disp)}) {
             for(auto api : apis) {
-#ifdef EGL_OPENGL_BIT
                 if(are_equal(api, string_view("OpenGL"))) {
                     result.add(client_api_bit(EGL_OPENGL_BIT));
                 }
-#endif
-#ifdef EGL_OPENGL_ES_BIT
                 if(are_equal(api, string_view("OpenGL_ES"))) {
                     result.add(client_api_bit(EGL_OPENGL_ES_BIT));
                 }
-#endif
-#ifdef EGL_OPENVG_BIT
                 if(are_equal(api, string_view("OpenVG"))) {
                     result.add(client_api_bit(EGL_OPENVG_BIT));
                 }
-#endif
             }
         }
 
@@ -701,12 +639,7 @@ public:
 
     // get_extensions
     auto get_extensions(display_handle disp) const noexcept {
-#ifdef EGL_EXTENSIONS
         return query_string(disp, string_query(EGL_EXTENSIONS))
-#else
-        return query_string
-          .fail()
-#endif
           .transformed(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }

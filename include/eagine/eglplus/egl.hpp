@@ -11,5 +11,7 @@
 #if __has_include(<EGL/egl.h>)
 #include <EGL/egl.h>
 #endif
+//
+#include <eagine/eglplus/egl_fallback.hpp>
 
 #endif // EAGINE_EGLPLUS_EGL_HPP
