@@ -213,14 +213,17 @@ public:
         }
     } get_configs{*this};
 
-    using _choose_config_t = adapted_function<
-      &egl_api::ChooseConfig,
-      bool_type(
-        display_handle disp,
-        span<const int_type>,
-        span<config_type> dest,
-        int_type&),
-      collapse_bool_map>;
+    using _choose_config_t = c_api::combined<
+      adapted_function<
+        &egl_api::ChooseConfig,
+        bool_type(display_handle, span<const int_type>, span<config_type>, int_type&),
+        collapse_bool_map>,
+      adapted_function<
+        &egl_api::ChooseConfig,
+        c_api::head_transformed<int_type, 3, 5>(
+          display_handle,
+          span<const int_type>,
+          span<config_type>)>>;
 
     struct : _choose_config_t {
         using base = _choose_config_t;
@@ -247,28 +250,16 @@ public:
 
         auto operator()(
           display_handle disp,
-          span<const int_type> attribs,
-          span<config_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, attribs, dest, ret_count)
-              .transformed([&ret_count, dest](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
-              });
-        }
-
-        auto operator()(
-          display_handle disp,
-          const config_attributes& attribs,
-          span<config_type> dest) const noexcept {
-            return (*this)(disp, attribs.get(), dest);
-        }
-
-        auto operator()(
-          display_handle disp,
           const config_attribute_value& attribs,
           span<config_type> dest) const noexcept {
-            return (*this)(disp, config_attributes{attribs}, dest);
+            return base::operator()(disp, config_attributes{attribs}, dest);
+        }
+
+        auto operator()(display_handle disp, const config_attributes& attribs)
+          const noexcept {
+            config_type result{};
+            return (*this)(disp, attribs.get(), cover_one(&result))
+              .replaced_with(result);
         }
 
         auto operator()(
@@ -276,18 +267,15 @@ public:
           const config_attribute_value& attribs) const noexcept {
             return (*this)(disp, config_attributes{attribs});
         }
-
-        auto operator()(display_handle disp, const config_attributes& attribs)
-          const noexcept {
-            config_type result;
-            return (*this)(disp, attribs.get(), cover_one(&result))
-              .replaced_with(result);
-        }
     } choose_config{*this};
 
     adapted_function<
       &egl_api::GetConfigAttrib,
-      int_type(display_handle, config_type, config_attribute)>
+      c_api::returned<int_type>(
+        display_handle,
+        config_type,
+        config_attribute,
+        c_api::returned<int_type>)>
       get_config_attrib{*this};
 
     adapted_function<
