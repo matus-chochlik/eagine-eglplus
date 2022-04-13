@@ -189,14 +189,6 @@ using egl_result = c_api::result<Result, egl_result_info>;
 template <typename Result>
 using egl_opt_result = c_api::opt_result<Result, egl_result_info>;
 //------------------------------------------------------------------------------
-template <typename Result, c_api::result_validity Validity>
-inline auto collapse_bool(
-  c_api::result<Result, egl_result_info, Validity>&& r) noexcept {
-    return r.collapsed(
-      [](egl_types::bool_type value) { return bool(value); },
-      [](auto& info) { info.set_unknown_error(); });
-}
-//------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
 #endif // EAGINE_EGLPLUS_EGL_API_RESULT_HPP
