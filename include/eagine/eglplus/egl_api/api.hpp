@@ -127,13 +127,13 @@ public:
         display_handle(platform, void_ptr_type, span<const attrib_type>)>,
       adapted_function<
         &egl_api::GetPlatformDisplay,
-        display_handle(platform, void_ptr_type, c_api::substituted<nullptr>)>,
+        display_handle(platform, void_ptr_type, c_api::defaulted)>,
       adapted_function<
         &egl_api::GetPlatformDisplay,
         display_handle(
           c_api::substituted<EGL_PLATFORM_DEVICE_EXT>,
           device_handle,
-          c_api::substituted<nullptr>)>>
+          c_api::defaulted)>>
       get_platform_display{*this};
 
     using _get_display_t =
@@ -525,7 +525,7 @@ public:
         c_api::collapsed<bool_type>(
           display_handle,
           sync_handle,
-          c_api::substituted<0>,
+          c_api::defaulted,
           c_api::substituted<EGL_FOREVER>)>>;
 
     struct : _client_wait_sync_t {
