@@ -93,7 +93,7 @@ public:
         c_api::collapsed<bool_type>(span<device_type>, int_type&)>,
       adapted_function<
         &egl_api::QueryDevices,
-        c_api::head_transformed<int_type, 1, 2>(span<device_type>)>>;
+        c_api::head_transformed<int_type, 2, 1>(span<device_type>)>>;
 
     struct : _query_devices_t {
         using base = _query_devices_t;
@@ -183,7 +183,7 @@ public:
         c_api::collapsed<bool_type>(display_handle, span<config_type>, int_type&)>,
       adapted_function<
         &egl_api::GetConfigs,
-        c_api::head_transformed<int_type, 2, 4>(
+        c_api::head_transformed<int_type, 4, 2>(
           display_handle,
           span<config_type> dest)>>;
 
@@ -211,7 +211,7 @@ public:
           int_type&)>,
       adapted_function<
         &egl_api::ChooseConfig,
-        c_api::head_transformed<int_type, 3, 5>(
+        c_api::head_transformed<int_type, 5, 3>(
           display_handle,
           span<const int_type>,
           span<config_type>)>>;
@@ -357,7 +357,7 @@ public:
           int_type&)>,
       adapted_function<
         &egl_api::GetOutputLayers,
-        c_api::head_transformed<int_type, 3, 5>(
+        c_api::head_transformed<int_type, 5, 3>(
           display_handle,
           output_layer_attributes,
           span<output_layer_type>)>>;
@@ -402,7 +402,7 @@ public:
           int_type&)>,
       adapted_function<
         &egl_api::GetOutputPorts,
-        c_api::head_transformed<int_type, 3, 5>(
+        c_api::head_transformed<int_type, 5, 3>(
           display_handle,
           output_port_attributes,
           span<output_port_type>)>>;
