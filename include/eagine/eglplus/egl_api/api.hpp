@@ -42,7 +42,7 @@ public:
 
     using void_ptr_type = typename egl_types::void_ptr_type;
     using int_type = typename egl_types::int_type;
-    using bool_type = typename egl_types::char_type;
+    using bool_type = typename egl_types::bool_type;
     using char_type = typename egl_types::char_type;
     using enum_type = typename egl_types::enum_type;
     using time_type = typename egl_types::time_type;
@@ -55,14 +55,6 @@ public:
     using config_type = typename egl_types::config_type;
     using output_layer_type = typename egl_types::output_layer_type;
     using output_port_type = typename egl_types::output_port_type;
-
-    struct collapse_bool_map {
-        template <typename... P>
-        constexpr auto operator()(size_constant<0> i, P&&... p) const noexcept {
-            return collapse_bool(
-              c_api::trivial_map{}(i, std::forward<P>(p)...));
-        }
-    };
 
     // extensions
     template <typename... Args>
@@ -98,11 +90,10 @@ public:
     using _query_devices_t = c_api::combined<
       adapted_function<
         &egl_api::QueryDevices,
-        bool_type(span<device_type>, int_type&),
-        collapse_bool_map>,
+        c_api::collapsed<bool_type>(span<device_type>, int_type&)>,
       adapted_function<
         &egl_api::QueryDevices,
-        c_api::head_transformed<int_type, 1, 2>(span<device_type>)>>;
+        c_api::head_transformed<int_type, 2, 1>(span<device_type>)>>;
 
     struct : _query_devices_t {
         using base = _query_devices_t;
@@ -136,13 +127,13 @@ public:
         display_handle(platform, void_ptr_type, span<const attrib_type>)>,
       adapted_function<
         &egl_api::GetPlatformDisplay,
-        display_handle(platform, void_ptr_type, c_api::substituted<nullptr>)>,
+        display_handle(platform, void_ptr_type, c_api::defaulted)>,
       adapted_function<
         &egl_api::GetPlatformDisplay,
         display_handle(
           c_api::substituted<EGL_PLATFORM_DEVICE_EXT>,
           device_handle,
-          c_api::substituted<nullptr>)>>
+          c_api::defaulted)>>
       get_platform_display{*this};
 
     using _get_display_t =
@@ -167,8 +158,7 @@ public:
 
     using _initialize_t = adapted_function<
       &egl_api::Initialize,
-      bool_type(display_handle, int&, int&),
-      collapse_bool_map>;
+      c_api::collapsed<bool_type>(display_handle, int&, int&)>;
 
     struct : _initialize_t {
         using base = _initialize_t;
@@ -184,18 +174,16 @@ public:
 
     adapted_function<
       &egl_api::Terminate,
-      string_view(display_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle)>
       terminate{*this};
 
     using _get_configs_t = c_api::combined<
       adapted_function<
         &egl_api::GetConfigs,
-        bool_type(display_handle, span<config_type>, int_type&),
-        collapse_bool_map>,
+        c_api::collapsed<bool_type>(display_handle, span<config_type>, int_type&)>,
       adapted_function<
         &egl_api::GetConfigs,
-        c_api::head_transformed<int_type, 2, 4>(
+        c_api::head_transformed<int_type, 4, 2>(
           display_handle,
           span<config_type> dest)>>;
 
@@ -213,14 +201,20 @@ public:
         }
     } get_configs{*this};
 
-    using _choose_config_t = adapted_function<
-      &egl_api::ChooseConfig,
-      bool_type(
-        display_handle disp,
-        span<const int_type>,
-        span<config_type> dest,
-        int_type&),
-      collapse_bool_map>;
+    using _choose_config_t = c_api::combined<
+      adapted_function<
+        &egl_api::ChooseConfig,
+        c_api::collapsed<bool_type>(
+          display_handle,
+          span<const int_type>,
+          span<config_type>,
+          int_type&)>,
+      adapted_function<
+        &egl_api::ChooseConfig,
+        c_api::head_transformed<int_type, 5, 3>(
+          display_handle,
+          span<const int_type>,
+          span<config_type>)>>;
 
     struct : _choose_config_t {
         using base = _choose_config_t;
@@ -247,28 +241,16 @@ public:
 
         auto operator()(
           display_handle disp,
-          span<const int_type> attribs,
-          span<config_type> dest) const noexcept {
-            int_type ret_count{0};
-            return base::operator()(disp, attribs, dest, ret_count)
-              .transformed([&ret_count, dest](bool valid) {
-                  return head(
-                    dest, limit_cast<span_size_t>(valid ? ret_count : 0));
-              });
-        }
-
-        auto operator()(
-          display_handle disp,
-          const config_attributes& attribs,
-          span<config_type> dest) const noexcept {
-            return (*this)(disp, attribs.get(), dest);
-        }
-
-        auto operator()(
-          display_handle disp,
           const config_attribute_value& attribs,
           span<config_type> dest) const noexcept {
-            return (*this)(disp, config_attributes{attribs}, dest);
+            return base::operator()(disp, config_attributes{attribs}, dest);
+        }
+
+        auto operator()(display_handle disp, const config_attributes& attribs)
+          const noexcept {
+            config_type result{};
+            return (*this)(disp, attribs.get(), cover_one(&result))
+              .replaced_with(result);
         }
 
         auto operator()(
@@ -276,18 +258,15 @@ public:
           const config_attribute_value& attribs) const noexcept {
             return (*this)(disp, config_attributes{attribs});
         }
-
-        auto operator()(display_handle disp, const config_attributes& attribs)
-          const noexcept {
-            config_type result;
-            return (*this)(disp, attribs.get(), cover_one(&result))
-              .replaced_with(result);
-        }
     } choose_config{*this};
 
     adapted_function<
       &egl_api::GetConfigAttrib,
-      int_type(display_handle, config_type, config_attribute)>
+      c_api::returned<int_type>(
+        display_handle,
+        config_type,
+        config_attribute,
+        c_api::returned<int_type>)>
       get_config_attrib{*this};
 
     adapted_function<
@@ -315,8 +294,7 @@ public:
 
     adapted_function<
       &egl_api::DestroySurface,
-      bool_type(display_handle, surface_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, surface_handle)>
       destroy_surface{*this};
 
     adapted_function<&egl_api::GetCurrentSurface, surface_handle(read_draw)>
@@ -324,8 +302,8 @@ public:
 
     adapted_function<
       &egl_api::SurfaceAttrib,
-      surface_handle(display_handle, surface_handle, surface_attribute, int_type),
-      collapse_bool_map>
+      c_api::collapsed<
+        bool_type>(display_handle, surface_handle, surface_attribute, int_type)>
       surface_attrib{*this};
 
     adapted_function<
@@ -340,14 +318,13 @@ public:
 
     adapted_function<
       &egl_api::DestroyStream,
-      bool_type(display_handle, stream_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, stream_handle)>
       destroy_stream{*this};
 
     adapted_function<
       &egl_api::StreamAttrib,
-      surface_handle(display_handle, stream_handle, stream_attribute, int_type),
-      collapse_bool_map>
+      c_api::collapsed<
+        bool_type>(display_handle, stream_handle, stream_attribute, int_type)>
       stream_attrib{*this};
 
     adapted_function<
@@ -357,34 +334,30 @@ public:
 
     adapted_function<
       &egl_api::StreamConsumerGLTextureExternal,
-      bool_type(display_handle, stream_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, stream_handle)>
       stream_consumer_gl_texture_external{*this};
 
     adapted_function<
       &egl_api::StreamConsumerAcquire,
-      bool_type(display_handle, stream_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, stream_handle)>
       stream_consumer_acquire{*this};
 
     adapted_function<
       &egl_api::StreamConsumerRelease,
-      bool_type(display_handle, stream_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, stream_handle)>
       stream_consumer_release{*this};
 
     using _get_output_layers_t = c_api::combined<
       adapted_function<
         &egl_api::GetOutputLayers,
-        bool_type(
+        c_api::collapsed<bool_type>(
           display_handle,
           span<const attrib_type>,
           span<output_layer_type>,
-          int_type&),
-        collapse_bool_map>,
+          int_type&)>,
       adapted_function<
         &egl_api::GetOutputLayers,
-        c_api::head_transformed<int_type, 3, 5>(
+        c_api::head_transformed<int_type, 5, 3>(
           display_handle,
           output_layer_attributes,
           span<output_layer_type>)>>;
@@ -405,8 +378,8 @@ public:
 
     adapted_function<
       &egl_api::OutputLayerAttrib,
-      bool_type(display_handle, output_layer_handle, output_layer_attribute),
-      collapse_bool_map>
+      c_api::collapsed<
+        bool_type>(display_handle, output_layer_handle, output_layer_attribute)>
       output_layer_attrib{*this};
 
     adapted_function<
@@ -422,15 +395,14 @@ public:
     using _get_output_ports_t = c_api::combined<
       adapted_function<
         &egl_api::GetOutputPorts,
-        bool_type(
+        c_api::collapsed<bool_type>(
           display_handle,
           span<const attrib_type>,
           span<output_port_type>,
-          int_type&),
-        collapse_bool_map>,
+          int_type&)>,
       adapted_function<
         &egl_api::GetOutputPorts,
-        c_api::head_transformed<int_type, 3, 5>(
+        c_api::head_transformed<int_type, 5, 3>(
           display_handle,
           output_port_attributes,
           span<output_port_type>)>>;
@@ -451,8 +423,8 @@ public:
 
     adapted_function<
       &egl_api::OutputPortAttrib,
-      bool_type(display_handle, output_port_handle, output_port_attribute),
-      collapse_bool_map>
+      c_api::collapsed<
+        bool_type>(display_handle, output_port_handle, output_port_attribute)>
       output_port_attrib{*this};
 
     adapted_function<
@@ -477,11 +449,10 @@ public:
 
     adapted_function<
       &egl_api::DestroyImage,
-      bool_type(display_handle, image_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, image_handle)>
       destroy_image{*this};
 
-    adapted_function<&egl_api::BindAPI, bool_type(client_api), collapse_bool_map>
+    adapted_function<&egl_api::BindAPI, c_api::collapsed<bool_type>(client_api)>
       bind_api{*this};
 
     adapted_function<&egl_api::QueryAPI, client_api()> query_api{*this};
@@ -497,14 +468,16 @@ public:
 
     adapted_function<
       &egl_api::DestroyContext,
-      bool_type(display_handle, context_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, context_handle)>
       destroy_context{*this};
 
     using _make_current_t = adapted_function<
       &egl_api::MakeCurrent,
-      bool_type(display_handle, surface_handle, surface_handle, context_handle),
-      collapse_bool_map>;
+      c_api::collapsed<bool_type>(
+        display_handle,
+        surface_handle,
+        surface_handle,
+        context_handle)>;
 
     struct : _make_current_t {
         using base = _make_current_t;
@@ -527,15 +500,14 @@ public:
     adapted_function<&egl_api::GetCurrentContext, context_handle()>
       get_current_context{*this};
 
-    adapted_function<&egl_api::WaitClient, bool_type(), collapse_bool_map>
+    adapted_function<&egl_api::WaitClient, c_api::collapsed<bool_type>()>
       wait_client{*this};
 
     c_api::combined<
-      adapted_function<&egl_api::WaitNative, bool_type(engine), collapse_bool_map>,
+      adapted_function<&egl_api::WaitNative, c_api::collapsed<bool_type>(engine)>,
       adapted_function<
         &egl_api::WaitNative,
-        bool_type(c_api::substituted<EGL_CORE_NATIVE_ENGINE>),
-        collapse_bool_map>>
+        c_api::collapsed<bool_type>(c_api::substituted<EGL_CORE_NATIVE_ENGINE>)>>
       wait_native{*this};
 
     adapted_function<
@@ -546,16 +518,15 @@ public:
     using _client_wait_sync_t = c_api::combined<
       adapted_function<
         &egl_api::ClientWaitSync,
-        bool_type(display_handle, sync_handle, int_type, time_type),
-        collapse_bool_map>,
+        c_api::collapsed<
+          bool_type>(display_handle, sync_handle, int_type, time_type)>,
       adapted_function<
         &egl_api::ClientWaitSync,
-        bool_type(
+        c_api::collapsed<bool_type>(
           display_handle,
           sync_handle,
-          c_api::substituted<0>,
-          c_api::substituted<EGL_FOREVER>),
-        collapse_bool_map>>;
+          c_api::defaulted,
+          c_api::substituted<EGL_FOREVER>)>>;
 
     struct : _client_wait_sync_t {
         using base = _client_wait_sync_t;
@@ -573,14 +544,12 @@ public:
 
     adapted_function<
       &egl_api::WaitSync,
-      bool_type(display_handle, sync_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, sync_handle)>
       wait_sync{*this};
 
     adapted_function<
       &egl_api::DestroySync,
-      bool_type(display_handle, sync_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, sync_handle)>
       destroy_sync{*this};
 
     adapted_function<
@@ -680,23 +649,21 @@ public:
 
     adapted_function<
       &egl_api::SwapInterval,
-      bool_type(display_handle, int_type),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, int_type)>
       swap_interval{*this};
 
     adapted_function<
       &egl_api::SwapBuffers,
-      bool_type(display_handle, surface_handle),
-      collapse_bool_map>
+      c_api::collapsed<bool_type>(display_handle, surface_handle)>
       swap_buffers{*this};
 
     adapted_function<
       &egl_api::SwapBuffersWithDamage,
-      bool_type(display_handle, surface_handle, span<const int_type>),
-      collapse_bool_map>
+      c_api::collapsed<
+        bool_type>(display_handle, surface_handle, span<const int_type>)>
       swap_buffers_with_damage{*this};
 
-    adapted_function<&egl_api::ReleaseThread, bool_type(), collapse_bool_map>
+    adapted_function<&egl_api::ReleaseThread, c_api::collapsed<bool_type>()>
       release_thread{*this};
 
     basic_egl_operations(api_traits& traits);
