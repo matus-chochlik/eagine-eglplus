@@ -574,7 +574,7 @@ public:
     }
 
     auto get_client_api_bits(display_handle disp) const noexcept {
-        enum_bitfield<client_api_bit> result{};
+        c_api::enum_bitfield<client_api_bit> result{};
 
         if(ok apis{get_client_apis(disp)}) {
             for(auto api : apis) {

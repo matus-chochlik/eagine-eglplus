@@ -57,7 +57,7 @@ static constexpr auto operator|(
 /// @relates context_attributes
 static constexpr auto operator|(
   const context_attribute key,
-  const enum_bitfield<context_opengl_profile_bit> value) noexcept
+  const c_api::enum_bitfield<context_opengl_profile_bit> value) noexcept
   -> context_attribute_value {
     return {key, egl_types::int_type(value)};
 }

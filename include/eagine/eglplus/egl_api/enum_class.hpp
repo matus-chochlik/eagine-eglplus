@@ -9,8 +9,8 @@
 #define EAGINE_EGLPLUS_EGL_API_ENUM_CLASS_HPP
 
 #include "config.hpp"
-#include <eagine/enum_bitfield.hpp>
-#include <eagine/enum_class.hpp>
+#include <eagine/c_api/enum_bitfield.hpp>
+#include <eagine/c_api/enum_class.hpp>
 #include <eagine/identifier.hpp>
 
 namespace eagine::eglplus {
@@ -24,24 +24,24 @@ namespace eagine::eglplus {
 /// of context attribute constants. Such mismatches result in compilation errors.
 template <typename Self, identifier_t Id>
 using egl_int_class =
-  enum_class<Self, egl_types::int_type, EAGINE_ID_V(EGL), Id>;
+  c_api::enum_class<Self, egl_types::int_type, EAGINE_ID_V(EGL), Id>;
 
 template <typename Self, identifier_t Id>
 using egl_enum_class =
-  enum_class<Self, egl_types::enum_type, EAGINE_ID_V(EGL), Id>;
+  c_api::enum_class<Self, egl_types::enum_type, EAGINE_ID_V(EGL), Id>;
 
 /// @brief Type erasure alias for EGL enum classes.
 /// @ingroup egl_api_wrap
-using egl_any_enum_class = any_enum_class<EAGINE_ID_V(EGL)>;
+using egl_any_enum_class = c_api::any_enum_class<EAGINE_ID_V(EGL)>;
 
 /// @brief Type erasure alias for EGL enum values.
 /// @ingroup egl_api_wrap
-using egl_any_enum_value = any_enum_value<EAGINE_ID_V(EGL)>;
+using egl_any_enum_value = c_api::any_enum_value<EAGINE_ID_V(EGL)>;
 
 static constexpr auto same_enum_class(
   const egl_any_enum_class a,
   const egl_any_enum_class b) noexcept -> bool {
-    return ::eagine::same_enum_class(a, b);
+    return ::eagine::c_api::same_enum_class(a, b);
 }
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
