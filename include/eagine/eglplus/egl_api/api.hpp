@@ -103,7 +103,7 @@ public:
         auto count() const noexcept {
             int_type ret_count{0};
             return base::operator()({}, ret_count)
-              .transformed([&ret_count](bool valid) {
+              .transformed([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -195,7 +195,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, ret_count)
-              .transformed([&ret_count](bool valid) {
+              .transformed([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -225,7 +225,7 @@ public:
           const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, attribs, {}, ret_count)
-              .transformed([&ret_count](bool valid) {
+              .transformed([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -370,7 +370,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, {}, ret_count)
-              .transformed([&ret_count](bool valid) {
+              .transformed([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -415,7 +415,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, {}, ret_count)
-              .transformed([&ret_count](bool valid) {
+              .transformed([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -574,7 +574,7 @@ public:
     }
 
     auto get_client_api_bits(display_handle disp) const noexcept {
-        enum_bitfield<client_api_bit> result{};
+        c_api::enum_bitfield<client_api_bit> result{};
 
         if(ok apis{get_client_apis(disp)}) {
             for(auto api : apis) {

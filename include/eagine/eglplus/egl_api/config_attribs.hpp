@@ -65,7 +65,7 @@ static constexpr auto operator|(
 /// @relates config_attributes
 static constexpr auto operator|(
   const config_attribute key,
-  const enum_bitfield<surface_type_bit> value) noexcept
+  const c_api::enum_bitfield<surface_type_bit> value) noexcept
   -> config_attribute_value {
     return {key, egl_types::int_type(value)};
 }
@@ -75,7 +75,7 @@ static constexpr auto operator|(
 /// @relates config_attributes
 static constexpr auto operator|(
   const config_attribute key,
-  const enum_bitfield<renderable_type_bit> value) noexcept
+  const c_api::enum_bitfield<renderable_type_bit> value) noexcept
   -> config_attribute_value {
     return {key, egl_types::int_type(value)};
 }
