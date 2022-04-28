@@ -159,7 +159,7 @@ public:
 
     constexpr auto set_unknown_error() noexcept -> auto& {
         if(_error_code != EGL_SUCCESS) {
-            _error_code = ~egl_types::int_type(0);
+            _error_code = egl_types::int_type(~0U);
         }
         return *this;
     }
