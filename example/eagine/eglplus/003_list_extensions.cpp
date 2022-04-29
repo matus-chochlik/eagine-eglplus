@@ -6,57 +6,73 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
+#include <eagine/console/console.hpp>
 #include <eagine/eglplus/egl.hpp>
 #include <eagine/eglplus/egl_api.hpp>
-#include <iostream>
-#include <vector>
+#include <eagine/main.hpp>
 
-auto main() -> int {
-    using namespace eagine;
+namespace eagine {
+
+auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
     const egl_api egl;
+    const auto& cio = ctx.cio();
 
-    std::cout << "Generic extensions: " << std::endl;
+    const auto gen_ext_cio{
+      cio.print(EAGINE_ID(GL), "Generic extensions:").to_be_continued()};
 
-    if(const ok extensions = egl.get_extensions()) {
+    if(const ok extensions{egl.get_extensions()}) {
         for(const auto name : extensions) {
-            std::cout << "  " << name << std::endl;
+            gen_ext_cio.print(name);
         }
     } else {
-        std::cerr << "failed to get extension list: " << (!extensions).message()
-                  << std::endl;
+        gen_ext_cio
+          .print(
+            console_entry_kind::error,
+            "failed to get extension list: ${message}")
+          .arg(EAGINE_ID(message), (!extensions).message());
     }
-
-    std::cout << std::endl;
 
     if(egl.get_display) {
         if(const ok display{egl.get_display()}) {
+            const auto disp_cio{
+              cio.print(EAGINE_ID(GL), "Display info:").to_be_continued()};
             if(egl.initialize(display)) {
                 const auto do_cleanup = egl.terminate.raii(display);
 
                 if(const ok vendor{egl.query_string(display, egl.vendor)}) {
-                    std::cout << "Vendor:  " << extract(vendor) << std::endl;
+                    disp_cio.print("Vendor: ${info}")
+                      .arg(EAGINE_ID(info), extract(vendor));
                 }
 
                 if(const ok version{egl.query_string(display, egl.version)}) {
-                    std::cout << "Version: " << extract(version) << std::endl;
+                    disp_cio.print("Version: ${info}")
+                      .arg(EAGINE_ID(info), extract(version));
                 }
 
-                std::cout << "Display extensions: " << std::endl;
+                const auto disp_ext_cio{
+                  disp_cio.print("extensions:").to_be_continued()};
 
                 if(const ok extensions{egl.get_extensions(display)}) {
                     for(const auto name : extensions) {
-                        std::cout << "  " << name << std::endl;
+                        disp_ext_cio.print(name);
                     }
                 } else {
-                    std::cerr << "failed to get extension list: "
-                              << (!extensions).message() << std::endl;
+                    disp_ext_cio
+                      .print(
+                        console_entry_kind::error,
+                        "failed to get extension list: ${message}")
+                      .arg(EAGINE_ID(message), (!extensions).message());
                 }
             } else {
-                std::cout << "missing required API function." << std::endl;
+                disp_cio.print(
+                  console_entry_kind::error,
+                  "failed to initialize EGL display");
             }
         }
     }
     return 0;
 }
+
+} // namespace eagine
