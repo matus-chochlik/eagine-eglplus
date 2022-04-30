@@ -6,10 +6,10 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
-#include <eagine/console/console.hpp>
 #include <eagine/eglplus/egl.hpp>
 #include <eagine/eglplus/egl_api.hpp>
 #include <eagine/main.hpp>
+#include <eagine/main_ctx_object.hpp>
 
 namespace eagine {
 
@@ -17,10 +17,10 @@ auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
     const egl_api egl;
-    const auto& cio = ctx.cio();
+    const main_ctx_object out{EAGINE_ID(EGLplus), ctx};
 
     const auto gen_ext_cio{
-      cio.print(EAGINE_ID(GL), "Generic extensions:").to_be_continued()};
+      out.cio_print("Generic extensions:").to_be_continued()};
 
     if(const ok extensions{egl.get_extensions()}) {
         for(const auto name : extensions) {
@@ -37,7 +37,7 @@ auto main(main_ctx& ctx) -> int {
     if(egl.get_display) {
         if(const ok display{egl.get_display()}) {
             const auto disp_cio{
-              cio.print(EAGINE_ID(GL), "Display info:").to_be_continued()};
+              out.cio_print("Display info:").to_be_continued()};
             if(egl.initialize(display)) {
                 const auto do_cleanup = egl.terminate.raii(display);
 

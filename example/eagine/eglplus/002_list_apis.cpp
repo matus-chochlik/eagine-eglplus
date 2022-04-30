@@ -8,33 +8,39 @@
 
 #include <eagine/eglplus/egl.hpp>
 #include <eagine/eglplus/egl_api.hpp>
-#include <iostream>
+#include <eagine/main.hpp>
+#include <eagine/main_ctx_object.hpp>
 
-auto main() -> int {
-    using namespace eagine;
+namespace eagine {
+
+auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
     const egl_api egl;
+    const main_ctx_object out{EAGINE_ID(EGLplus), ctx};
 
     if(egl.get_display) {
         if(const ok display = egl.get_display()) {
             if(auto init_res = egl.initialize(display)) {
                 const auto do_cleanup = egl.terminate.raii(display);
 
-                std::cout << "Supported APIs:" << std::endl;
+                const auto api_cio{
+                  out.cio_print("Supported APIs:").to_be_continued()};
 
                 if(const ok apis{egl.get_client_apis(display)}) {
                     for(const auto name : apis) {
-                        std::cout << "  " << name << std::endl;
+                        api_cio.print(name);
                     }
                 } else {
-                    std::cerr << "failed to get API list: " << (!apis).message()
-                              << std::endl;
+                    api_cio.error("failed to get API list: ${message}")
+                      .arg(EAGINE_ID(message), (!apis).message());
                 }
             } else {
-                std::cout << "missing required API function." << std::endl;
+                out.cio_error("missing required API function");
             }
         }
     }
     return 0;
 }
+
+} // namespace eagine
