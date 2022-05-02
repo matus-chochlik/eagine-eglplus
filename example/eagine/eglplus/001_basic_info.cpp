@@ -8,35 +8,42 @@
 
 #include <eagine/eglplus/egl.hpp>
 #include <eagine/eglplus/egl_api.hpp>
-#include <iostream>
+#include <eagine/main.hpp>
+#include <eagine/main_ctx_object.hpp>
 
-auto main() -> int {
-    using namespace eagine;
+namespace eagine {
+
+auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
     const egl_api egl;
+    const main_ctx_object out{EAGINE_ID(EGLplus), ctx};
 
     if(const ok display{egl.get_display()}) {
         if(egl.initialize(display)) {
             const auto do_cleanup{egl.terminate.raii(display)};
 
             if(const ok dev_count{egl.query_devices.count()}) {
-                std::cout << "Devices: " << dev_count << std::endl;
+                out.cio_print("Devices: ${count}")
+                  .arg(EAGINE_ID(count), dev_count);
             }
 
             if(const ok vendor{egl.query_string(display, egl.vendor)}) {
-                std::cout << "Vendor:  " << extract(vendor) << std::endl;
+                out.cio_print("Vendor: ${vendor}")
+                  .arg(EAGINE_ID(vendor), vendor);
             }
 
             if(const ok version{egl.query_string(display, egl.version)}) {
-                std::cout << "Version: " << extract(version) << std::endl;
+                out.cio_print("Version: ${version}")
+                  .arg(EAGINE_ID(version), version);
             }
 
         } else {
-            std::cout << "failed to initialize EGL" << std::endl;
+            out.cio_error("failed to initialize EGL");
         }
     } else {
-        std::cout << "failed to get default display" << std::endl;
+        out.cio_error("failed to get default display");
     }
     return 0;
 }
+} // namespace eagine
