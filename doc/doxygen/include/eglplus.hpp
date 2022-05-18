@@ -10,7 +10,7 @@ namespace eagine {
 
 /// @brief EGL API wrapper code is placed in this namespace.
 namespace eglplus {
-/// @defgroup eglplus EGL API wrappers
+/// @defgroup egl_api_wrap  EGL API wrappers
 }
 
 } // namespace eagine
