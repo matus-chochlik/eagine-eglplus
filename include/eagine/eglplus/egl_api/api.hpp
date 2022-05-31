@@ -271,7 +271,7 @@ public:
 
     adapted_function<
       &egl_api::CreateWindowSurface,
-      surface_handle(
+      owned_surface_handle(
         display_handle,
         config_type,
         native_window_type,
@@ -280,12 +280,12 @@ public:
 
     adapted_function<
       &egl_api::CreatePbufferSurface,
-      surface_handle(display_handle, config_type, surface_attributes)>
+      owned_surface_handle(display_handle, config_type, surface_attributes)>
       create_pbuffer_surface{*this};
 
     adapted_function<
       &egl_api::CreatePixmapSurface,
-      surface_handle(
+      owned_surface_handle(
         display_handle,
         config_type,
         native_pixmap_type,
@@ -294,8 +294,13 @@ public:
 
     adapted_function<
       &egl_api::DestroySurface,
-      c_api::collapsed<bool_type>(display_handle, surface_handle)>
+      c_api::collapsed<bool_type>(display_handle, owned_surface_handle)>
       destroy_surface{*this};
+
+    auto clean_up(owned_surface_handle surf, display_handle disp)
+      const noexcept {
+        return destroy_surface(disp, std::move(surf));
+    }
 
     adapted_function<&egl_api::GetCurrentSurface, surface_handle(read_draw)>
       get_current_surface{*this};
@@ -313,13 +318,17 @@ public:
 
     adapted_function<
       &egl_api::CreateStream,
-      stream_handle(display_handle, stream_attributes)>
+      owned_stream_handle(display_handle, stream_attributes)>
       create_stream{*this};
 
     adapted_function<
       &egl_api::DestroyStream,
-      c_api::collapsed<bool_type>(display_handle, stream_handle)>
+      c_api::collapsed<bool_type>(display_handle, owned_stream_handle)>
       destroy_stream{*this};
+
+    auto clean_up(owned_stream_handle strm, display_handle disp) const noexcept {
+        return destroy_stream(disp, std::move(strm));
+    }
 
     adapted_function<
       &egl_api::StreamAttrib,
@@ -439,7 +448,7 @@ public:
 
     adapted_function<
       &egl_api::CreateImage,
-      image_handle(
+      owned_image_handle(
         display_handle,
         context_handle,
         image_target,
@@ -449,8 +458,12 @@ public:
 
     adapted_function<
       &egl_api::DestroyImage,
-      c_api::collapsed<bool_type>(display_handle, image_handle)>
+      c_api::collapsed<bool_type>(display_handle, owned_image_handle)>
       destroy_image{*this};
+
+    auto clean_up(owned_image_handle imge, display_handle disp) const noexcept {
+        return destroy_image(disp, std::move(imge));
+    }
 
     adapted_function<&egl_api::BindAPI, c_api::collapsed<bool_type>(client_api)>
       bind_api{*this};
@@ -459,7 +472,7 @@ public:
 
     adapted_function<
       &egl_api::CreateContext,
-      context_handle(
+      owned_context_handle(
         display_handle,
         config_type,
         context_handle,
@@ -468,8 +481,13 @@ public:
 
     adapted_function<
       &egl_api::DestroyContext,
-      c_api::collapsed<bool_type>(display_handle, context_handle)>
+      c_api::collapsed<bool_type>(display_handle, owned_context_handle)>
       destroy_context{*this};
+
+    auto clean_up(owned_context_handle ctxt, display_handle disp)
+      const noexcept {
+        return destroy_context(disp, std::move(ctxt));
+    }
 
     using _make_current_t = adapted_function<
       &egl_api::MakeCurrent,
