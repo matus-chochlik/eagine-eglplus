@@ -9,7 +9,7 @@
 #define EAGINE_EGLPLUS_EGL_API_OBJECTS_HPP
 
 #include "config.hpp"
-#include <eagine/c_api/handle.hpp>
+#include <eagine/c_api/object.hpp>
 #include <eagine/message_id.hpp>
 
 namespace eagine::eglplus {
@@ -69,31 +69,55 @@ using device_handle = c_api::basic_handle<
 #if defined(EGL_NO_DISPLAY)
 using display_handle =
   c_api::basic_handle<display_tag, egl_types::display_type, EGL_NO_DISPLAY>;
+
+using owned_display_handle =
+  c_api::basic_owned_handle<display_tag, egl_types::display_type, EGL_NO_DISPLAY>;
 #else
 /// @brief Alias for EGL display  handle wrapper.
 /// @ingroup egl_api_wrap
 using display_handle =
   c_api::basic_handle<display_tag, egl_types::display_type>;
+
+/// @brief Alias for owned EGL display handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_display_handle =
+  c_api::basic_owned_handle<display_tag, egl_types::display_type>;
 #endif
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_SURFACE)
 using surface_handle =
   c_api::basic_handle<surface_tag, egl_types::surface_type, EGL_NO_SURFACE>;
+
+using owned_surface_handle =
+  c_api::basic_owned_handle<surface_tag, egl_types::surface_type, EGL_NO_SURFACE>;
 #else
 /// @brief Alias for EGL surface handle wrapper.
 /// @ingroup egl_api_wrap
 using surface_handle =
   c_api::basic_handle<surface_tag, egl_types::surface_type>;
+
+/// @brief Alias for owned EGL surface handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_surface_handle =
+  c_api::basic_owned_handle<surface_tag, egl_types::surface_type>;
 #endif
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_CONTEXT)
 using context_handle =
   c_api::basic_handle<context_tag, egl_types::context_type, EGL_NO_CONTEXT>;
+
+using owned_context_handle =
+  c_api::basic_owned_handle<context_tag, egl_types::context_type, EGL_NO_CONTEXT>;
 #else
 /// @brief Alias for EGL context handle wrapper.
 /// @ingroup egl_api_wrap
 using context_handle =
   c_api::basic_handle<context_tag, egl_types::context_type>;
+
+/// @brief Alias for EGL context handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_context_handle =
+  c_api::basic_owned_handle<context_tag, egl_types::context_type>;
 #endif
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL stream handle wrapper.
@@ -102,14 +126,29 @@ using stream_handle = c_api::basic_handle<
   stream_tag,
   egl_types::stream_type,
   egl_types::stream_type(nullptr)>;
+
+/// @brief Alias for owned EGL stream handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_stream_handle = c_api::basic_owned_handle<
+  stream_tag,
+  egl_types::stream_type,
+  egl_types::stream_type(nullptr)>;
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_IMAGE)
 using image_handle =
   c_api::basic_handle<image_tag, egl_types::image_type, EGL_NO_IMAGE>;
+
+using owned_image_handle =
+  c_api::basic_owned_handle<image_tag, egl_types::image_type, EGL_NO_IMAGE>;
 #else
 /// @brief Alias for EGL image handle wrapper.
 /// @ingroup egl_api_wrap
 using image_handle = c_api::basic_handle<image_tag, egl_types::image_type>;
+
+/// @brief Alias for owned EGL image handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_image_handle =
+  c_api::basic_owned_handle<image_tag, egl_types::image_type>;
 #endif
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL output layer handle wrapper.
@@ -118,10 +157,24 @@ using output_layer_handle = c_api::basic_handle<
   stream_tag,
   egl_types::output_layer_type,
   egl_types::output_layer_type(nullptr)>;
+
+/// @brief Alias for owned EGL output layer handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_output_layer_handle = c_api::basic_owned_handle<
+  stream_tag,
+  egl_types::output_layer_type,
+  egl_types::output_layer_type(nullptr)>;
 //------------------------------------------------------------------------------
 /// @brief Alias for EGL output port handle wrapper.
 /// @ingroup egl_api_wrap
 using output_port_handle = c_api::basic_handle<
+  stream_tag,
+  egl_types::output_port_type,
+  egl_types::output_port_type(nullptr)>;
+
+/// @brief Alias for EGL output port handle wrapper.
+/// @ingroup egl_api_wrap
+using owned_output_port_handle = c_api::basic_owned_handle<
   stream_tag,
   egl_types::output_port_type,
   egl_types::output_port_type(nullptr)>;

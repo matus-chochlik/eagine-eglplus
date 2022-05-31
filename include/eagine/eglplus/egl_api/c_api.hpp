@@ -296,7 +296,7 @@ public:
 
     /// @var DestroyStream
     /// @eglfuncwrap{DestroyStream}
-    egl_api_function<surface_type(display_type, stream_type), nullptr>
+    egl_api_function<bool_type(display_type, stream_type), nullptr>
       DestroyStream;
 
     /// @var StreamAttrib
