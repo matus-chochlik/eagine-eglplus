@@ -554,10 +554,8 @@ public:
     }
 };
 //------------------------------------------------------------------------------
-/// @brief Alias for the default EGL operations wrapper instantiation.
-/// @ingroup egl_api_wrap
-using egl_c_api = basic_egl_c_api<egl_api_traits>;
-//------------------------------------------------------------------------------
 } // namespace eagine::eglplus
+
+#include <eagine/eglplus/egl_api/c_api.inl>
 
 #endif // EAGINE_EGLPLUS_EGL_API_C_API_HPP

@@ -43,4 +43,6 @@ private:
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
+#include <eagine/eglplus/egl_api/api_traits.inl>
+
 #endif // EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP

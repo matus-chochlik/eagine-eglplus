@@ -11,8 +11,4 @@
 #include "basic_egl_api.hpp"
 #include "egl_api_fwd.hpp"
 
-#if !EAGINE_EGLPLUS_LIBRARY || defined(EAGINE_IMPLEMENTING_EGLPLUS_LIBRARY)
-#include <eagine/eglplus/egl_api.inl>
-#endif
-
 #endif // EAGINE_EGLPLUS_EGL_API_HPP

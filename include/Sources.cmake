@@ -36,7 +36,6 @@ set(PUB_INLS
     eagine/eglplus/egl_api/api_traits.inl
     eagine/eglplus/egl_api/c_api.inl
     eagine/eglplus/egl_api/constants.inl
-    eagine/eglplus/egl_api.inl
 )
 
 set(LIB_INLS

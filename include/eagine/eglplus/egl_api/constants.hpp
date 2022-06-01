@@ -1017,4 +1017,6 @@ public:
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
+#include <eagine/eglplus/egl_api/constants.inl>
+
 #endif // EAGINE_EGLPLUS_EGL_API_CONSTANTS_HPP
