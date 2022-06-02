@@ -13,7 +13,7 @@ auto egl_api_traits::link_function(
   Api& api,
   const Tag,
   const string_view name,
-  const type_identity<Signature>) -> std::add_pointer_t<Signature> {
+  const std::type_identity<Signature>) -> std::add_pointer_t<Signature> {
     if(api.GetProcAddress && api.GetError) {
         _full_name.clear();
         _full_name.reserve(3 + name.size() + 1);

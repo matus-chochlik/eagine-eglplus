@@ -36,12 +36,12 @@ public:
     };
 
     using enum_type = typename egl_types::enum_type;
-    using enum_type_i = type_identity<enum_type>;
+    using enum_type_i = std::type_identity<enum_type>;
     template <enum_type value>
     using enum_type_c = std::integral_constant<enum_type, value>;
 
     using int_type = typename egl_types::int_type;
-    using int_type_i = type_identity<int_type>;
+    using int_type_i = std::type_identity<int_type>;
     template <int_type value>
     using int_type_c = std::integral_constant<int_type, value>;
 
