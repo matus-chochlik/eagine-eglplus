@@ -689,4 +689,6 @@ public:
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
+#include <eagine/eglplus/egl_api/api.inl>
+
 #endif // EAGINE_EGLPLUS_EGL_API_API_HPP

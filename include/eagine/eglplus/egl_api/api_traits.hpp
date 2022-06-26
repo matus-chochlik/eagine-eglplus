@@ -35,12 +35,14 @@ public:
       Api& api,
       const Tag,
       const string_view name,
-      const type_identity<Signature>) -> std::add_pointer_t<Signature>;
+      const std::type_identity<Signature>) -> std::add_pointer_t<Signature>;
 
 private:
     std::string _full_name;
 };
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
+
+#include <eagine/eglplus/egl_api/api_traits.inl>
 
 #endif // EAGINE_EGLPLUS_EGL_API_API_TRAITS_HPP
