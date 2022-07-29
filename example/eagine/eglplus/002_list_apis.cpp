@@ -17,7 +17,7 @@ auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
     const egl_api egl;
-    const main_ctx_object out{EAGINE_ID(EGLplus), ctx};
+    const main_ctx_object out{"EGLplus", ctx};
 
     if(egl.get_display) {
         if(const ok display = egl.get_display()) {
@@ -33,7 +33,7 @@ auto main(main_ctx& ctx) -> int {
                     }
                 } else {
                     api_cio.error("failed to get API list: ${message}")
-                      .arg(EAGINE_ID(message), (!apis).message());
+                      .arg("message", (!apis).message());
                 }
             } else {
                 out.cio_error("missing required API function");
