@@ -26,6 +26,15 @@ eagine_add_module(
 )
 
 eagine_add_module(
+	eagine.eglplus PARTITION result
+	IMPORTS
+		config
+		eagine.core.types
+		eagine.core.memory
+		eagine.core.c_api
+)
+
+eagine_add_module(
 	eagine.eglplus
 	PP_NAME EGLPLUS
 	INTERFACES eglplus
@@ -33,6 +42,7 @@ eagine_add_module(
 		config
 		enum_types
 		attributes
+		result
 	SOURCES
 )
 target_link_libraries(
