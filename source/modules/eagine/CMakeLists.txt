@@ -82,8 +82,9 @@ eagine_add_module(
 	eagine.eglplus PARTITION api
 	IMPORTS
 		config enum_types
-		attributes extensions
-		c_api
+		api_traits
+		attributes constants
+		extensions c_api
 		eagine.core.types
 		eagine.core.c_api
 )
