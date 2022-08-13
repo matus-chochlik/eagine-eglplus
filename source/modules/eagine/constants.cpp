@@ -9,6 +9,11 @@ module;
 
 #if __has_include(<EGL/egl.h>)
 #include <EGL/egl.h>
+
+#ifndef EGL_PLATFORM_DEVICE_EXT
+#define EGL_PLATFORM_DEVICE_EXT 0x313F
+#endif
+
 #define EAGINE_HAS_EGL 1
 #else
 #define EAGINE_HAS_EGL 0

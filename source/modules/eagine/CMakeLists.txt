@@ -62,9 +62,28 @@ eagine_add_module(
 )
 
 eagine_add_module(
+	eagine.eglplus PARTITION extensions
+	IMPORTS
+		config objects
+		eagine.core.types
+		eagine.core.memory
+		eagine.core.c_api
+)
+
+eagine_add_module(
 	eagine.eglplus PARTITION constants
 	IMPORTS
 		config enum_types c_api
+		eagine.core.types
+		eagine.core.c_api
+)
+
+eagine_add_module(
+	eagine.eglplus PARTITION api
+	IMPORTS
+		config enum_types
+		attributes extensions
+		c_api
 		eagine.core.types
 		eagine.core.c_api
 )
@@ -82,6 +101,7 @@ eagine_add_module(
 		api_traits
 		c_api
 		constants
+		api
 	SOURCES
 )
 target_link_libraries(
