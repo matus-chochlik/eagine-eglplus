@@ -40,7 +40,7 @@ export struct egl_types {
 
     /// @brief Output port handle type.
     using output_port_type = void*;
-#if EGLPLUS_HAS_EGL
+#if EAGINE_HAS_EGL
     static constexpr bool has_api = true;
 
     /// @brief Native display handle type.
@@ -69,9 +69,6 @@ export struct egl_types {
 
     /// @brief Rendering surface handle type.
     using surface_type = EGLSurface;
-
-    /// @brief EGL image type.
-    using image_type = EGLImage;
 
     /// @brief EGL image type.
     using image_type = EGLImage;
@@ -110,7 +107,7 @@ export struct egl_types {
 #endif
 
     static constexpr auto bool_true(bool_type b) noexcept -> bool {
-#if EGLPLUS_HAS_EGL
+#if EAGINE_HAS_EGL
         return b == EGL_TRUE;
 #else
         return b;
@@ -119,7 +116,7 @@ export struct egl_types {
 
     static constexpr auto error_code_no_error(
       [[maybe_unused]] const int_type ec) noexcept -> bool {
-#if EGLPLUS_HAS_EGL
+#if EAGINE_HAS_EGL
         return ec == EGL_SUCCESS;
 #else
         return false;

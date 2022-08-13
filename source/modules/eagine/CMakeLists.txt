@@ -26,6 +26,15 @@ eagine_add_module(
 )
 
 eagine_add_module(
+	eagine.eglplus PARTITION objects
+	IMPORTS
+		config
+		eagine.core.types
+		eagine.core.identifier
+		eagine.core.c_api
+)
+
+eagine_add_module(
 	eagine.eglplus PARTITION result
 	IMPORTS
 		config
@@ -42,6 +51,7 @@ eagine_add_module(
 		config
 		enum_types
 		attributes
+		objects
 		result
 	SOURCES
 )

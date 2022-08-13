@@ -18,7 +18,7 @@ module;
 #define EAGINE_HAS_EGL 0
 #endif
 
-export module eagine.eglplus:enum_types;
+export module eagine.eglplus:result;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.c_api;
