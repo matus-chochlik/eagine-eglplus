@@ -6,3 +6,7 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 export module eagine.eglplus;
+
+export import :config;
+export import :enum_types;
+export import :attributes;
