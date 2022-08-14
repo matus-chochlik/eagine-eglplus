@@ -5,15 +5,6 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-module;
-
-#if __has_include(<EGL/egl.h>)
-#include <EGL/egl.h>
-#define EAGINE_HAS_EGL 1
-#else
-#define EAGINE_HAS_EGL 0
-#endif
-
 export module eagine.eglplus:enum_types;
 import eagine.core.types;
 import eagine.core.identifier;
