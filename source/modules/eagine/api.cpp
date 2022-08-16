@@ -28,6 +28,7 @@ import :api_traits;
 import :attributes;
 import :extensions;
 import :constants;
+import :objects;
 import :c_api;
 import <chrono>;
 
