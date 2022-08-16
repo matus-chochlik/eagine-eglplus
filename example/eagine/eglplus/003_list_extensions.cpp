@@ -17,7 +17,7 @@ auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
     const egl_api egl;
-    const main_ctx_object out{EAGINE_ID(EGLplus), ctx};
+    const main_ctx_object out{"EGLplus", ctx};
 
     const auto gen_ext_cio{
       out.cio_print("Generic extensions:").to_be_continued()};
@@ -31,7 +31,7 @@ auto main(main_ctx& ctx) -> int {
           .print(
             console_entry_kind::error,
             "failed to get extension list: ${message}")
-          .arg(EAGINE_ID(message), (!extensions).message());
+          .arg("message", (!extensions).message());
     }
 
     if(egl.get_display) {
@@ -43,12 +43,12 @@ auto main(main_ctx& ctx) -> int {
 
                 if(const ok vendor{egl.query_string(display, egl.vendor)}) {
                     disp_cio.print("Vendor: ${info}")
-                      .arg(EAGINE_ID(info), extract(vendor));
+                      .arg("info", extract(vendor));
                 }
 
                 if(const ok version{egl.query_string(display, egl.version)}) {
                     disp_cio.print("Version: ${info}")
-                      .arg(EAGINE_ID(info), extract(version));
+                      .arg("info", extract(version));
                 }
 
                 const auto disp_ext_cio{
@@ -63,7 +63,7 @@ auto main(main_ctx& ctx) -> int {
                       .print(
                         console_entry_kind::error,
                         "failed to get extension list: ${message}")
-                      .arg(EAGINE_ID(message), (!extensions).message());
+                      .arg("message", (!extensions).message());
                 }
             } else {
                 disp_cio.print(

@@ -1,0 +1,200 @@
+/// @file
+///
+/// Copyright Matus Chochlik.
+/// Distributed under the Boost Software License, Version 1.0.
+/// See accompanying file LICENSE_1_0.txt or copy at
+///  http://www.boost.org/LICENSE_1_0.txt
+///
+module;
+
+#if __has_include(<EGL/egl.h>)
+#include <EGL/egl.h>
+#define EAGINE_HAS_EGL 1
+
+#ifndef EGL_SUCCESS
+#define EGL_SUCCESS 0x3000
+#endif
+#else
+#define EAGINE_HAS_EGL 0
+#endif
+
+export module eagine.eglplus:result;
+import eagine.core.types;
+import eagine.core.memory;
+import eagine.core.c_api;
+import :config;
+
+namespace eagine::eglplus {
+//------------------------------------------------------------------------------
+/// @brief Class storing information about call result for unavailable EGL functions.
+/// @ingroup egl_api_wrap
+/// @see egl_no_result
+/// @see egl_result_info
+export class egl_no_result_info {
+public:
+    constexpr auto error_code(const anything) noexcept -> auto& {
+        return *this;
+    }
+
+    /// @brief Returns a message associated with the result.
+    constexpr auto message() const noexcept -> string_view {
+        return {"EGL function not available"};
+    }
+
+    constexpr auto set_unknown_error() const noexcept -> auto& {
+        return *this;
+    }
+
+private:
+};
+//------------------------------------------------------------------------------
+/// @brief Class storing information about an EGL function call result.
+/// @ingroup egl_api_wrap
+/// @see egl_result
+/// @see egl_no_result_info
+export class egl_result_info {
+public:
+    /// @brief Indicates if the call finished without error.
+    explicit constexpr operator bool() const noexcept {
+        return egl_types::error_code_no_error(_error_code);
+    }
+
+    constexpr auto error_code(const egl_types::int_type ec) noexcept -> auto& {
+        _error_code = ec;
+        return *this;
+    }
+
+    /// @brief Returns a message associated with the result.
+    auto message() const noexcept -> string_view {
+#ifdef EGL_BAD_SURFACE
+        if(_error_code == EGL_BAD_SURFACE) {
+            return {"bad surface"};
+        }
+#endif
+#ifdef EGL_BAD_CURRENT_SURFACE
+        if(_error_code == EGL_BAD_CURRENT_SURFACE) {
+            return {"bad current surface"};
+        }
+#endif
+#ifdef EGL_BAD_DISPLAY
+        if(_error_code == EGL_BAD_DISPLAY) {
+            return {"bad display"};
+        }
+#endif
+#ifdef EGL_CONTEXT_LOST
+        if(_error_code == EGL_CONTEXT_LOST) {
+            return {"EGL context lost"};
+        }
+#endif
+#ifdef EGL_BAD_PARAMETER
+        if(_error_code == EGL_BAD_PARAMETER) {
+            return {"invalid parameter"};
+        }
+#endif
+#ifdef EGL_BAD_ATTRIBUTE
+        if(_error_code == EGL_BAD_ATTRIBUTE) {
+            return {"unrecognized attribute or attribute value"};
+        }
+#endif
+#ifdef EGL_BAD_CONFIG
+        if(_error_code == EGL_BAD_CONFIG) {
+            return {"invalid configuration"};
+        }
+#endif
+#ifdef EGL_BAD_CONTEXT
+        if(_error_code == EGL_BAD_CONTEXT) {
+            return {"invalid context"};
+        }
+#endif
+#ifdef EGL_BAD_NATIVE_PIXMAP
+        if(_error_code == EGL_BAD_NATIVE_PIXMAP) {
+            return {"bad native pixmap"};
+        }
+#endif
+#ifdef EGL_BAD_NATIVE_WINDOW
+        if(_error_code == EGL_BAD_NATIVE_WINDOW) {
+            return {"bad native window"};
+        }
+#endif
+#ifdef EGL_BAD_MATCH
+        if(_error_code == EGL_BAD_MATCH) {
+            return {"inconsistent attributes"};
+        }
+#endif
+#ifdef EGL_BAD_ACCESS
+        if(_error_code == EGL_BAD_ACCESS) {
+            return {"cannot access requested resource"};
+        }
+#endif
+#ifdef EGL_NOT_INITIALIZED
+        if(_error_code == EGL_NOT_INITIALIZED) {
+            return {"EGL not initialized"};
+        }
+#endif
+#ifdef EGL_BAD_STREAM_KHR
+        if(_error_code == EGL_BAD_STREAM_KHR) {
+            return {"bad EGL stream"};
+        }
+#endif
+#ifdef EGL_BAD_OUTPUT_LAYER_EXT
+        if(_error_code == EGL_BAD_OUTPUT_LAYER_EXT) {
+            return {"bad EGL output layer"};
+        }
+#endif
+#ifdef EGL_BAD_OUTPUT_PORT_EXT
+        if(_error_code == EGL_BAD_OUTPUT_PORT_EXT) {
+            return {"bad EGL output port"};
+        }
+#endif
+#ifdef EGL_BAD_STATE_KHR
+        if(_error_code == EGL_BAD_STATE_KHR) {
+            return {"bad EGL state"};
+        }
+#endif
+#ifdef EGL_SUCCESS
+        if(_error_code == EGL_SUCCESS) {
+            return {"no error"};
+        }
+#endif
+#ifdef EGL_BAD_ALLOC
+        if(_error_code == EGL_BAD_ALLOC) {
+            return {"out of memory"};
+        }
+#endif
+        return {"unknown error"};
+    }
+
+    constexpr auto set_unknown_error() noexcept -> auto& {
+        if(_error_code != EGL_SUCCESS) {
+            _error_code = egl_types::int_type(~0U);
+        }
+        return *this;
+    }
+
+private:
+    egl_types::int_type _error_code{EGL_SUCCESS};
+};
+//------------------------------------------------------------------------------
+/// @brief Alias for always-invalid result of a missing EGL API function call.
+/// @ingroup egl_api_wrap
+/// @see egl_result
+/// @see egl_opt_result
+export template <typename Result>
+using egl_no_result = c_api::no_result<Result, egl_no_result_info>;
+//------------------------------------------------------------------------------
+/// @brief Class wrapping the result of a EGL API function call.
+/// @ingroup egl_api_wrap
+/// @see egl_no_result
+/// @see egl_opt_result
+export template <typename Result>
+using egl_result = c_api::result<Result, egl_result_info>;
+//------------------------------------------------------------------------------
+/// @brief Alias for conditionally-valid result of a EGL API function call.
+/// @ingroup gl_api_wrap
+/// @see egl_result
+/// @see egl_no_result
+export template <typename Result>
+using egl_opt_result = c_api::opt_result<Result, egl_result_info>;
+//------------------------------------------------------------------------------
+} // namespace eagine::eglplus
+
