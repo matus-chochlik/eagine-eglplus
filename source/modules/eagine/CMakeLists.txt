@@ -86,6 +86,8 @@ eagine_add_module(
 		attributes constants
 		extensions c_api
 		eagine.core.types
+		eagine.core.memory
+		eagine.core.string
 		eagine.core.c_api
 )
 
@@ -96,6 +98,7 @@ eagine_add_module(
 	PARTITIONS
 		config
 		enum_types
+		extensions
 		attributes
 		objects
 		result

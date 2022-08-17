@@ -21,6 +21,7 @@ module;
 export module eagine.eglplus:api;
 import eagine.core.types;
 import eagine.core.memory;
+import eagine.core.string;
 import eagine.core.c_api;
 import :config;
 import :enum_types;
@@ -764,7 +765,7 @@ auto get(const basic_egl_api<ApiTraits>& x) noexcept -> const
 //------------------------------------------------------------------------------
 /// @brief Alias for the default instantation of basic_egl_api.
 /// @ingroup egl_api_wrap
-using egl_api = basic_egl_api<egl_api_traits>;
+export using egl_api = basic_egl_api<egl_api_traits>;
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 

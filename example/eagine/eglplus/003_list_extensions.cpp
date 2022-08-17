@@ -5,11 +5,15 @@
 /// See accompanying file LICENSE_1_0.txt or copy at
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
-
+#if EAGINE_EGLPLUS_MODULE
+import eagine.core;
+import eagine.eglplus;
+#else
 #include <eagine/eglplus/egl.hpp>
 #include <eagine/eglplus/egl_api.hpp>
 #include <eagine/main_ctx.hpp>
 #include <eagine/main_ctx_object.hpp>
+#endif
 
 namespace eagine {
 
