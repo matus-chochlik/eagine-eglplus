@@ -32,7 +32,7 @@ namespace eagine::eglplus {
 /// @ingroup egl_api_wrap
 /// @see basic_egl_c_api
 /// @see basic_egl_operations
-template <typename ApiTraits>
+export template <typename ApiTraits>
 class basic_egl_constants {
 public:
 #if EAGINE_HAS_EGL

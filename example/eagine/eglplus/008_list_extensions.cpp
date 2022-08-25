@@ -6,11 +6,18 @@
 ///  http://www.boost.org/LICENSE_1_0.txt
 ///
 
+#if EAGINE_EGLPLUS_MODULE
+import eagine.core;
+import eagine.eglplus;
+import <iostream>;
+import <vector>;
+#else
 #include <eagine/eglplus/egl.hpp>
 #include <eagine/eglplus/egl_api.hpp>
 #include <eagine/integer_range.hpp>
 #include <iostream>
 #include <vector>
+#endif
 
 auto main() -> int {
     using namespace eagine;

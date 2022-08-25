@@ -83,6 +83,16 @@ export constexpr auto operator|(
 /// @relates config_attributes
 export constexpr auto operator|(
   const config_attribute key,
+  const c_api::enum_bitfield<renderable_type_bit> value) noexcept
+  -> config_attribute_value {
+    return {key, egl_types::int_type(value)};
+}
+
+/// @brief Concatenation operator for configuration attribute list key and value.
+/// @ingroup egl_api_wrap
+/// @relates config_attributes
+export constexpr auto operator|(
+  const config_attribute key,
   const bool value) noexcept -> config_attribute_value {
 #if defined(EGL_TRUE) && defined(EGL_FALSE)
     return {key, value ? EGL_TRUE : EGL_FALSE};
