@@ -8,25 +8,19 @@ else()
 	add_subdirectory(lib)
 endif()
 
+set(EAGINE_EGLPLUS_EXPORT_TARGETS)
+
 if(TARGET eagine-eglplus)
 	add_library(EAGine::EGLplus INTERFACE IMPORTED GLOBAL)
-	target_link_libraries(EAGine::EGLplus INTERFACE eagine-eglplus-headers)
-
 	target_link_libraries(
 		EAGine::EGLplus
 		INTERFACE
 			eagine-eglplus
-	)
-
-	install(
-		TARGETS
 			eagine-eglplus-headers
-			EXPORT EGLplus
-		LIBRARY DESTINATION lib
-		ARCHIVE DESTINATION lib
-		RUNTIME DESTINATION bin
-		INCLUDES DESTINATION include
-		PUBLIC_HEADER DESTINATION include
+	)
+	list(
+		APPEND EAGINE_EGLPLUS_EXPORT_TARGETS
+			eagine-eglplus-headers
 	)
 
 	install(
@@ -36,3 +30,14 @@ if(TARGET eagine-eglplus)
 		DESTINATION lib/cmake/EAGine
 	)
 endif()
+
+install(
+	TARGETS ${EAGINE_EGLPLUS_EXPORT_TARGETS}
+	EXPORT EGLplus
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	INCLUDES DESTINATION include
+	PUBLIC_HEADER DESTINATION include
+)
+
