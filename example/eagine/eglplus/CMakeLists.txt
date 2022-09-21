@@ -23,20 +23,12 @@ function(eagine_example_common EXAMPLE_NAME)
 		"${EXAMPLE_NAME}.cpp"
 		${ARGN}
 	)
-	if(${WITH_MODULES})
-		eagine_target_modules(
-			eglplus-${EXAMPLE_NAME}
-			eagine.core
-			eagine.eglplus
-		)
-	else()
-		eagine_add_exe_analysis(eglplus-${EXAMPLE_NAME})
-		target_link_libraries(
-			eglplus-${EXAMPLE_NAME}
-			PUBLIC EAGine::EGLplus
-			PRIVATE ${ARGN}
-		)
-	endif()
+	eagine_add_exe_analysis(eglplus-${EXAMPLE_NAME})
+	eagine_target_modules(
+		eglplus-${EXAMPLE_NAME}
+		eagine.core
+		eagine.eglplus
+	)
 	add_dependencies(eagine-eglplus-examples eglplus-${EXAMPLE_NAME})
 
 	set_target_properties(
