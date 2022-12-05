@@ -75,7 +75,17 @@ eagine_add_module(
 	IMPORTS
 		config enum_types c_api
 		eagine.core.types
+		eagine.core.memory
 		eagine.core.c_api
+)
+
+eagine_add_module(
+	eagine.eglplus PARTITION from_string
+	IMPORTS
+		enum_types constants
+		eagine.core.types
+		eagine.core.memory
+		eagine.core.string
 )
 
 eagine_add_module(
@@ -105,8 +115,10 @@ eagine_add_module(
 		api_traits
 		c_api
 		constants
+		from_string
 		api
 	SOURCES
+		constants_impl
 )
 target_link_libraries(
 	eagine.eglplus

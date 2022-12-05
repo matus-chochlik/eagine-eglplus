@@ -21,12 +21,28 @@ module;
 
 export module eagine.eglplus:constants;
 import eagine.core.types;
+import eagine.core.memory;
 import eagine.core.c_api;
 import :config;
 import :enum_types;
 import :c_api;
+import <optional>;
 
-namespace eagine::eglplus {
+namespace eagine {
+//------------------------------------------------------------------------------
+export template <>
+struct within_limits<eglplus::color_buffer_type, eglplus::egl_types::enum_type> {
+    auto check(eglplus::egl_types::enum_type) const noexcept -> bool;
+};
+//------------------------------------------------------------------------------
+export template <>
+struct within_limits<eglplus::texture_target, eglplus::egl_types::enum_type> {
+    auto check(eglplus::egl_types::enum_type) const noexcept -> bool;
+};
+//------------------------------------------------------------------------------
+namespace eglplus {
+export auto egl_enum_by_name(const string_view name) noexcept
+  -> std::optional<egl_types::enum_type>;
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the constants from the EGL API.
 /// @ingroup egl_api_wrap
@@ -1169,5 +1185,5 @@ basic_egl_constants<ApiTraits>::basic_egl_constants(
   , gl_colorspace_srgb("gl_colorspace_srgb", traits, api)
   , none("NONE", traits, api) {}
 //------------------------------------------------------------------------------
-} // namespace eagine::eglplus
-
+} // namespace eglplus
+} // namespace eagine
