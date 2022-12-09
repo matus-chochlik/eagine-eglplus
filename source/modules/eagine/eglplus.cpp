@@ -11,6 +11,7 @@ export import :config;
 export import :enum_types;
 export import :attributes;
 export import :constants;
+export import :from_string;
 export import :objects;
 export import :result;
 export import :api_traits;
