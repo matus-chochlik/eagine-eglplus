@@ -58,7 +58,7 @@ auto egl_api_traits::link_function(
   const Tag,
   const string_view name,
   const std::type_identity<Signature>) -> std::add_pointer_t<Signature> {
-    if(api.GetProcAddress && api.GetError) {
+    if(api.GetProcAddress and api.GetError) {
         _full_name.clear();
         _full_name.reserve(3 + name.size() + 1);
         _full_name.append("egl");

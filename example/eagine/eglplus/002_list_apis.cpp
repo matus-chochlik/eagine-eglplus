@@ -30,7 +30,7 @@ auto main(main_ctx& ctx) -> int {
                     }
                 } else {
                     api_cio.error("failed to get API list: ${message}")
-                      .arg("message", (!apis).message());
+                      .arg("message", (not apis).message());
                 }
             } else {
                 out.cio_error("missing required API function");
