@@ -125,3 +125,11 @@ target_link_libraries(
 	PUBLIC
 	EGL
 )
+
+eagine_add_module_tests(
+	eagine.eglplus
+	UNITS
+		constants
+	IMPORTS
+		eagine.core
+)
