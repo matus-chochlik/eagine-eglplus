@@ -7,6 +7,7 @@
 ///
 import eagine.core;
 import eagine.eglplus;
+import std;
 
 namespace eagine {
 

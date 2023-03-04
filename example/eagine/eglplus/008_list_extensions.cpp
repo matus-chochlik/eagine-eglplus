@@ -8,8 +8,7 @@
 
 import eagine.core;
 import eagine.eglplus;
-import <iostream>;
-import <vector>;
+import std;
 
 auto main() -> int {
     using namespace eagine;

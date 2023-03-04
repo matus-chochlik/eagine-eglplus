@@ -31,7 +31,7 @@ import :extensions;
 import :constants;
 import :objects;
 import :c_api;
-import <chrono>;
+import std;
 
 namespace eagine::eglplus {
 using c_api::adapted_function;
