@@ -118,10 +118,18 @@ eagine_add_module(
 		from_string
 		api
 	SOURCES
-		constants_impl
+		constants
 )
 target_link_libraries(
 	eagine.eglplus
 	PUBLIC
 	EGL
+)
+
+eagine_add_module_tests(
+	eagine.eglplus
+	UNITS
+		constants
+	IMPORTS
+		eagine.core
 )

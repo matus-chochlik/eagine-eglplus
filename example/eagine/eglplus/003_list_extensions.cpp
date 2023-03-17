@@ -7,6 +7,7 @@
 ///
 import eagine.core;
 import eagine.eglplus;
+import std;
 
 namespace eagine {
 
@@ -28,7 +29,7 @@ auto main(main_ctx& ctx) -> int {
           .print(
             console_entry_kind::error,
             "failed to get extension list: ${message}")
-          .arg("message", (!extensions).message());
+          .arg("message", (not extensions).message());
     }
 
     if(egl.get_display) {
@@ -60,7 +61,7 @@ auto main(main_ctx& ctx) -> int {
                       .print(
                         console_entry_kind::error,
                         "failed to get extension list: ${message}")
-                      .arg("message", (!extensions).message());
+                      .arg("message", (not extensions).message());
                 }
             } else {
                 disp_cio.print(

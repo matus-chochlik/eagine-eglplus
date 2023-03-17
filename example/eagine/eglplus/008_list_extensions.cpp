@@ -8,8 +8,7 @@
 
 import eagine.core;
 import eagine.eglplus;
-import <iostream>;
-import <vector>;
+import std;
 
 auto main() -> int {
     using namespace eagine;
@@ -24,8 +23,8 @@ auto main() -> int {
             std::cout << "  " << name << std::endl;
         }
     } else {
-        std::cerr << "failed to get extension list: " << (!extensions).message()
-                  << std::endl;
+        std::cerr << "failed to get extension list: "
+                  << (not extensions).message() << std::endl;
     }
 
     std::cout << std::endl;
@@ -46,7 +45,7 @@ auto main() -> int {
                     }
                 } else {
                     std::cerr << "failed to get device extension list: "
-                              << (!extensions).message() << std::endl;
+                              << (not extensions).message() << std::endl;
                 }
 
                 if(egl.get_platform_display) {
@@ -100,16 +99,16 @@ auto main() -> int {
                                 }
                             } else {
                                 std::cerr << "failed to get extension list: "
-                                          << (!extensions).message()
+                                          << (not extensions).message()
                                           << std::endl;
                             }
                         } else {
                             std::cerr << "failed to initialize display: "
-                                      << (!init_res).message() << std::endl;
+                                      << (not init_res).message() << std::endl;
                         }
                     } else {
                         std::cerr << "failed to get platform display: "
-                                  << (!display).message() << std::endl;
+                                  << (not display).message() << std::endl;
                     }
                 } else {
                     std::cout << "missing required API function." << std::endl;

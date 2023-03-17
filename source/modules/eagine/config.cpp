@@ -16,7 +16,7 @@ module;
 
 export module eagine.eglplus:config;
 import eagine.core.types;
-import <cstdint>;
+import std;
 
 namespace eagine::eglplus {
 //------------------------------------------------------------------------------
