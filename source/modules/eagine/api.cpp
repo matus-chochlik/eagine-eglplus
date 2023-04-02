@@ -19,6 +19,7 @@ module;
 #endif
 
 export module eagine.eglplus:api;
+import std;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.string;
@@ -31,7 +32,6 @@ import :extensions;
 import :constants;
 import :objects;
 import :c_api;
-import std;
 
 namespace eagine::eglplus {
 using c_api::adapted_function;
