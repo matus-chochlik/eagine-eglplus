@@ -103,7 +103,6 @@ eagine_add_module(
 
 eagine_add_module(
 	eagine.eglplus
-	PP_NAME EGLPLUS
 	INTERFACES eglplus
 	PARTITIONS
 		config
