@@ -34,15 +34,17 @@ auto main() -> int {
                             display, egl.samples | 2, cover(configs)),
                           span<egl_api::config_type>{})) {
 
-                        const auto print_info =
-                          [&](const char* pref, auto attr, const char* suff) {
-                              std::cout << pref << std::setw(2)
-                                        << extract_or(
-                                             egl.get_config_attrib(
-                                               display, config, attr),
-                                             -1)
-                                        << suff;
-                          };
+                        const auto print_info{[&](
+                                                const std::string_view pref,
+                                                auto attr,
+                                                const std::string_view suff) {
+                            std::cout
+                              << pref << std::setw(2)
+                              << extract_or(
+                                   egl.get_config_attrib(display, config, attr),
+                                   -1)
+                              << suff;
+                        }};
                         print_info("  ", egl.config_id, ": ");
                         print_info("R:", egl.red_size, "|");
                         print_info("G:", egl.green_size, "|");
