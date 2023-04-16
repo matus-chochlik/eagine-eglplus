@@ -41,9 +41,8 @@ auto main() -> int {
                                                 const std::string_view suff) {
                             std::cout
                               << pref << std::setw(2)
-                              << extract_or(
-                                   egl.get_config_attrib(display, config, attr),
-                                   -1)
+                              << egl.get_config_attrib(display, config, attr)
+                                   .value_or(-1)
                               << suff;
                         }};
                         print_info("  ", egl.config_id, ": ");
