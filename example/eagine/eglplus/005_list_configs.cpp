@@ -19,7 +19,7 @@ auto main() -> int {
     if(egl.get_display) {
         if(const ok display{egl.get_display()}) {
             if(egl.initialize(display)) {
-                const auto do_cleanup = egl.terminate.raii(display);
+                const auto do_cleanup{egl.terminate.raii(display)};
 
                 if(const ok count{egl.get_configs.count(display)}) {
 
@@ -28,9 +28,8 @@ auto main() -> int {
                     std::cout << "found " << configs.size()
                               << " configs:" << std::endl;
 
-                    for(const auto config : extract_or(
-                          egl.get_configs(display, cover(configs)),
-                          span<egl_api::config_type>{})) {
+                    for(const auto config :
+                        egl.get_configs(display, cover(configs)).or_default()) {
 
                         const auto print_info{[&](
                                                 const std::string_view pref,

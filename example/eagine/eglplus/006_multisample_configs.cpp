@@ -29,10 +29,11 @@ auto main() -> int {
                     std::cout << "found " << configs.size()
                               << " multisample configs:" << std::endl;
 
-                    for(const auto config : extract_or(
-                          egl.choose_config(
-                            display, egl.samples | 2, cover(configs)),
-                          span<egl_api::config_type>{})) {
+                    for(const auto config :
+                        egl
+                          .choose_config(
+                            display, egl.samples | 2, cover(configs))
+                          .or_default()) {
 
                         const auto print_info{[&](
                                                 const std::string_view pref,

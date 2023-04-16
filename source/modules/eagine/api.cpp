@@ -111,7 +111,7 @@ public:
         auto count() const noexcept {
             int_type ret_count{0};
             return base::operator()({}, ret_count)
-              .transformed([&ret_count](auto, bool valid) {
+              .transform([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -125,7 +125,7 @@ public:
     // get_device_extensions
     auto get_device_extensions(device_handle dev) const noexcept {
         return query_device_string(dev, device_string_query(EGL_EXTENSIONS))
-          .transformed(
+          .transform(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
@@ -206,7 +206,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, ret_count)
-              .transformed([&ret_count](auto, bool valid) {
+              .transform([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -236,7 +236,7 @@ public:
           const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, attribs, {}, ret_count)
-              .transformed([&ret_count](auto, bool valid) {
+              .transform([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -393,7 +393,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, {}, ret_count)
-              .transformed([&ret_count](auto, bool valid) {
+              .transform([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -438,7 +438,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, {}, ret_count)
-              .transformed([&ret_count](auto, bool valid) {
+              .transform([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -596,16 +596,15 @@ public:
     // query_strings
     auto query_strings(display_handle disp, string_query query, char separator)
       const noexcept {
-        return query_string(disp, query)
-          .transformed([separator](auto src, bool) {
-              return split_into_string_list(src, separator);
-          });
+        return query_string(disp, query).transform([separator](auto src, bool) {
+            return split_into_string_list(src, separator);
+        });
     }
 
     // get_client_apis
     auto get_client_apis(display_handle disp) const noexcept {
         return query_string(disp, string_query(EGL_CLIENT_APIS))
-          .transformed(
+          .transform(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
@@ -638,14 +637,14 @@ public:
         return query_string
           .fail()
 #endif
-          .transformed(
+          .transform(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
     // get_extensions
     auto get_extensions(display_handle disp) const noexcept {
         return query_string(disp, string_query(EGL_EXTENSIONS))
-          .transformed(
+          .transform(
             [](auto src, bool) { return split_into_string_list(src, ' '); });
     }
 
