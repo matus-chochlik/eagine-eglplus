@@ -56,37 +56,34 @@ auto main() -> int {
 
                             if(const ok vendor{
                                  egl.query_string(display, egl.vendor)}) {
-                                std::cout << " Vendor:  " << extract(vendor)
+                                std::cout << " Vendor:  " << vendor
                                           << std::endl;
                             }
 
                             if(const ok version{
                                  egl.query_string(display, egl.version)}) {
-                                std::cout << " Version: " << extract(version)
+                                std::cout << " Version: " << version
                                           << std::endl;
                             }
 
                             if(egl.MESA_query_driver(display)) {
                                 if(ok driver_name{
                                      egl.get_display_driver_name(display)}) {
-                                    std::cout
-                                      << " Driver: " << extract(driver_name)
-                                      << std::endl;
+                                    std::cout << " Driver: " << driver_name
+                                              << std::endl;
                                 }
                             }
 
                             if(egl.EXT_output_base(display)) {
                                 if(ok count{
                                      egl.get_output_layers.count(display)}) {
-                                    std::cout
-                                      << " Output layers: " << extract(count)
-                                      << std::endl;
+                                    std::cout << " Output layers: " << count
+                                              << std::endl;
                                 }
                                 if(const ok count{
                                      egl.get_output_ports.count(display)}) {
-                                    std::cout
-                                      << " Output ports: " << extract(count)
-                                      << std::endl;
+                                    std::cout << " Output ports: " << count
+                                              << std::endl;
                                 }
                             }
 

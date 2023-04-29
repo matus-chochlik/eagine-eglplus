@@ -40,13 +40,11 @@ auto main(main_ctx& ctx) -> int {
                 const auto do_cleanup = egl.terminate.raii(display);
 
                 if(const ok vendor{egl.query_string(display, egl.vendor)}) {
-                    disp_cio.print("Vendor: ${info}")
-                      .arg("info", extract(vendor));
+                    disp_cio.print("Vendor: ${info}").arg("info", vendor);
                 }
 
                 if(const ok version{egl.query_string(display, egl.version)}) {
-                    disp_cio.print("Version: ${info}")
-                      .arg("info", extract(version));
+                    disp_cio.print("Version: ${info}").arg("info", version);
                 }
 
                 const auto disp_ext_cio{
