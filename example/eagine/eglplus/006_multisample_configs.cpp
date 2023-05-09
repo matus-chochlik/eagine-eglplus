@@ -29,29 +29,34 @@ auto main() -> int {
                     std::cout << "found " << configs.size()
                               << " multisample configs:" << std::endl;
 
-                    for(const auto config : extract_or(
-                          egl.choose_config(
-                            display, egl.samples | 2, cover(configs)),
-                          span<egl_api::config_type>{})) {
+                    const std::vector<std::tuple<
+                      std::string_view,
+                      config_attribute,
+                      std::string_view>>
+                      properties{
+                        {"  ", egl.config_id, ": "},
+                        {"R:", egl.red_size, "|"},
+                        {"G:", egl.green_size, "|"},
+                        {"B:", egl.blue_size, "|"},
+                        {"A:", egl.alpha_size, "|"},
+                        {"L:", egl.luminance_size, "|"},
+                        {"D:", egl.depth_size, "|"},
+                        {"S:", egl.stencil_size, "|"},
+                        {"Sam:", egl.samples, "|"}};
 
-                        const auto print_info =
-                          [&](const char* pref, auto attr, const char* suff) {
-                              std::cout << pref << std::setw(2)
-                                        << extract_or(
-                                             egl.get_config_attrib(
-                                               display, config, attr),
-                                             -1)
-                                        << suff;
-                          };
-                        print_info("  ", egl.config_id, ": ");
-                        print_info("R:", egl.red_size, "|");
-                        print_info("G:", egl.green_size, "|");
-                        print_info("B:", egl.blue_size, "|");
-                        print_info("A:", egl.alpha_size, "|");
-                        print_info("L:", egl.luminance_size, "|");
-                        print_info("D:", egl.depth_size, "|");
-                        print_info("S:", egl.stencil_size, "|");
-                        print_info("Sam:", egl.samples, "|");
+                    for(const auto config :
+                        egl
+                          .choose_config(
+                            display, egl.samples | 2, cover(configs))
+                          .or_default()) {
+
+                        for(const auto& [pref, attr, suff] : properties) {
+                            std::cout
+                              << pref << std::setw(2)
+                              << egl.get_config_attrib(display, config, attr)
+                                   .value_or(-1)
+                              << suff;
+                        }
 
                         std::cout << std::endl;
                     }

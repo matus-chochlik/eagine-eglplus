@@ -15,10 +15,10 @@ module;
 #endif
 
 module eagine.eglplus;
+import std;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.container;
-import std;
 
 namespace eagine {
 //------------------------------------------------------------------------------

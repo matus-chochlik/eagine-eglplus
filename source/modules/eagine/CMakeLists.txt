@@ -103,7 +103,6 @@ eagine_add_module(
 
 eagine_add_module(
 	eagine.eglplus
-	PP_NAME EGLPLUS
 	INTERFACES eglplus
 	PARTITIONS
 		config
@@ -119,6 +118,10 @@ eagine_add_module(
 		api
 	SOURCES
 		constants
+	IMPORTS
+		eagine.core.types
+		eagine.core.memory
+		eagine.core.container
 )
 target_link_libraries(
 	eagine.eglplus
