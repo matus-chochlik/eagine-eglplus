@@ -103,19 +103,6 @@ eagine_add_module(
 
 eagine_add_module(
 	eagine.eglplus
-	INTERFACES eglplus
-	PARTITIONS
-		config
-		enum_types
-		extensions
-		attributes
-		objects
-		result
-		api_traits
-		c_api
-		constants
-		from_string
-		api
 	SOURCES
 		constants
 	IMPORTS
