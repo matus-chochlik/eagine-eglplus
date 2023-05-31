@@ -23,6 +23,7 @@ export module eagine.eglplus:constants;
 import std;
 import eagine.core.types;
 import eagine.core.memory;
+import eagine.core.valid_if;
 import eagine.core.c_api;
 import :config;
 import :enum_types;
@@ -42,7 +43,7 @@ struct within_limits<eglplus::texture_target, eglplus::egl_types::enum_type> {
 //------------------------------------------------------------------------------
 namespace eglplus {
 export auto egl_enum_by_name(const string_view name) noexcept
-  -> std::optional<egl_types::enum_type>;
+  -> optionally_valid<egl_types::enum_type>;
 //------------------------------------------------------------------------------
 /// @brief Class wrapping the constants from the EGL API.
 /// @ingroup egl_api_wrap
