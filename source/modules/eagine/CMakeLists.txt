@@ -76,6 +76,7 @@ eagine_add_module(
 		config enum_types c_api
 		eagine.core.types
 		eagine.core.memory
+		eagine.core.valid_if
 		eagine.core.c_api
 )
 
@@ -86,6 +87,7 @@ eagine_add_module(
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.string
+		eagine.core.valid_if
 )
 
 eagine_add_module(
@@ -103,25 +105,13 @@ eagine_add_module(
 
 eagine_add_module(
 	eagine.eglplus
-	INTERFACES eglplus
-	PARTITIONS
-		config
-		enum_types
-		extensions
-		attributes
-		objects
-		result
-		api_traits
-		c_api
-		constants
-		from_string
-		api
 	SOURCES
 		constants
 	IMPORTS
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.container
+		eagine.core.valid_if
 )
 target_link_libraries(
 	eagine.eglplus
