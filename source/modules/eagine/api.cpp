@@ -111,7 +111,7 @@ public:
         auto count() const noexcept {
             int_type ret_count{0};
             return base::operator()({}, ret_count)
-              .transform([&ret_count](auto, bool valid) {
+              .transform_if([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -125,8 +125,7 @@ public:
     // get_device_extensions
     auto get_device_extensions(device_handle dev) const noexcept {
         return query_device_string(dev, device_string_query(EGL_EXTENSIONS))
-          .transform(
-            [](auto src, bool) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); });
     }
 
     c_api::combined<
@@ -206,7 +205,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, ret_count)
-              .transform([&ret_count](auto, bool valid) {
+              .transform_if([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -236,7 +235,7 @@ public:
           const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, attribs, {}, ret_count)
-              .transform([&ret_count](auto, bool valid) {
+              .transform_if([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -393,7 +392,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, {}, ret_count)
-              .transform([&ret_count](auto, bool valid) {
+              .transform_if([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -438,7 +437,7 @@ public:
         auto count(display_handle disp) const noexcept {
             int_type ret_count{0};
             return base::operator()(disp, {}, {}, ret_count)
-              .transform([&ret_count](auto, bool valid) {
+              .transform_if([&ret_count](auto, bool valid) {
                   return limit_cast<span_size_t>(valid ? ret_count : 0);
               });
         }
@@ -596,7 +595,7 @@ public:
     // query_strings
     auto query_strings(display_handle disp, string_query query, char separator)
       const noexcept {
-        return query_string(disp, query).transform([separator](auto src, bool) {
+        return query_string(disp, query).transform([separator](auto src) {
             return split_into_string_list(src, separator);
         });
     }
@@ -604,8 +603,7 @@ public:
     // get_client_apis
     auto get_client_apis(display_handle disp) const noexcept {
         return query_string(disp, string_query(EGL_CLIENT_APIS))
-          .transform(
-            [](auto src, bool) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); });
     }
 
     auto get_client_api_bits(display_handle disp) const noexcept {
@@ -637,15 +635,13 @@ public:
         return query_string
           .fail()
 #endif
-          .transform(
-            [](auto src, bool) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); });
     }
 
     // get_extensions
     auto get_extensions(display_handle disp) const noexcept {
         return query_string(disp, string_query(EGL_EXTENSIONS))
-          .transform(
-            [](auto src, bool) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); });
     }
 
     // has_extension
@@ -740,9 +736,11 @@ public:
     basic_egl_api(ApiTraits traits)
       : ApiTraits{std::move(traits)}
       , basic_egl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
-      , basic_egl_constants<ApiTraits>{
-          *static_cast<ApiTraits*>(this),
-          *static_cast<basic_egl_operations<ApiTraits>*>(this)} {}
+      , basic_egl_constants<ApiTraits> {
+        *static_cast<ApiTraits*>(this),
+          *static_cast<basic_egl_operations<ApiTraits>*>(this)
+    }
+    {}
 
     basic_egl_api()
       : basic_egl_api{ApiTraits{}} {}
