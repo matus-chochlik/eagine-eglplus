@@ -138,192 +138,196 @@ public:
 
     /// @var GetError
     /// @eglfuncwrap{GetError}
-    egl_api_function<int_type(), EGLPLUS_EGL_STATIC_FUNC(GetError)> GetError;
+    egl_api_function<int_type(), EGLPLUS_EGL_STATIC_FUNC(GetError)> GetError{
+      "GetError",
+      *this};
 
     /// @var GetProcAddress
     /// @eglfuncwrap{GetProcAddress}
     egl_api_function<
       void (*(const char_type*))(),
       EGLPLUS_EGL_STATIC_FUNC(GetProcAddress)>
-      GetProcAddress;
+      GetProcAddress{"GetProcAddress", *this};
 
     /// @var QueryDevices
     /// @eglfuncwrap{QueryDevices}
     egl_api_function<bool_type(int_type, device_type, int_type*), nullptr>
-      QueryDevices;
+      QueryDevices{"QueryDevicesEXT", *this};
 
     /// @var QueryDeviceString
     /// @eglfuncwrap{QueryDeviceString}
     egl_api_function<const char_type*(device_type, int_type), nullptr>
-      QueryDeviceString;
+      QueryDeviceString{"QueryDeviceStringEXT", *this};
 
     /// @var GetPlatformDisplay
     /// @eglfuncwrap{GetPlatformDisplay}
     egl_api_function<
       display_type(enum_type, void_ptr_type, const attrib_type*),
       EGLPLUS_EGL_STATIC_FUNC(GetPlatformDisplay)>
-      GetPlatformDisplay;
+      GetPlatformDisplay{"GetPlatformDisplay", *this};
 
     /// @var GetDisplay
     /// @eglfuncwrap{GetDisplay}
     egl_api_function<
       display_type(native_display_type),
       EGLPLUS_EGL_STATIC_FUNC(GetDisplay)>
-      GetDisplay;
+      GetDisplay{"GetDisplay", *this};
 
     /// @var GetDisplayDriverName
     /// @eglfuncwrap{GetDisplayDriverName}
     egl_api_function<const char_type*(display_type), nullptr>
-      GetDisplayDriverName;
+      GetDisplayDriverName{"GetDisplayDriverName", *this};
 
     /// @var Initialize
     /// @eglfuncwrap{Initialize}
     egl_api_function<
       bool_type(display_type, int_type*, int_type*),
       EGLPLUS_EGL_STATIC_FUNC(Initialize)>
-      Initialize;
+      Initialize{"Initialize", *this};
 
     /// @var Terminate
     /// @eglfuncwrap{Terminate}
     egl_api_function<bool_type(display_type), EGLPLUS_EGL_STATIC_FUNC(Terminate)>
-      Terminate;
+      Terminate{"Terminate", *this};
 
     /// @var QueryString
     /// @eglfuncwrap{QueryString}
     egl_api_function<
       const char_type*(display_type, int_type),
       EGLPLUS_EGL_STATIC_FUNC(QueryString)>
-      QueryString;
+      QueryString{"QueryString", *this};
 
     /// @var GetConfigs
     /// @eglfuncwrap{GetConfigs}
     egl_api_function<
       bool_type(display_type, config_type*, int_type, int_type*),
       EGLPLUS_EGL_STATIC_FUNC(GetConfigs)>
-      GetConfigs;
+      GetConfigs{"GetConfigs", *this};
 
     /// @var ChooseConfig
     /// @eglfuncwrap{ChooseConfig}
     egl_api_function<
       bool_type(display_type, const int_type*, config_type*, int_type, int_type*),
       EGLPLUS_EGL_STATIC_FUNC(ChooseConfig)>
-      ChooseConfig;
+      ChooseConfig{"ChooseConfig", *this};
 
     /// @var GetConfigAttrib
     /// @eglfuncwrap{GetConfigAttrib}
     egl_api_function<
       bool_type(display_type, config_type, int_type, int_type*),
       EGLPLUS_EGL_STATIC_FUNC(GetConfigAttrib)>
-      GetConfigAttrib;
+      GetConfigAttrib{"GetConfigAttrib", *this};
 
     /// @var CreatePlatformWindowSurface
     /// @eglfuncwrap{CreatePlatformWindowSurface}
     egl_api_function<
       surface_type(display_type, config_type, void_ptr_type, const attrib_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreatePlatformWindowSurface)>
-      CreatePlatformWindowSurface;
+      CreatePlatformWindowSurface{"CreatePlatformWindowSurface", *this};
 
     /// @var CreateWindowSurface
     /// @eglfuncwrap{CreateWindowSurface}
     egl_api_function<
       surface_type(display_type, config_type, native_window_type, const int_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreateWindowSurface)>
-      CreateWindowSurface;
+      CreateWindowSurface{"CreateWindowSurface", *this};
 
     /// @var CreatePbufferSurface
     /// @eglfuncwrap{CreatePbufferSurface}
     egl_api_function<
       surface_type(display_type, config_type, const int_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreatePbufferSurface)>
-      CreatePbufferSurface;
+      CreatePbufferSurface{"CreatePbufferSurface", *this};
 
     /// @var CreatePlatformPixmapSurface
     /// @eglfuncwrap{CreatePlatformPixmapSurface}
     egl_api_function<
       surface_type(display_type, config_type, void_ptr_type, const attrib_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreatePlatformPixmapSurface)>
-      CreatePlatformPixmapSurface;
+      CreatePlatformPixmapSurface{"CreatePlatformPixmapSurface", *this};
 
     /// @var CreatePixmapSurface
     /// @eglfuncwrap{CreatePixmapSurface}
     egl_api_function<
       surface_type(display_type, config_type, native_pixmap_type, const int_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreatePixmapSurface)>
-      CreatePixmapSurface;
+      CreatePixmapSurface{"CreatePixmapSurface", *this};
 
     /// @var CreateStreamProducerSurface
     /// @eglfuncwrap{CreateStreamProducerSurface}
     egl_api_function<
       surface_type(display_type, config_type, stream_type, const int_type*),
       nullptr>
-      CreateStreamProducerSurface;
+      CreateStreamProducerSurface{"CreateStreamProducerSurfaceKHR", *this};
 
     /// @var DestroySurface
     /// @eglfuncwrap{DestroySurface}
     egl_api_function<
       bool_type(display_type, surface_type),
       EGLPLUS_EGL_STATIC_FUNC(DestroySurface)>
-      DestroySurface;
+      DestroySurface{"DestroySurface", *this};
 
     /// @var GetCurrentSurface
     /// @eglfuncwrap{GetCurrentSurface}
     egl_api_function<
       surface_type(int_type),
       EGLPLUS_EGL_STATIC_FUNC(GetCurrentSurface)>
-      GetCurrentSurface;
+      GetCurrentSurface{"GetCurrentSurface", *this};
 
     /// @var SurfaceAttrib
     /// @eglfuncwrap{SurfaceAttrib}
     egl_api_function<
       bool_type(display_type, surface_type, int_type, int_type),
       EGLPLUS_EGL_STATIC_FUNC(SurfaceAttrib)>
-      SurfaceAttrib;
+      SurfaceAttrib{"SurfaceAttrib", *this};
 
     /// @var QuerySurface
     /// @eglfuncwrap{QuerySurface}
     egl_api_function<
       bool_type(display_type, surface_type, int_type, int_type*),
       EGLPLUS_EGL_STATIC_FUNC(QuerySurface)>
-      QuerySurface;
+      QuerySurface{"QuerySurface", *this};
 
     /// @var CreateStream
     /// @eglfuncwrap{CreateStream}
     egl_api_function<surface_type(display_type, const int_type*), nullptr>
-      CreateStream;
+      CreateStream{"CreateStreamKHR", *this};
 
     /// @var DestroyStream
     /// @eglfuncwrap{DestroyStream}
     egl_api_function<bool_type(display_type, stream_type), nullptr>
-      DestroyStream;
+      DestroyStream{"DestroyStreamKHR", *this};
 
     /// @var StreamAttrib
     /// @eglfuncwrap{StreamAttrib}
     egl_api_function<
       bool_type(display_type, stream_type, int_type, int_type),
       nullptr>
-      StreamAttrib;
+      StreamAttrib{"StreamAttribKHR", *this};
 
     /// @var QueryStream
     /// @eglfuncwrap{QueryStream}
     egl_api_function<
       bool_type(display_type, stream_type, int_type, int_type*),
       nullptr>
-      QueryStream;
+      QueryStream{"QueryStream", *this};
 
     /// @var StreamConsumerGLTextureExternal
     /// @eglfuncwrap{StreamConsumerGLTextureExternal}
     egl_api_function<bool_type(display_type, stream_type), nullptr>
-      StreamConsumerGLTextureExternal;
+      StreamConsumerGLTextureExternal{
+        "StreamConsumerGLTextureExternalKHR",
+        *this};
 
     /// @var StreamConsumerAcquire
     /// @eglfuncwrap{GetErrorsumerAcquire}
     egl_api_function<bool_type(display_type, stream_type), nullptr>
-      StreamConsumerAcquire;
+      StreamConsumerAcquire{"StreamConsumerAcquireKHR", *this};
 
     /// @var StreamConsumerRelease
     /// @eglfuncwrap{StreamConsumerRelease}
     egl_api_function<bool_type(display_type, stream_type), nullptr>
-      StreamConsumerRelease;
+      StreamConsumerRelease{"StreamConsumerReleaseKHR", *this};
 
     /// @var GetOutputLayers
     /// @eglfuncwrap{GetOutputLayers}
@@ -335,28 +339,28 @@ public:
         int_type,
         int_type*),
       nullptr>
-      GetOutputLayers;
+      GetOutputLayers{"GetOutputLayersEXT", *this};
 
     /// @var OutputLayerAttrib
     /// @eglfuncwrap{OutputLayerAttrib}
     egl_api_function<
       bool_type(display_type, output_layer_type, int_type, attrib_type),
       nullptr>
-      OutputLayerAttrib;
+      OutputLayerAttrib{"OutputLayerAttribEXT", *this};
 
     /// @var QueryOutputLayerAttrib
     /// @eglfuncwrap{QueryOutputLayerAttrib}
     egl_api_function<
       bool_type(display_type, output_layer_type, int_type, attrib_type*),
       nullptr>
-      QueryOutputLayerAttrib;
+      QueryOutputLayerAttrib{"QueryOutputLayerAttribEXT", *this};
 
     /// @var QueryOutputLayerString
     /// @eglfuncwrap{QueryOutputLayerString}
     egl_api_function<
       const char_type*(display_type, output_layer_type, int_type),
       nullptr>
-      QueryOutputLayerString;
+      QueryOutputLayerString{"QueryOutputLayerStringEXT", *this};
 
     /// @var GetOutputPorts
     /// @eglfuncwrap{GetOutputPorts}
@@ -368,129 +372,131 @@ public:
         int_type,
         int_type*),
       nullptr>
-      GetOutputPorts;
+      GetOutputPorts{"GetOutputPortsEXT", *this};
 
     /// @var OutputPortAttrib
     /// @eglfuncwrap{OutputPortAttrib}
     egl_api_function<
       bool_type(display_type, output_port_type, int_type, attrib_type),
       nullptr>
-      OutputPortAttrib;
+      OutputPortAttrib{"OutputPortAttribEXT", *this};
 
     /// @var QueryOutputPortAttrib
     /// @eglfuncwrap{QueryOutputPortAttrib}
     egl_api_function<
       bool_type(display_type, output_port_type, int_type, attrib_type*),
       nullptr>
-      QueryOutputPortAttrib;
+      QueryOutputPortAttrib{"QueryOutputPortAttribEXT", *this};
 
     /// @var QueryOutputPortString
     /// @eglfuncwrap{QueryOutputPortString}
     egl_api_function<
       const char_type*(display_type, output_port_type, int_type),
       nullptr>
-      QueryOutputPortString;
+      QueryOutputPortString{"QueryOutputPortStringEXT", *this};
 
     /// @var BindTexImage
     /// @eglfuncwrap{BindTexImage}
     egl_api_function<
       bool_type(display_type, surface_type, int_type),
       EGLPLUS_EGL_STATIC_FUNC(BindTexImage)>
-      BindTexImage;
+      BindTexImage{"BindTexImage", *this};
 
     /// @var ReleaseTexImage
     /// @eglfuncwrap{ReleaseTexImage}
     egl_api_function<
       bool_type(display_type, surface_type, int_type),
       EGLPLUS_EGL_STATIC_FUNC(ReleaseTexImage)>
-      ReleaseTexImage;
+      ReleaseTexImage{"ReleaseTexImage", *this};
 
     /// @var BindAPI
     /// @eglfuncwrap{BindAPI}
     egl_api_function<bool_type(enum_type), EGLPLUS_EGL_STATIC_FUNC(BindAPI)>
-      BindAPI;
+      BindAPI{"BindAPI", *this};
 
     /// @var QueryAPI
     /// @eglfuncwrap{QueryAPI}
-    egl_api_function<enum_type(), EGLPLUS_EGL_STATIC_FUNC(QueryAPI)> QueryAPI;
+    egl_api_function<enum_type(), EGLPLUS_EGL_STATIC_FUNC(QueryAPI)> QueryAPI{
+      "QueryAPI",
+      *this};
 
     /// @var CreateContext
     /// @eglfuncwrap{CreateContext}
     egl_api_function<
       context_type(display_type, config_type, context_type, const int_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreateContext)>
-      CreateContext;
+      CreateContext{"CreateContext", *this};
 
     /// @var DestroyContext
     /// @eglfuncwrap{DestroyContext}
     egl_api_function<
       bool_type(display_type, context_type),
       EGLPLUS_EGL_STATIC_FUNC(DestroyContext)>
-      DestroyContext;
+      DestroyContext{"DestroyContext", *this};
 
     /// @var MakeCurrent
     /// @eglfuncwrap{MakeCurrent}
     egl_api_function<
       bool_type(display_type, surface_type, surface_type, context_type),
       EGLPLUS_EGL_STATIC_FUNC(MakeCurrent)>
-      MakeCurrent;
+      MakeCurrent{"MakeCurrent", *this};
 
     /// @var GetCurrentContext
     /// @eglfuncwrap{GetCurrentContext}
     egl_api_function<context_type(), EGLPLUS_EGL_STATIC_FUNC(GetCurrentContext)>
-      GetCurrentContext;
+      GetCurrentContext{"GetCurrentContext", *this};
 
     /// @var QueryContext
     /// @eglfuncwrap{QueryContext}
     egl_api_function<
       bool_type(display_type, context_type, int_type, int_type*),
       EGLPLUS_EGL_STATIC_FUNC(QueryContext)>
-      QueryContext;
+      QueryContext{"QueryContext", *this};
 
     /// @var WaitClient
     /// @eglfuncwrap{WaitClient}
     egl_api_function<bool_type(), EGLPLUS_EGL_STATIC_FUNC(WaitClient)>
-      WaitClient;
+      WaitClient{"WaitClient", *this};
 
     /// @var WaitNative
     /// @eglfuncwrap{WaitNative}
     egl_api_function<bool_type(int_type), EGLPLUS_EGL_STATIC_FUNC(WaitNative)>
-      WaitNative;
+      WaitNative{"WaitNative", *this};
 
     /// @var CreateSync
     /// @eglfuncwrap{CreateSync}
     egl_api_function<
       sync_type(display_type, enum_type, const attrib_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreateSync)>
-      CreateSync;
+      CreateSync{"CreateSync", *this};
 
     /// @var ClientWaitSync
     /// @eglfuncwrap{ClientWaitSync}
     egl_api_function<
       int_type(display_type, sync_type, int_type, time_type),
       EGLPLUS_EGL_STATIC_FUNC(ClientWaitSync)>
-      ClientWaitSync;
+      ClientWaitSync{"ClientWaitSync", *this};
 
     /// @var WaitSync
     /// @eglfuncwrap{WaitSync}
     egl_api_function<
       bool_type(display_type, sync_type, int_type),
       EGLPLUS_EGL_STATIC_FUNC(WaitSync)>
-      WaitSync;
+      WaitSync{"WaitSync", *this};
 
     /// @var GetSyncAttrib
     /// @eglfuncwrap{GetSyncAttrib}
     egl_api_function<
       bool_type(display_type, sync_type, int_type, attrib_type*),
       EGLPLUS_EGL_STATIC_FUNC(GetSyncAttrib)>
-      GetSyncAttrib;
+      GetSyncAttrib{"GetSyncAttrib", *this};
 
     /// @var DestroySync
     /// @eglfuncwrap{DestroySync}
     egl_api_function<
       bool_type(display_type, sync_type),
       EGLPLUS_EGL_STATIC_FUNC(DestroySync)>
-      DestroySync;
+      DestroySync{"DestroySync", *this};
 
     /// @var CreateImage
     /// @eglfuncwrap{CreateImage}
@@ -502,119 +508,55 @@ public:
         client_buffer_type,
         const attrib_type*),
       EGLPLUS_EGL_STATIC_FUNC(CreateImage)>
-      CreateImage;
+      CreateImage{"CreateImage", *this};
 
     /// @var DestroyImage
     /// @eglfuncwrap{DestroyImage}
     egl_api_function<
       bool_type(display_type, image_type),
       EGLPLUS_EGL_STATIC_FUNC(DestroyImage)>
-      DestroyImage;
+      DestroyImage{"DestroyImage", *this};
 
     /// @var CopyBuffers
     /// @eglfuncwrap{CopyBuffers}
     egl_api_function<
       bool_type(display_type, surface_type, native_pixmap_type),
       EGLPLUS_EGL_STATIC_FUNC(CopyBuffers)>
-      CopyBuffers;
+      CopyBuffers{"CopyBuffers", *this};
 
     /// @var SwapInterval
     /// @eglfuncwrap{SwapInterval}
     egl_api_function<
       bool_type(display_type, int_type),
       EGLPLUS_EGL_STATIC_FUNC(SwapInterval)>
-      SwapInterval;
+      SwapInterval{"SwapInterval", *this};
 
     /// @var SwapBuffers
     /// @eglfuncwrap{SwapBuffers}
     egl_api_function<
       bool_type(display_type, surface_type),
       EGLPLUS_EGL_STATIC_FUNC(SwapBuffers)>
-      SwapBuffers;
+      SwapBuffers{"SwapBuffers", *this};
 
     /// @var SwapBuffersWithDamage
     /// @eglfuncwrap{SwapBuffersWithDamage}
     egl_api_function<
       bool_type(display_type, surface_type, const int_type*, int_type),
       nullptr>
-      SwapBuffersWithDamage;
+      SwapBuffersWithDamage{"SwapBuffersWithDamageEXT", *this};
 
     /// @var ReleaseThread
     /// @eglfuncwrap{ReleaseThread}
     egl_api_function<bool_type(), EGLPLUS_EGL_STATIC_FUNC(ReleaseThread)>
-      ReleaseThread;
+      ReleaseThread{"ReleaseThread", *this};
 
-    basic_egl_c_api(api_traits& traits);
+    basic_egl_c_api(api_traits& traits)
+      : _traits{traits} {}
 
     auto traits() noexcept -> api_traits& {
         return _traits;
     }
 };
-//------------------------------------------------------------------------------
-template <typename ApiTraits>
-basic_egl_c_api<ApiTraits>::basic_egl_c_api(api_traits& traits)
-  : _traits{traits}
-  , GetError{"GetError", *this}
-  , GetProcAddress{"GetProcAddress", *this}
-  , QueryDevices{"QueryDevicesEXT", *this}
-  , QueryDeviceString{"QueryDeviceStringEXT", *this}
-  , GetPlatformDisplay{"GetPlatformDisplay", *this}
-  , GetDisplay{"GetDisplay", *this}
-  , GetDisplayDriverName{"GetDisplayDriverName", *this}
-  , Initialize{"Initialize", *this}
-  , Terminate{"Terminate", *this}
-  , QueryString{"QueryString", *this}
-  , GetConfigs{"GetConfigs", *this}
-  , ChooseConfig{"ChooseConfig", *this}
-  , GetConfigAttrib{"GetConfigAttrib", *this}
-  , CreatePlatformWindowSurface{"CreatePlatformWindowSurface", *this}
-  , CreateWindowSurface{"CreateWindowSurface", *this}
-  , CreatePbufferSurface{"CreatePbufferSurface", *this}
-  , CreatePlatformPixmapSurface{"CreatePlatformPixmapSurface", *this}
-  , CreatePixmapSurface{"CreatePixmapSurface", *this}
-  , CreateStreamProducerSurface{"CreateStreamProducerSurfaceKHR", *this}
-  , DestroySurface{"DestroySurface", *this}
-  , GetCurrentSurface{"GetCurrentSurface", *this}
-  , SurfaceAttrib{"SurfaceAttrib", *this}
-  , QuerySurface{"QuerySurface", *this}
-  , CreateStream{"CreateStreamKHR", *this}
-  , DestroyStream{"DestroyStreamKHR", *this}
-  , StreamAttrib{"StreamAttribKHR", *this}
-  , QueryStream{"QueryStream", *this}
-  , StreamConsumerGLTextureExternal{"StreamConsumerGLTextureExternalKHR", *this}
-  , StreamConsumerAcquire{"StreamConsumerAcquireKHR", *this}
-  , StreamConsumerRelease{"StreamConsumerReleaseKHR", *this}
-  , GetOutputLayers{"GetOutputLayersEXT", *this}
-  , OutputLayerAttrib{"OutputLayerAttribEXT", *this}
-  , QueryOutputLayerAttrib{"QueryOutputLayerAttribEXT", *this}
-  , QueryOutputLayerString{"QueryOutputLayerStringEXT", *this}
-  , GetOutputPorts{"GetOutputPortsEXT", *this}
-  , OutputPortAttrib{"OutputPortAttribEXT", *this}
-  , QueryOutputPortAttrib{"QueryOutputPortAttribEXT", *this}
-  , QueryOutputPortString{"QueryOutputPortStringEXT", *this}
-  , BindTexImage{"BindTexImage", *this}
-  , ReleaseTexImage{"ReleaseTexImage", *this}
-  , BindAPI{"BindAPI", *this}
-  , QueryAPI{"QueryAPI", *this}
-  , CreateContext{"CreateContext", *this}
-  , DestroyContext{"DestroyContext", *this}
-  , MakeCurrent{"MakeCurrent", *this}
-  , GetCurrentContext{"GetCurrentContext", *this}
-  , QueryContext{"QueryContext", *this}
-  , WaitClient{"WaitClient", *this}
-  , WaitNative{"WaitNative", *this}
-  , CreateSync{"CreateSync", *this}
-  , ClientWaitSync{"ClientWaitSync", *this}
-  , WaitSync{"WaitSync", *this}
-  , GetSyncAttrib{"GetSyncAttrib", *this}
-  , DestroySync{"DestroySync", *this}
-  , CreateImage{"CreateImage", *this}
-  , DestroyImage{"DestroyImage", *this}
-  , CopyBuffers{"CopyBuffers", *this}
-  , SwapInterval{"SwapInterval", *this}
-  , SwapBuffers{"SwapBuffers", *this}
-  , SwapBuffersWithDamage{"SwapBuffersWithDamageEXT", *this}
-  , ReleaseThread{"ReleaseThread", *this} {}
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
