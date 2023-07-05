@@ -51,8 +51,6 @@ export auto egl_enum_by_name(const string_view name) noexcept
 /// @see basic_egl_operations
 export template <typename ApiTraits>
 class basic_egl_constants {
-    struct egl_tag {};
-
 public:
 #if EAGINE_HAS_EGL
     static constexpr const typename egl_types::config_type no_config{nullptr};
@@ -68,8 +66,8 @@ public:
 #endif
     };
 
-    template <typename ClassList, typename Constant>
-    using opt_constant = c_api::opt_constant<ClassList, Constant, egl_tag>;
+    template <typename ClassList, typename Constant, typename Tag = nothing_t>
+    using opt_constant = c_api::opt_constant<ClassList, Constant, Tag>;
 
     using enum_type = typename egl_types::enum_type;
     using enum_type_i = std::type_identity<enum_type>;
@@ -624,7 +622,7 @@ public:
 #endif
       largest_pbuffer;
 
-    c_api::opt_constant<
+    opt_constant<
       mp_list<surface_attribute>,
 #ifdef EGL_GL_COLORSPACE
       int_type_c<EGL_GL_COLORSPACE>,
@@ -634,7 +632,7 @@ public:
       eglplus::gl_colorspace>
       gl_colorspace;
 
-    c_api::opt_constant<
+    opt_constant<
       mp_list<surface_attribute>,
 #ifdef EGL_TEXTURE_TARGET
       int_type_c<EGL_TEXTURE_TARGET>,
