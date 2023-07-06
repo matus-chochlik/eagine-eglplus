@@ -784,4 +784,12 @@ struct tuple_element<1, eagine::eglplus::basic_egl_api<ApiTraits>> {
 };
 //------------------------------------------------------------------------------
 } // namespace std
+namespace eagine::eglplus {
+//------------------------------------------------------------------------------
+export template <typename ApiTraits>
+using basic_egl_api_reference =
+  c_api::basic_api_reference<basic_egl_api<ApiTraits>>;
+
+export using egl_api_reference = basic_egl_api_reference<egl_api_traits>;
+} // namespace eagine::eglplus
 
