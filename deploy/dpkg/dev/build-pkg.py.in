@@ -57,7 +57,7 @@ Package: eagine-eglplus-dev
 Version: %s
 Architecture: %s
 Installed-Size: %d
-Depends: libegl1,eagine-core-dev
+Depends: libegl1,eagine-core-dev (>= @EAGINE_VERSION@)
 Maintainer: Matus Chochlik <chochlik@gmail.com>
 Description: C++ wrapper for EGL.
 """ % (
