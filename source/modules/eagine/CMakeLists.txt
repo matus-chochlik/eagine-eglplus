@@ -4,13 +4,15 @@
 #  http://www.boost.org/LICENSE_1_0.txt
 eagine_add_module(
 	eagine.eglplus PARTITION config
-	IMPORTS eagine.core.types
+	IMPORTS
+		std
+		eagine.core.types
 )
 
 eagine_add_module(
 	eagine.eglplus PARTITION enum_types
 	IMPORTS
-		config
+		std config
 		eagine.core.types
 		eagine.core.identifier
 		eagine.core.c_api
@@ -19,7 +21,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION attributes
 	IMPORTS
-		config enum_types
+		std config enum_types
 		eagine.core.types
 		eagine.core.identifier
 		eagine.core.c_api
@@ -28,7 +30,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION objects
 	IMPORTS
-		config
+		std config
 		eagine.core.types
 		eagine.core.identifier
 		eagine.core.c_api
@@ -37,7 +39,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION result
 	IMPORTS
-		config
+		std config
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.c_api
@@ -46,7 +48,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION api_traits
 	IMPORTS
-		config result
+		std config result
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.c_api
@@ -55,7 +57,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION c_api
 	IMPORTS
-		config result
+		std config result
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.c_api
@@ -64,7 +66,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION extensions
 	IMPORTS
-		config objects
+		std config objects
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.c_api
@@ -73,7 +75,8 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION constants
 	IMPORTS
-		config enum_types c_api
+		std config
+		enum_types c_api
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.valid_if
@@ -83,7 +86,7 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION from_string
 	IMPORTS
-		enum_types constants
+		std enum_types constants
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.string
@@ -93,8 +96,8 @@ eagine_add_module(
 eagine_add_module(
 	eagine.eglplus PARTITION api
 	IMPORTS
-		config enum_types
-		api_traits
+		std config
+		enum_types api_traits
 		attributes constants
 		extensions c_api
 		eagine.core.types
@@ -108,6 +111,7 @@ eagine_add_module(
 	SOURCES
 		constants
 	IMPORTS
+		std
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.container
