@@ -771,17 +771,15 @@ namespace std {
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 struct tuple_size<eagine::eglplus::basic_egl_api<ApiTraits>>
-  : public std::integral_constant<std::size_t, 2> {};
+  : integral_constant<std::size_t, 2> {};
 
 template <typename ApiTraits>
-struct tuple_element<0, eagine::eglplus::basic_egl_api<ApiTraits>> {
-    using type = eagine::eglplus::basic_egl_operations<ApiTraits>;
-};
+struct tuple_element<0, eagine::eglplus::basic_egl_api<ApiTraits>>
+  : type_identity<eagine::eglplus::basic_egl_operations<ApiTraits>> {};
 
 template <typename ApiTraits>
-struct tuple_element<1, eagine::eglplus::basic_egl_api<ApiTraits>> {
-    using type = eagine::eglplus::basic_egl_constants<ApiTraits>;
-};
+struct tuple_element<1, eagine::eglplus::basic_egl_api<ApiTraits>>
+  : type_identity<eagine::eglplus::basic_egl_constants<ApiTraits>> {};
 //------------------------------------------------------------------------------
 } // namespace std
 namespace eagine::eglplus {
