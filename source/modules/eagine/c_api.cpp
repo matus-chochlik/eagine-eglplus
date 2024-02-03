@@ -151,7 +151,7 @@ public:
 
     /// @var QueryDevices
     /// @eglfuncwrap{QueryDevices}
-    egl_api_function<bool_type(int_type, device_type, int_type*), nullptr>
+    egl_api_function<bool_type(int_type, device_type*, int_type*), nullptr>
       QueryDevices{"QueryDevicesEXT", *this};
 
     /// @var QueryDeviceString
