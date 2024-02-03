@@ -30,8 +30,9 @@ auto main() -> int {
     std::cout << std::endl;
 
     if(const ok dev_count{egl.query_devices.count()}) {
+        const auto n{std_size(dev_count)};
+        std::cout << "Device count: " << n << std::endl;
         std::vector<egl_types::device_type> devices;
-        const auto n = std_size(dev_count.get());
         devices.resize(n);
         if(egl.query_devices(cover(devices))) {
             for(const auto d : integer_range(n)) {

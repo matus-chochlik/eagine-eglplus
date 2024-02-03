@@ -37,7 +37,7 @@ auto main(main_ctx& ctx) -> int {
             const auto disp_cio{
               out.cio_print("Display info:").to_be_continued()};
             if(egl.initialize(display)) {
-                const auto do_cleanup = egl.terminate.raii(display);
+                const auto do_cleanup{egl.terminate.raii(display)};
 
                 if(const ok vendor{egl.query_string(display, egl.vendor)}) {
                     disp_cio.print("Vendor: ${info}").arg("info", vendor);
@@ -72,7 +72,7 @@ auto main(main_ctx& ctx) -> int {
 }
 
 } // namespace eagine
-
+//------------------------------------------------------------------------------
 auto main(int argc, const char** argv) -> int {
     return eagine::default_main(argc, argv, eagine::main);
 }

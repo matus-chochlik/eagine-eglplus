@@ -19,10 +19,10 @@ auto main() -> int {
     if(egl.get_display) {
         if(const ok display{egl.get_display()}) {
             if(egl.initialize(display)) {
-                const auto do_cleanup = egl.terminate.raii(display);
+                const auto do_cleanup{egl.terminate.raii(display)};
 
-                const auto attribs =
-                  (egl.depth_size | 24) + (egl.stencil_size | 8);
+                const auto attribs{
+                  (egl.depth_size | 24) + (egl.stencil_size | 8)};
 
                 if(const ok count{egl.choose_config.count(display, attribs)}) {
 

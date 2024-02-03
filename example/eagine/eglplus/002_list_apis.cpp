@@ -18,9 +18,9 @@ auto main(main_ctx& ctx) -> int {
     const main_ctx_object out{"EGLplus", ctx};
 
     if(egl.get_display) {
-        if(const ok display = egl.get_display()) {
-            if(auto init_res = egl.initialize(display)) {
-                const auto do_cleanup = egl.terminate.raii(display);
+        if(const ok display{egl.get_display()}) {
+            if(auto init_res{egl.initialize(display)}) {
+                const auto do_cleanup{egl.terminate.raii(display)};
 
                 const auto api_cio{
                   out.cio_print("Supported APIs:").to_be_continued()};
@@ -42,7 +42,7 @@ auto main(main_ctx& ctx) -> int {
 }
 
 } // namespace eagine
-
+//------------------------------------------------------------------------------
 auto main(int argc, const char** argv) -> int {
     return eagine::default_main(argc, argv, eagine::main);
 }

@@ -41,7 +41,7 @@ auto main(main_ctx& ctx) -> int {
     return 0;
 }
 } // namespace eagine
-
+//------------------------------------------------------------------------------
 auto main(int argc, const char** argv) -> int {
     return eagine::default_main(argc, argv, eagine::main);
 }
