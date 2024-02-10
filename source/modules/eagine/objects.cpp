@@ -94,6 +94,10 @@ export using display_handle =
 export using owned_display_handle =
   c_api::basic_owned_handle<display_tag, egl_types::display_type>;
 #endif
+
+export template <typename Api>
+using initialized_display_object =
+  c_api::basic_object_from_handle_t<Api, display_handle>;
 //------------------------------------------------------------------------------
 #if defined(EGL_NO_SURFACE)
 export using surface_handle =

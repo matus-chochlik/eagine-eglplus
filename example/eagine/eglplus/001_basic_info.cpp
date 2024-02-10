@@ -16,24 +16,17 @@ auto main(main_ctx& ctx) -> int {
     const egl_api egl;
     const main_ctx_object out{"EGLplus", ctx};
 
-    if(const ok display{egl.get_display()}) {
-        if(egl.initialize(display)) {
-            const auto do_cleanup{egl.terminate.raii(display)};
+    if(const ok display{egl.get_open_display()}) {
+        if(const ok dev_count{egl.query_devices.count()}) {
+            out.cio_print("Devices: ${count}").arg("count", dev_count);
+        }
 
-            if(const ok dev_count{egl.query_devices.count()}) {
-                out.cio_print("Devices: ${count}").arg("count", dev_count);
-            }
+        if(const ok vendor{egl.query_string(display, egl.vendor)}) {
+            out.cio_print("Vendor: ${vendor}").arg("vendor", vendor);
+        }
 
-            if(const ok vendor{egl.query_string(display, egl.vendor)}) {
-                out.cio_print("Vendor: ${vendor}").arg("vendor", vendor);
-            }
-
-            if(const ok version{egl.query_string(display, egl.version)}) {
-                out.cio_print("Version: ${version}").arg("version", version);
-            }
-
-        } else {
-            out.cio_error("failed to initialize EGL");
+        if(const ok version{egl.query_string(display, egl.version)}) {
+            out.cio_print("Version: ${version}").arg("version", version);
         }
     } else {
         out.cio_error("failed to get default display");

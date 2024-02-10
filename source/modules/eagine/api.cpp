@@ -186,10 +186,38 @@ public:
         }
     } initialize{*this};
 
+    auto open_display(display_handle disp) const noexcept
+      -> initialized_display_object<basic_egl_operations> {
+        if(initialize(disp)) {
+            return {*this, owned_display_handle{disp}};
+        }
+        return {*this};
+    }
+
+    auto get_open_display() const noexcept
+      -> initialized_display_object<basic_egl_operations> {
+        if(const ok display{get_display()}) {
+            return open_display(display);
+        }
+        return {*this};
+    }
+
+    auto get_open_platform_display(device_handle dev) const noexcept
+      -> initialized_display_object<basic_egl_operations> {
+        if(const ok display{get_platform_display(dev)}) {
+            return open_display(display);
+        }
+        return {*this};
+    }
+
     simple_adapted_function<
       &egl_api::Terminate,
       c_api::collapsed<bool_type>(display_handle)>
       terminate{*this};
+
+    void clean_up(owned_display_handle display) const noexcept {
+        terminate(display);
+    }
 
     using _get_configs_t = c_api::combined<
       simple_adapted_function<
@@ -777,6 +805,11 @@ auto get(const basic_egl_api<ApiTraits>& x) noexcept -> const
 /// @brief Alias for the default instantation of basic_egl_api.
 /// @ingroup egl_api_wrap
 export using egl_api = basic_egl_api<egl_api_traits>;
+
+/// @brief Alias for initialized display object, that cleans up in destruction.
+/// @ingroup egl_api_wrap
+export using initialized_display =
+  initialized_display_object<basic_egl_operations<egl_api_traits>>;
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
