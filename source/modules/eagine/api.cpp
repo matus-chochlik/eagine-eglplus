@@ -191,7 +191,7 @@ public:
         if(initialize(disp)) {
             return {*this, owned_display_handle{disp}};
         }
-        return {*this};
+        return {};
     }
 
     auto get_open_display() const noexcept
@@ -199,7 +199,7 @@ public:
         if(const ok display{get_display()}) {
             return open_display(display);
         }
-        return {*this};
+        return {};
     }
 
     auto get_open_platform_display(device_handle dev) const noexcept
@@ -207,7 +207,7 @@ public:
         if(const ok display{get_platform_display(dev)}) {
             return open_display(display);
         }
-        return {*this};
+        return {};
     }
 
     simple_adapted_function<
