@@ -37,6 +37,11 @@ struct within_limits<eglplus::color_buffer_type, eglplus::egl_types::enum_type> 
 };
 //------------------------------------------------------------------------------
 export template <>
+struct within_limits<eglplus::transparent_type, eglplus::egl_types::enum_type> {
+    auto check(eglplus::egl_types::enum_type) const noexcept -> bool;
+};
+//------------------------------------------------------------------------------
+export template <>
 struct within_limits<eglplus::texture_target, eglplus::egl_types::enum_type> {
     auto check(eglplus::egl_types::enum_type) const noexcept -> bool;
 };
@@ -928,6 +933,15 @@ public:
 #endif
       luminance_buffer;
 
+    opt_constant<
+      mp_list<eglplus::transparent_type>,
+#ifdef EGL_TRANSPARENT_RGB
+      int_type_c<EGL_TRANSPARENT_RGB>>
+#else
+      int_type_i>
+#endif
+      transparent_rgb;
+
     c_api::
       opt_constant<mp_list<eglplus::color_component_type>, int_type_c<0x333A>>
         color_component_type_fixed;
@@ -1164,6 +1178,7 @@ basic_egl_constants<ApiTraits>::basic_egl_constants(
       api)
   , rgb_buffer("RGB_BUFFER", traits, api)
   , luminance_buffer("LUMINANCE_BUFFER", traits, api)
+  , transparent_rgb("TRANSPARENT_RGB", traits, api)
   , color_component_type_fixed("COLOR_COMPONENT_TYPE_FIXED_EXT", traits, api)
   , color_component_type_float("COLOR_COMPONENT_TYPE_FLOAT_EXT", traits, api)
   , read("READ", traits, api)

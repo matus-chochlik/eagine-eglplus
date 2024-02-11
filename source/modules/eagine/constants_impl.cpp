@@ -36,6 +36,19 @@ auto within_limits<eglplus::color_buffer_type, eglplus::egl_types::enum_type>::
     }
 }
 //------------------------------------------------------------------------------
+auto within_limits<eglplus::transparent_type, eglplus::egl_types::enum_type>::
+  check(eglplus::egl_types::enum_type x) const noexcept -> bool {
+    switch(x) {
+#if EAGINE_HAS_EGL
+        case EGL_TRANSPARENT_RGB:
+        case EGL_NONE:
+            return true;
+#endif
+        default:
+            return false;
+    }
+}
+//------------------------------------------------------------------------------
 auto within_limits<eglplus::texture_target, eglplus::egl_types::enum_type>::check(
   eglplus::egl_types::enum_type x) const noexcept -> bool {
     switch(x) {
@@ -55,6 +68,8 @@ auto map_egl_enum_by_name() noexcept {
     return basic_lc_identifier_trie<egl_types::enum_type>()
 #if EAGINE_HAS_EGL
       .add("luminance_buffer", EGL_LUMINANCE_BUFFER)
+      .add("transparent_type", EGL_TRANSPARENT_TYPE)
+      .add("transparent_rgb", EGL_TRANSPARENT_RGB)
       .add("no_texture", EGL_NO_TEXTURE)
       .add("rgb_buffer", EGL_RGB_BUFFER)
       .add("texture_2d", EGL_TEXTURE_2D)

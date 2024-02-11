@@ -221,6 +221,12 @@ export struct color_buffer_type
     using enum_class::enum_class;
 };
 
+/// @brief Typed enumeration for EGL transparent type constants.
+/// @ingroup egl_api_wrap
+export struct transparent_type : egl_int_class<transparent_type, "TrnsptType"> {
+    using enum_class::enum_class;
+};
+
 /// @brief Typed enumeration for EGL color component type constants.
 /// @ingroup egl_api_wrap
 export struct color_component_type

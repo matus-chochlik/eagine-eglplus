@@ -23,11 +23,13 @@ void constants_enum_by_name(auto& s) {
         }
     }};
     check("luminance_buffer");
+    check("transparent_type");
+    check("transparent_rgb");
     check("no_texture");
     check("rgb_buffer");
     check("texture_2d");
 
-    test.check_equal(distinct.size(), 4U, "constant count");
+    test.check_equal(distinct.size(), 6U, "constant count");
 }
 //------------------------------------------------------------------------------
 auto main(int argc, const char** argv) -> int {
