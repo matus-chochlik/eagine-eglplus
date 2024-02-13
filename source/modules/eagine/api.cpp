@@ -129,7 +129,8 @@ public:
     // get_device_extensions
     auto get_device_extensions(device_handle dev) const noexcept {
         return query_device_string(dev, device_string_query(EGL_EXTENSIONS))
-          .transform([](auto src) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); })
+          .or_default();
     }
 
     c_api::combined<
@@ -679,44 +680,45 @@ public:
         return query_string
           .fail()
 #endif
-          .transform([](auto src) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); })
+          .or_default();
     }
 
     // get_extensions
     auto get_extensions(display_handle disp) const noexcept {
+#if defined(EGL_EXTENSIONS) && defined(EGL_NO_DISPLAY)
         return query_string(disp, string_query(EGL_EXTENSIONS))
-          .transform([](auto src) { return split_into_string_list(src, ' '); });
+#else
+        return query_string
+          .fail()
+#endif
+          .transform([](auto src) { return split_into_string_list(src, ' '); })
+          .or_default();
     }
 
     // has_extension
     auto has_extension(string_view which) const noexcept {
-        if(ok extensions{get_extensions()}) {
-            for(auto ext_name : extensions) {
-                if(ends_with(ext_name, which)) {
-                    return true;
-                }
+        for(auto ext_name : get_extensions()) {
+            if(ends_with(ext_name, which)) {
+                return true;
             }
         }
         return false;
     }
 
     auto has_extension(device_handle dev, string_view which) const noexcept {
-        if(ok extensions{get_device_extensions(dev)}) {
-            for(auto ext_name : extensions) {
-                if(ends_with(ext_name, which)) {
-                    return true;
-                }
+        for(auto ext_name : get_device_extensions(dev)) {
+            if(ends_with(ext_name, which)) {
+                return true;
             }
         }
         return false;
     }
 
     auto has_extension(display_handle disp, string_view which) const noexcept {
-        if(ok extensions{get_extensions(disp)}) {
-            for(auto ext_name : extensions) {
-                if(ends_with(ext_name, which)) {
-                    return true;
-                }
+        for(auto ext_name : get_extensions(disp)) {
+            if(ends_with(ext_name, which)) {
+                return true;
             }
         }
         return false;

@@ -20,16 +20,8 @@ auto main(main_ctx& ctx) -> int {
     const auto gen_ext_cio{
       out.cio_print("Generic extensions:").to_be_continued()};
 
-    if(const ok extensions{egl.get_extensions()}) {
-        for(const auto name : extensions) {
-            gen_ext_cio.print(name);
-        }
-    } else {
-        gen_ext_cio
-          .print(
-            console_entry_kind::error,
-            "failed to get extension list: ${message}")
-          .arg("message", (not extensions).message());
+    for(const auto name : egl.get_extensions()) {
+        gen_ext_cio.print(name);
     }
 
     if(egl.get_display) {
@@ -47,16 +39,8 @@ auto main(main_ctx& ctx) -> int {
             const auto disp_ext_cio{
               disp_cio.print("extensions:").to_be_continued()};
 
-            if(const ok extensions{egl.get_extensions(display)}) {
-                for(const auto name : extensions) {
-                    disp_ext_cio.print(name);
-                }
-            } else {
-                disp_ext_cio
-                  .print(
-                    console_entry_kind::error,
-                    "failed to get extension list: ${message}")
-                  .arg("message", (not extensions).message());
+            for(const auto name : egl.get_extensions(display)) {
+                disp_ext_cio.print(name);
             }
         } else {
             disp_cio.print(
