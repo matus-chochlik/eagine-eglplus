@@ -19,6 +19,9 @@ print the version number and exit.
 \fB--version-at-least\fR <\fIMAJOR.MINOR[.PATCH[.COMMIT]]\fR>
 checks if the version is at least the specified semantic version number.
 If the version is less than the specified number, exits with non-zero result.
+.TP
+\fB--extensions\fR
+also prints the list of extensions for each EGL device.
 .SH "AUTHOR"
 Matus Chochlik, chochlik@gmail.com
 .SH "COPYRIGHT"
