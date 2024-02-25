@@ -18,34 +18,25 @@ auto main() -> int {
 
     std::cout << "Generic extensions: " << std::endl;
 
-    if(const ok extensions{egl.get_extensions()}) {
-        for(const auto name : extensions) {
-            std::cout << "  " << name << std::endl;
-        }
-    } else {
-        std::cerr << "failed to get extension list: "
-                  << (not extensions).message() << std::endl;
+    for(const auto name : egl.get_extensions()) {
+        std::cout << "  " << name << std::endl;
     }
 
     std::cout << std::endl;
 
     if(const ok dev_count{egl.query_devices.count()}) {
+        const auto n{std_size(dev_count)};
+        std::cout << "Device count: " << n << std::endl;
         std::vector<egl_types::device_type> devices;
-        const auto n = std_size(dev_count.get());
         devices.resize(n);
         if(egl.query_devices(cover(devices))) {
             for(const auto d : integer_range(n)) {
                 std::cout << "Device: " << d << std::endl;
 
                 std::cout << " Device extensions: " << std::endl;
-                if(const ok extensions{
-                     egl.get_device_extensions(device_handle(devices[d]))}) {
-                    for(const auto name : extensions) {
-                        std::cout << "  " << name << std::endl;
-                    }
-                } else {
-                    std::cerr << "failed to get device extension list: "
-                              << (not extensions).message() << std::endl;
+                for(const auto name :
+                    egl.get_device_extensions(device_handle(devices[d]))) {
+                    std::cout << "  " << name << std::endl;
                 }
 
                 if(egl.get_platform_display) {
@@ -89,15 +80,8 @@ auto main() -> int {
 
                             std::cout << " Display extensions: " << std::endl;
 
-                            if(const ok extensions{
-                                 egl.get_extensions(display)}) {
-                                for(auto name : extensions) {
-                                    std::cout << "  " << name << std::endl;
-                                }
-                            } else {
-                                std::cerr << "failed to get extension list: "
-                                          << (not extensions).message()
-                                          << std::endl;
+                            for(auto name : egl.get_extensions(display)) {
+                                std::cout << "  " << name << std::endl;
                             }
                         } else {
                             std::cerr << "failed to initialize display: "

@@ -99,9 +99,13 @@ public:
       simple_adapted_function<
         &egl_api::QueryDevices,
         c_api::collapsed<bool_type>(span<device_type>, int_type&)>,
-      simple_adapted_function<
+      adapted_function<
         &egl_api::QueryDevices,
-        c_api::head_transformed<int_type, 2, 1>(span<device_type>)>>;
+        void(span<device_type>),
+        c_api::combined_map<
+          c_api::head_transform_map<int_type, 3, 1>,
+          c_api::convert<int_type, c_api::get_size_map<1, 1>>,
+          c_api::get_data_map<2, 1>>>>;
 
     struct : _query_devices_t {
         using base = _query_devices_t;
@@ -125,7 +129,8 @@ public:
     // get_device_extensions
     auto get_device_extensions(device_handle dev) const noexcept {
         return query_device_string(dev, device_string_query(EGL_EXTENSIONS))
-          .transform([](auto src) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); })
+          .or_default();
     }
 
     c_api::combined<
@@ -182,20 +187,51 @@ public:
         }
     } initialize{*this};
 
+    auto open_display(display_handle disp) const noexcept
+      -> initialized_display_object<basic_egl_operations> {
+        if(initialize(disp)) {
+            return {*this, owned_display_handle{disp}};
+        }
+        return {};
+    }
+
+    auto get_open_display() const noexcept
+      -> initialized_display_object<basic_egl_operations> {
+        if(const ok display{get_display()}) {
+            return open_display(display);
+        }
+        return {};
+    }
+
+    auto get_open_platform_display(device_handle dev) const noexcept
+      -> initialized_display_object<basic_egl_operations> {
+        if(const ok display{get_platform_display(dev)}) {
+            return open_display(display);
+        }
+        return {};
+    }
+
     simple_adapted_function<
       &egl_api::Terminate,
       c_api::collapsed<bool_type>(display_handle)>
       terminate{*this};
 
+    void clean_up(owned_display_handle display) const noexcept {
+        terminate(display);
+    }
+
     using _get_configs_t = c_api::combined<
       simple_adapted_function<
         &egl_api::GetConfigs,
         c_api::collapsed<bool_type>(display_handle, span<config_type>, int_type&)>,
-      simple_adapted_function<
+      adapted_function<
         &egl_api::GetConfigs,
-        c_api::head_transformed<int_type, 4, 2>(
-          display_handle,
-          span<config_type> dest)>>;
+        void(display_handle, span<device_type>),
+        c_api::combined_map<
+          c_api::head_transform_map<int_type, 4, 2>,
+          c_api::make_arg_map<1, 1, egl_types::display_type, display_handle>,
+          c_api::get_data_map<2, 2>,
+          c_api::convert<int_type, c_api::get_size_map<3, 2>>>>>;
 
     struct : _get_configs_t {
         using base = _get_configs_t;
@@ -219,12 +255,15 @@ public:
           span<const int_type>,
           span<config_type>,
           int_type&)>,
-      simple_adapted_function<
+      adapted_function<
         &egl_api::ChooseConfig,
-        c_api::head_transformed<int_type, 5, 3>(
-          display_handle,
-          span<const int_type>,
-          span<config_type>)>>;
+        void(display_handle, span<const int_type>, span<config_type>),
+        c_api::combined_map<
+          c_api::head_transform_map<int_type, 5, 3>,
+          c_api::make_arg_map<1, 1, egl_types::display_type, display_handle>,
+          c_api::get_data_map<2, 2>,
+          c_api::get_data_map<3, 3>,
+          c_api::convert<int_type, c_api::get_size_map<4, 3>>>>>;
 
     struct : _choose_config_t {
         using base = _choose_config_t;
@@ -377,12 +416,15 @@ public:
           span<const attrib_type>,
           span<output_layer_type>,
           int_type&)>,
-      simple_adapted_function<
+      adapted_function<
         &egl_api::GetOutputLayers,
-        c_api::head_transformed<int_type, 5, 3>(
-          display_handle,
-          output_layer_attributes,
-          span<output_layer_type>)>>;
+        void(display_handle, output_layer_attributes, span<output_layer_type>),
+        c_api::combined_map<
+          c_api::head_transform_map<int_type, 5, 3>,
+          c_api::make_arg_map<1, 1, egl_types::display_type, display_handle>,
+          c_api::get_data_map<2, 2>,
+          c_api::get_data_map<3, 3>,
+          c_api::convert<int_type, c_api::get_size_map<4, 2>>>>>;
 
     struct : _get_output_layers_t {
         using base = _get_output_layers_t;
@@ -422,12 +464,15 @@ public:
           span<const attrib_type>,
           span<output_port_type>,
           int_type&)>,
-      simple_adapted_function<
+      adapted_function<
         &egl_api::GetOutputPorts,
-        c_api::head_transformed<int_type, 5, 3>(
-          display_handle,
-          output_port_attributes,
-          span<output_port_type>)>>;
+        void(display_handle, output_port_attributes, span<output_port_type>),
+        c_api::combined_map<
+          c_api::head_transform_map<int_type, 5, 3>,
+          c_api::make_arg_map<1, 1, egl_types::display_type, display_handle>,
+          c_api::get_data_map<2, 2>,
+          c_api::get_data_map<3, 3>,
+          c_api::convert<int_type, c_api::get_size_map<4, 2>>>>>;
 
     struct : _get_output_ports_t {
         using base = _get_output_ports_t;
@@ -635,44 +680,45 @@ public:
         return query_string
           .fail()
 #endif
-          .transform([](auto src) { return split_into_string_list(src, ' '); });
+          .transform([](auto src) { return split_into_string_list(src, ' '); })
+          .or_default();
     }
 
     // get_extensions
     auto get_extensions(display_handle disp) const noexcept {
+#if defined(EGL_EXTENSIONS) && defined(EGL_NO_DISPLAY)
         return query_string(disp, string_query(EGL_EXTENSIONS))
-          .transform([](auto src) { return split_into_string_list(src, ' '); });
+#else
+        return query_string
+          .fail()
+#endif
+          .transform([](auto src) { return split_into_string_list(src, ' '); })
+          .or_default();
     }
 
     // has_extension
     auto has_extension(string_view which) const noexcept {
-        if(ok extensions{get_extensions()}) {
-            for(auto ext_name : extensions) {
-                if(ends_with(ext_name, which)) {
-                    return true;
-                }
+        for(auto ext_name : get_extensions()) {
+            if(ends_with(ext_name, which)) {
+                return true;
             }
         }
         return false;
     }
 
     auto has_extension(device_handle dev, string_view which) const noexcept {
-        if(ok extensions{get_device_extensions(dev)}) {
-            for(auto ext_name : extensions) {
-                if(ends_with(ext_name, which)) {
-                    return true;
-                }
+        for(auto ext_name : get_device_extensions(dev)) {
+            if(ends_with(ext_name, which)) {
+                return true;
             }
         }
         return false;
     }
 
     auto has_extension(display_handle disp, string_view which) const noexcept {
-        if(ok extensions{get_extensions(disp)}) {
-            for(auto ext_name : extensions) {
-                if(ends_with(ext_name, which)) {
-                    return true;
-                }
+        for(auto ext_name : get_extensions(disp)) {
+            if(ends_with(ext_name, which)) {
+                return true;
             }
         }
         return false;
@@ -736,11 +782,9 @@ public:
     basic_egl_api(ApiTraits traits)
       : ApiTraits{std::move(traits)}
       , basic_egl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
-      , basic_egl_constants<ApiTraits> {
-        *static_cast<ApiTraits*>(this),
-          *static_cast<basic_egl_operations<ApiTraits>*>(this)
-    }
-    {}
+      , basic_egl_constants<ApiTraits>{
+          *static_cast<ApiTraits*>(this),
+          *static_cast<basic_egl_operations<ApiTraits>*>(this)} {}
 
     basic_egl_api()
       : basic_egl_api{ApiTraits{}} {}
@@ -763,6 +807,11 @@ auto get(const basic_egl_api<ApiTraits>& x) noexcept -> const
 /// @brief Alias for the default instantation of basic_egl_api.
 /// @ingroup egl_api_wrap
 export using egl_api = basic_egl_api<egl_api_traits>;
+
+/// @brief Alias for initialized display object, that cleans up in destruction.
+/// @ingroup egl_api_wrap
+export using initialized_display =
+  initialized_display_object<basic_egl_operations<egl_api_traits>>;
 //------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 
