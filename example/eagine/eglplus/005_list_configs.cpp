@@ -10,11 +10,12 @@ import eagine.core;
 import eagine.eglplus;
 import std;
 
-auto main() -> int {
-    using namespace eagine;
+namespace eagine {
+
+auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
-    const egl_api egl;
+    const egl_api egl{ctx};
 
     if(egl.get_display) {
         if(const ok display{egl.get_open_display()}) {
@@ -58,3 +59,9 @@ auto main() -> int {
     }
     return 0;
 }
+} // namespace eagine
+
+auto main(int argc, const char** argv) -> int {
+    return eagine::default_main(argc, argv, eagine::main);
+}
+

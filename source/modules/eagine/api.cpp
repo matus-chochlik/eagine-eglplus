@@ -24,6 +24,7 @@ import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.string;
 import eagine.core.c_api;
+import eagine.core.main_ctx;
 import :config;
 import :enum_types;
 import :api_traits;
@@ -775,19 +776,21 @@ basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
 //------------------------------------------------------------------------------
 export template <typename ApiTraits>
 class basic_egl_api
-  : protected ApiTraits
+  : public main_ctx_object
+  , protected ApiTraits
   , public basic_egl_operations<ApiTraits>
   , public basic_egl_constants<ApiTraits> {
 public:
-    basic_egl_api(ApiTraits traits)
-      : ApiTraits{std::move(traits)}
+    basic_egl_api(main_ctx_parent parent, ApiTraits traits)
+      : main_ctx_object{"EGLAPI", parent}
+      , ApiTraits{std::move(traits)}
       , basic_egl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
       , basic_egl_constants<ApiTraits>{
           *static_cast<ApiTraits*>(this),
           *static_cast<basic_egl_operations<ApiTraits>*>(this)} {}
 
-    basic_egl_api()
-      : basic_egl_api{ApiTraits{}} {}
+    basic_egl_api(main_ctx_parent parent)
+      : basic_egl_api{parent, ApiTraits{}} {}
 
     auto operations() const noexcept -> const basic_egl_operations<ApiTraits>& {
         return *this;
