@@ -23,6 +23,7 @@ import std;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.string;
+import eagine.core.identifier;
 import eagine.core.c_api;
 import eagine.core.main_ctx;
 import :config;
@@ -781,6 +782,10 @@ class basic_egl_api
   , public basic_egl_operations<ApiTraits>
   , public basic_egl_constants<ApiTraits> {
 public:
+    using config_type = typename egl_types::config_type;
+    using native_window_type = typename egl_types::native_window_type;
+    using native_pixmap_type = typename egl_types::native_pixmap_type;
+
     basic_egl_api(main_ctx_parent parent, ApiTraits traits)
       : main_ctx_object{"EGLAPI", parent}
       , ApiTraits{std::move(traits)}
@@ -799,8 +804,111 @@ public:
     auto constants() const noexcept -> const basic_egl_constants<ApiTraits>& {
         return *this;
     }
-};
 
+    template <identifier_value Id, typename Handle, Handle invalid, typename... P>
+    auto to_object(
+      c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid> name,
+      P...) const noexcept
+      -> basic_egl_object<
+        basic_egl_api<ApiTraits>,
+        egl_lib_tag<Id>,
+        Handle,
+        invalid,
+        P...>;
+
+    template <
+      identifier_value Id,
+      typename Handle,
+      Handle invalid,
+      typename Info,
+      c_api::result_validity validity,
+      typename... P>
+    auto to_object(
+      c_api::result<
+        c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid>,
+        Info,
+        validity>&& res,
+      P...) const noexcept
+      -> basic_egl_object<
+        basic_egl_api<ApiTraits>,
+        egl_lib_tag<Id>,
+        Handle,
+        invalid,
+        P...>;
+
+    auto create_window_surface_object(
+      display_handle disp,
+      config_type conf,
+      native_window_type wind,
+      surface_attributes attr) const noexcept {
+        return to_object(
+          this->create_window_surface(disp, conf, wind, attr), disp);
+    }
+
+    auto create_pbuffer_surface_object(
+      display_handle disp,
+      config_type conf,
+      surface_attributes attr) const noexcept {
+        return to_object(this->create_pbuffer_surface(disp, conf, attr), disp);
+    }
+
+    auto create_pixmap_surface_object(
+      display_handle disp,
+      config_type conf,
+      native_pixmap_type pmap,
+      surface_attributes attr) const noexcept {
+        return to_object(
+          this->create_pixmap_surface(disp, conf, pmap, attr), disp);
+    }
+};
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+template <identifier_value Id, typename Handle, Handle invalid, typename... P>
+auto basic_egl_api<ApiTraits>::to_object(
+  c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid> name,
+  P... params) const noexcept
+  -> basic_egl_object<
+    basic_egl_api<ApiTraits>,
+    egl_lib_tag<Id>,
+    Handle,
+    invalid,
+    P...> {
+    return {*this, std::move(name), params...};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+template <
+  identifier_value Id,
+  typename Handle,
+  Handle invalid,
+  typename Info,
+  c_api::result_validity validity,
+  typename... P>
+auto basic_egl_api<ApiTraits>::to_object(
+  c_api::result<
+    c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid>,
+    Info,
+    validity>&& res,
+  P... params) const noexcept
+  -> basic_egl_object<
+    basic_egl_api<ApiTraits>,
+    egl_lib_tag<Id>,
+    Handle,
+    invalid,
+    P...> {
+    return std::move(res)
+      .transform(
+        [&, this](auto&& name) -> basic_egl_object<
+                                 basic_egl_api<ApiTraits>,
+                                 egl_lib_tag<Id>,
+                                 Handle,
+                                 invalid,
+                                 P...> {
+            return {*this, std::move(name), params...};
+        })
+      .or_default();
+}
+//------------------------------------------------------------------------------
 export template <std::size_t I, typename ApiTraits>
 auto get(const basic_egl_api<ApiTraits>& x) noexcept -> const
   typename std::tuple_element<I, basic_egl_api<ApiTraits>>::type& {

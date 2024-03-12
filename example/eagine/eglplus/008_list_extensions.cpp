@@ -84,6 +84,7 @@ auto main(main_ctx& ctx) -> int {
                             for(auto name : egl.get_extensions(display)) {
                                 std::cout << "  " << name << std::endl;
                             }
+
                         } else {
                             std::cerr << "failed to initialize display: "
                                       << (not init_res).message() << std::endl;
