@@ -785,6 +785,7 @@ public:
     using config_type = typename egl_types::config_type;
     using native_window_type = typename egl_types::native_window_type;
     using native_pixmap_type = typename egl_types::native_pixmap_type;
+    using client_buffer_type = typename egl_types::client_buffer_type;
 
     basic_egl_api(main_ctx_parent parent, ApiTraits traits)
       : main_ctx_object{"EGLAPI", parent}
@@ -859,6 +860,36 @@ public:
       surface_attributes attr) const noexcept {
         return to_object(
           this->create_pixmap_surface(disp, conf, pmap, attr), disp);
+    }
+
+    auto create_context_object(
+      display_handle disp,
+      config_type conf,
+      context_handle ctxt,
+      context_attributes attr) const noexcept {
+        return to_object(this->create_context(disp, conf, ctxt, attr), disp);
+    }
+
+    auto create_context_object(
+      display_handle disp,
+      config_type conf,
+      context_attributes attr) const noexcept {
+        return create_context_object(disp, conf, {}, attr);
+    }
+
+    auto create_stream_object(display_handle disp, stream_attributes attr)
+      const noexcept {
+        return to_object(this->create_stream(disp, attr), disp);
+    }
+
+    auto create_image_object(
+      display_handle disp,
+      context_handle ctxt,
+      image_target itgt,
+      client_buffer_type cbty,
+      image_attributes attr) const noexcept {
+        return to_object(
+          this->create_image(disp, ctxt, itgt, cbty, attr), disp);
     }
 };
 //------------------------------------------------------------------------------
