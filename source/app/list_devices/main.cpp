@@ -72,7 +72,7 @@ auto main(main_ctx& ctx) -> int {
         return *exit_code;
     }
 
-    const eglplus::egl_api egl;
+    const eglplus::egl_api egl{ctx};
     if(const ok dev_count{egl.query_devices.count()}) {
         const auto n{std_size(dev_count)};
         const auto list_cio{ctx.cio()

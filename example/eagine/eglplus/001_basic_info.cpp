@@ -13,7 +13,7 @@ namespace eagine {
 auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
-    const egl_api egl;
+    const egl_api egl{ctx};
     const main_ctx_object out{"EGLplus", ctx};
 
     if(const ok display{egl.get_open_display()}) {

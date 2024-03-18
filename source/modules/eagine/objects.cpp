@@ -204,5 +204,25 @@ export using sync_handle =
 export using sync_handle = c_api::basic_handle<sync_tag, egl_types::sync_type>;
 #endif
 //------------------------------------------------------------------------------
+/// @brief Alias for EGL object template.
+/// @ingroup egl_api_wrap
+export template <
+  typename Api,
+  typename Tag,
+  typename Handle,
+  Handle invalid,
+  typename... P>
+struct basic_egl_object
+  : c_api::basic_object_from_handle_t<
+      Api,
+      c_api::basic_handle<Tag, Handle, invalid>,
+      P...> {
+    using base = c_api::basic_object_from_handle_t<
+      Api,
+      c_api::basic_handle<Tag, Handle, invalid>,
+      P...>;
+    using base::base;
+};
+//------------------------------------------------------------------------------
 } // namespace eagine::eglplus
 

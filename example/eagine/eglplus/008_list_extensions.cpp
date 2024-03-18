@@ -10,11 +10,12 @@ import eagine.core;
 import eagine.eglplus;
 import std;
 
-auto main() -> int {
-    using namespace eagine;
+namespace eagine {
+
+auto main(main_ctx& ctx) -> int {
     using namespace eagine::eglplus;
 
-    const egl_api egl;
+    const egl_api egl{ctx};
 
     std::cout << "Generic extensions: " << std::endl;
 
@@ -83,6 +84,7 @@ auto main() -> int {
                             for(auto name : egl.get_extensions(display)) {
                                 std::cout << "  " << name << std::endl;
                             }
+
                         } else {
                             std::cerr << "failed to initialize display: "
                                       << (not init_res).message() << std::endl;
@@ -101,3 +103,9 @@ auto main() -> int {
 
     return 0;
 }
+} // namespace eagine
+
+auto main(int argc, const char** argv) -> int {
+    return eagine::default_main(argc, argv, eagine::main);
+}
+

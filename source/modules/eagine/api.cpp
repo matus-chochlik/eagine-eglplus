@@ -23,7 +23,9 @@ import std;
 import eagine.core.types;
 import eagine.core.memory;
 import eagine.core.string;
+import eagine.core.identifier;
 import eagine.core.c_api;
+import eagine.core.main_ctx;
 import :config;
 import :enum_types;
 import :api_traits;
@@ -68,32 +70,42 @@ public:
     template <typename... Args>
     using extension = basic_egl_extension<ApiTraits, Args...>;
 
-    extension<> EXT_device_base;
-    extension<> EXT_device_enumeration;
-    extension<> EXT_device_query;
-    extension<> EXT_device_query_name;
-    extension<device_handle> EXT_device_drm;
-    extension<device_handle> MESA_device_software;
+    extension<> EXT_device_base{"EXT_device_base", *this};
+    extension<> EXT_device_enumeration{"EXT_device_enumeration", *this};
+    extension<> EXT_device_query{"EXT_device_query", *this};
+    extension<> EXT_device_query_name{"EXT_device_query_name", *this};
+    extension<device_handle> EXT_device_drm{"EXT_device_drm", *this};
+    extension<device_handle> MESA_device_software{"MESA_device_software", *this};
 
-    extension<> EXT_platform_base;
-    extension<> EXT_platform_device;
-    extension<> EXT_platform_x11;
-    extension<> EXT_platform_xcb;
-    extension<> EXT_platform_wayland;
-    extension<> KHR_platform_gbm;
-    extension<> MESA_platform_surfaceless;
+    extension<> EXT_platform_base{"EXT_platform_base", *this};
+    extension<> EXT_platform_device{"EXT_platform_device", *this};
+    extension<> EXT_platform_x11{"EXT_platform_x11", *this};
+    extension<> EXT_platform_xcb{"EXT_platform_xcb", *this};
+    extension<> EXT_platform_wayland{"EXT_platform_wayland", *this};
+    extension<> KHR_platform_gbm{"KHR_platform_gbm", *this};
+    extension<> MESA_platform_surfaceless{"MESA_platform_surfaceless", *this};
 
-    extension<display_handle> EXT_create_context_robustness;
-    extension<display_handle> EXT_swap_buffers_with_damage;
+    extension<display_handle> EXT_create_context_robustness{
+      "EXT_create_context_robustness",
+      *this};
+    extension<display_handle> EXT_swap_buffers_with_damage{
+      "EXT_swap_buffers_with_damage",
+      *this};
 
-    extension<display_handle> EXT_output_base;
-    extension<display_handle> EXT_output_drm;
-    extension<display_handle> EXT_stream_consumer_egloutput;
+    extension<display_handle> EXT_output_base{"EXT_output_base", *this};
+    extension<display_handle> EXT_output_drm{"EXT_output_drm", *this};
+    extension<display_handle> EXT_stream_consumer_egloutput{
+      "EXT_stream_consumer_egloutput",
+      *this};
 
-    extension<display_handle> EXT_pixel_format_float;
+    extension<display_handle> EXT_pixel_format_float{
+      "EXT_pixel_format_float",
+      *this};
 
-    extension<display_handle> MESA_configless_context;
-    extension<display_handle> MESA_query_driver;
+    extension<display_handle> MESA_configless_context{
+      "MESA_configless_context",
+      *this};
+    extension<display_handle> MESA_query_driver{"MESA_query_driver", *this};
 
     using _query_devices_t = c_api::combined<
       simple_adapted_function<
@@ -750,44 +762,30 @@ public:
 //------------------------------------------------------------------------------
 template <typename ApiTraits>
 basic_egl_operations<ApiTraits>::basic_egl_operations(api_traits& traits)
-  : egl_api{traits}
-  , EXT_device_base{"EXT_device_base", *this}
-  , EXT_device_enumeration{"EXT_device_enumeration", *this}
-  , EXT_device_query{"EXT_device_query", *this}
-  , EXT_device_query_name{"EXT_device_query_name", *this}
-  , EXT_device_drm{"EXT_device_drm", *this}
-  , MESA_device_software{"MESA_device_software", *this}
-  , EXT_platform_base{"EXT_platform_base", *this}
-  , EXT_platform_device{"EXT_platform_device", *this}
-  , EXT_platform_x11{"EXT_platform_x11", *this}
-  , EXT_platform_xcb{"EXT_platform_xcb", *this}
-  , EXT_platform_wayland{"EXT_platform_wayland", *this}
-  , KHR_platform_gbm{"KHR_platform_gbm", *this}
-  , MESA_platform_surfaceless{"MESA_platform_surfaceless", *this}
-  , EXT_create_context_robustness{"EXT_create_context_robustness", *this}
-  , EXT_swap_buffers_with_damage{"EXT_swap_buffers_with_damage", *this}
-  , EXT_output_base{"EXT_output_base", *this}
-  , EXT_output_drm{"EXT_output_drm", *this}
-  , EXT_stream_consumer_egloutput{"EXT_stream_consumer_egloutput", *this}
-  , EXT_pixel_format_float{"EXT_pixel_format_float", *this}
-  , MESA_configless_context{"MESA_configless_context", *this}
-  , MESA_query_driver{"MESA_query_driver", *this} {}
+  : egl_api{traits} {}
 //------------------------------------------------------------------------------
 export template <typename ApiTraits>
 class basic_egl_api
-  : protected ApiTraits
+  : public main_ctx_object
+  , protected ApiTraits
   , public basic_egl_operations<ApiTraits>
   , public basic_egl_constants<ApiTraits> {
 public:
-    basic_egl_api(ApiTraits traits)
-      : ApiTraits{std::move(traits)}
+    using config_type = typename egl_types::config_type;
+    using native_window_type = typename egl_types::native_window_type;
+    using native_pixmap_type = typename egl_types::native_pixmap_type;
+    using client_buffer_type = typename egl_types::client_buffer_type;
+
+    basic_egl_api(main_ctx_parent parent, ApiTraits traits)
+      : main_ctx_object{"EGLAPI", parent}
+      , ApiTraits{std::move(traits)}
       , basic_egl_operations<ApiTraits>{*static_cast<ApiTraits*>(this)}
       , basic_egl_constants<ApiTraits>{
           *static_cast<ApiTraits*>(this),
           *static_cast<basic_egl_operations<ApiTraits>*>(this)} {}
 
-    basic_egl_api()
-      : basic_egl_api{ApiTraits{}} {}
+    basic_egl_api(main_ctx_parent parent)
+      : basic_egl_api{parent, ApiTraits{}} {}
 
     auto operations() const noexcept -> const basic_egl_operations<ApiTraits>& {
         return *this;
@@ -796,8 +794,141 @@ public:
     auto constants() const noexcept -> const basic_egl_constants<ApiTraits>& {
         return *this;
     }
-};
 
+    template <identifier_value Id, typename Handle, Handle invalid, typename... P>
+    auto to_object(
+      c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid> name,
+      P...) const noexcept
+      -> basic_egl_object<
+        basic_egl_api<ApiTraits>,
+        egl_lib_tag<Id>,
+        Handle,
+        invalid,
+        P...>;
+
+    template <
+      identifier_value Id,
+      typename Handle,
+      Handle invalid,
+      typename Info,
+      c_api::result_validity validity,
+      typename... P>
+    auto to_object(
+      c_api::result<
+        c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid>,
+        Info,
+        validity>&& res,
+      P...) const noexcept
+      -> basic_egl_object<
+        basic_egl_api<ApiTraits>,
+        egl_lib_tag<Id>,
+        Handle,
+        invalid,
+        P...>;
+
+    auto create_window_surface_object(
+      display_handle disp,
+      config_type conf,
+      native_window_type wind,
+      surface_attributes attr) const noexcept {
+        return to_object(
+          this->create_window_surface(disp, conf, wind, attr), disp);
+    }
+
+    auto create_pbuffer_surface_object(
+      display_handle disp,
+      config_type conf,
+      surface_attributes attr) const noexcept {
+        return to_object(this->create_pbuffer_surface(disp, conf, attr), disp);
+    }
+
+    auto create_pixmap_surface_object(
+      display_handle disp,
+      config_type conf,
+      native_pixmap_type pmap,
+      surface_attributes attr) const noexcept {
+        return to_object(
+          this->create_pixmap_surface(disp, conf, pmap, attr), disp);
+    }
+
+    auto create_context_object(
+      display_handle disp,
+      config_type conf,
+      context_handle ctxt,
+      context_attributes attr) const noexcept {
+        return to_object(this->create_context(disp, conf, ctxt, attr), disp);
+    }
+
+    auto create_context_object(
+      display_handle disp,
+      config_type conf,
+      context_attributes attr) const noexcept {
+        return create_context_object(disp, conf, {}, attr);
+    }
+
+    auto create_stream_object(display_handle disp, stream_attributes attr)
+      const noexcept {
+        return to_object(this->create_stream(disp, attr), disp);
+    }
+
+    auto create_image_object(
+      display_handle disp,
+      context_handle ctxt,
+      image_target itgt,
+      client_buffer_type cbty,
+      image_attributes attr) const noexcept {
+        return to_object(
+          this->create_image(disp, ctxt, itgt, cbty, attr), disp);
+    }
+};
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+template <identifier_value Id, typename Handle, Handle invalid, typename... P>
+auto basic_egl_api<ApiTraits>::to_object(
+  c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid> name,
+  P... params) const noexcept
+  -> basic_egl_object<
+    basic_egl_api<ApiTraits>,
+    egl_lib_tag<Id>,
+    Handle,
+    invalid,
+    P...> {
+    return {*this, std::move(name), params...};
+}
+//------------------------------------------------------------------------------
+template <typename ApiTraits>
+template <
+  identifier_value Id,
+  typename Handle,
+  Handle invalid,
+  typename Info,
+  c_api::result_validity validity,
+  typename... P>
+auto basic_egl_api<ApiTraits>::to_object(
+  c_api::result<
+    c_api::basic_owned_handle<egl_lib_tag<Id>, Handle, invalid>,
+    Info,
+    validity>&& res,
+  P... params) const noexcept
+  -> basic_egl_object<
+    basic_egl_api<ApiTraits>,
+    egl_lib_tag<Id>,
+    Handle,
+    invalid,
+    P...> {
+    return std::move(res)
+      .transform(
+        [&, this](auto&& name) -> basic_egl_object<
+                                 basic_egl_api<ApiTraits>,
+                                 egl_lib_tag<Id>,
+                                 Handle,
+                                 invalid,
+                                 P...> {
+            return {*this, std::move(name), params...};
+        })
+      .or_default();
+}
+//------------------------------------------------------------------------------
 export template <std::size_t I, typename ApiTraits>
 auto get(const basic_egl_api<ApiTraits>& x) noexcept -> const
   typename std::tuple_element<I, basic_egl_api<ApiTraits>>::type& {
