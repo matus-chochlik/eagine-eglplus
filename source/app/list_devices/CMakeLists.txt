@@ -24,3 +24,15 @@ install(
 	TARGETS eagine-list-egl-devices
 	DESTINATION bin)
 
+install(
+	TARGETS eagine-list-egl-devices
+	COMPONENT eglplus-apps
+	RUNTIME DESTINATION bin)
+
+install(
+	FILES "resource/eagine-list-egl-devices.bco"
+	COMPONENT eglplus-apps
+	RENAME eagine-list-egl-devices
+	PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+	DESTINATION share/bash-completion/completions)
+
