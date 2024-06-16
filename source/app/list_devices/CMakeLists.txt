@@ -22,10 +22,6 @@ eagine_embed_target_resources(
 
 install(
 	TARGETS eagine-list-egl-devices
-	DESTINATION bin)
-
-install(
-	TARGETS eagine-list-egl-devices
 	COMPONENT eglplus-apps
 	RUNTIME DESTINATION bin)
 
