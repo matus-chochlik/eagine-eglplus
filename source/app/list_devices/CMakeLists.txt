@@ -36,3 +36,7 @@ install(
 	PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
 	DESTINATION share/bash-completion/completions)
 
+install(
+	DIRECTORY etc
+	COMPONENT eglplus-apps
+	DESTINATION /)
