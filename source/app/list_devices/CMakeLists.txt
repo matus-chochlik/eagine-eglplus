@@ -36,3 +36,16 @@ install(
 	DIRECTORY etc
 	COMPONENT eglplus-apps
 	DESTINATION /)
+
+eagine_add_package_property(
+	eglplus-apps
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "\${CXX_RUNTIME_PKGS},\${EAGINE_CORE_RUNTIME_PKGS}")
+
+eagine_add_package_property(
+	eglplus-apps
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "EAGine EGLplus applications.")
+

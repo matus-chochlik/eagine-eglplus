@@ -159,3 +159,15 @@ eagine_add_module_tests(
 eagine_add_license(eglplus-dev)
 eagine_add_debian_changelog(eglplus-dev)
 
+eagine_add_package_property(
+	eglplus-dev
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "eagine-core-dev (>= @EAGINE_VERSION@)")
+
+eagine_add_package_property(
+	eglplus-dev
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "C++ wrapper for EGL.")
+

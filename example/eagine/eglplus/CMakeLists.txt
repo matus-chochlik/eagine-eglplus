@@ -46,3 +46,16 @@ eagine_example_common(005_list_configs)
 eagine_example_common(006_multisample_configs)
 eagine_example_common(007_depth_stencil_configs)
 eagine_example_common(008_list_extensions)
+
+eagine_add_package_property(
+	eglplus-examples
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "\${CXX_RUNTIME_PKGS},\${EAGINE_CORE_RUNTIME_PKGS}")
+
+eagine_add_package_property(
+	eglplus-examples
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "EAGine EGLplus examples.")
+
