@@ -37,6 +37,8 @@ install(
 	COMPONENT eglplus-apps
 	DESTINATION /)
 
+eagine_add_package_conffiles(eglplus-apps etc)
+
 eagine_add_package_property(
 	eglplus-apps
 	GENERATOR DEBIAN
