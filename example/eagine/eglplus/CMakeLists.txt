@@ -47,6 +47,9 @@ eagine_example_common(006_multisample_configs)
 eagine_example_common(007_depth_stencil_configs)
 eagine_example_common(008_list_extensions)
 
+eagine_add_license(eglplus-examples)
+eagine_add_debian_changelog(eglplus-examples)
+
 eagine_add_package_property(
 	eglplus-examples
 	GENERATOR DEBIAN
