@@ -26,18 +26,13 @@ install(
 	RUNTIME DESTINATION bin)
 
 install(
-	FILES "resource/eagine-list-egl-devices.bco"
-	COMPONENT eglplus-apps
-	RENAME eagine-list-egl-devices
-	PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
-	DESTINATION share/bash-completion/completions)
-
-install(
 	DIRECTORY etc
 	COMPONENT eglplus-apps
 	DESTINATION /)
 
-eagine_add_package_conffiles(eglplus-apps etc)
+eagine_add_bash_completion(eglplus-apps "resource/eagine-list-egl-devices.bco")
+eagine_add_manual(eglplus-apps "resource/eagine-list-egl-devices.man")
+eagine_add_package_conffiles(eglplus-apps "etc")
 
 eagine_add_package_property(
 	eglplus-apps
