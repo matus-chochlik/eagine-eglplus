@@ -3,3 +3,7 @@
 # See accompanying file LICENSE_1_0.txt or copy at
 # https://www.boost.org/LICENSE_1_0.txt
 add_subdirectory(list_devices)
+
+eagine_add_license(eglplus-apps)
+eagine_add_debian_changelog(eglplus-apps)
+

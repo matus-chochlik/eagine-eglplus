@@ -22,5 +22,27 @@ eagine_embed_target_resources(
 
 install(
 	TARGETS eagine-list-egl-devices
-	DESTINATION bin)
+	COMPONENT eglplus-apps
+	RUNTIME DESTINATION bin)
+
+install(
+	DIRECTORY etc
+	COMPONENT eglplus-apps
+	DESTINATION /)
+
+eagine_add_bash_completion(eglplus-apps "resource/eagine-list-egl-devices.bco")
+eagine_add_manual(eglplus-apps "resource/eagine-list-egl-devices.man")
+eagine_add_package_conffiles(eglplus-apps "etc")
+
+eagine_add_package_property(
+	eglplus-apps
+	GENERATOR DEBIAN
+	VARIABLE PACKAGE_DEPENDS
+	VALUE "\${CXX_RUNTIME_PKGS},\${EAGINE_CORE_RUNTIME_PKGS}")
+
+eagine_add_package_property(
+	eglplus-apps
+	GENERATOR DEBIAN
+	VARIABLE DESCRIPTION
+	VALUE "EAGine EGLplus applications.")
 
