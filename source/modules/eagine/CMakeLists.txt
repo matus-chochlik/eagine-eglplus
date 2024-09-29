@@ -8,8 +8,7 @@ eagine_add_module(
 	PARTITION config
 	IMPORTS
 		std
-		eagine.core.types
-)
+		eagine.core.types)
 
 eagine_add_module(
 	eagine.eglplus
@@ -19,8 +18,7 @@ eagine_add_module(
 		std config
 		eagine.core.types
 		eagine.core.identifier
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -30,8 +28,7 @@ eagine_add_module(
 		std config enum_types
 		eagine.core.types
 		eagine.core.identifier
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -41,8 +38,7 @@ eagine_add_module(
 		std config
 		eagine.core.types
 		eagine.core.identifier
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -52,8 +48,7 @@ eagine_add_module(
 		std config
 		eagine.core.types
 		eagine.core.memory
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -63,8 +58,7 @@ eagine_add_module(
 		std config result
 		eagine.core.types
 		eagine.core.memory
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -74,8 +68,7 @@ eagine_add_module(
 		std config result
 		eagine.core.types
 		eagine.core.memory
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -85,8 +78,7 @@ eagine_add_module(
 		std config objects
 		eagine.core.types
 		eagine.core.memory
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -98,8 +90,7 @@ eagine_add_module(
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.valid_if
-		eagine.core.c_api
-)
+		eagine.core.c_api)
 
 eagine_add_module(
 	eagine.eglplus
@@ -110,8 +101,7 @@ eagine_add_module(
 		eagine.core.types
 		eagine.core.memory
 		eagine.core.string
-		eagine.core.valid_if
-)
+		eagine.core.valid_if)
 
 eagine_add_module(
 	eagine.eglplus
@@ -127,8 +117,7 @@ eagine_add_module(
 		eagine.core.string
 		eagine.core.identifier
 		eagine.core.c_api
-		eagine.core.main_ctx
-)
+		eagine.core.main_ctx)
 
 eagine_add_module(
 	eagine.eglplus
@@ -145,16 +134,14 @@ eagine_add_module(
 target_link_libraries(
 	eagine.eglplus
 	PUBLIC
-	EGL
-)
+	EGL)
 
 eagine_add_module_tests(
 	eagine.eglplus
 	UNITS
 		constants
 	IMPORTS
-		eagine.core
-)
+		eagine.core)
 
 eagine_add_license(eglplus-dev)
 eagine_add_debian_changelog(eglplus-dev)
